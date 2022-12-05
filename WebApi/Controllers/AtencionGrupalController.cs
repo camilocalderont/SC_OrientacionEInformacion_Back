@@ -29,88 +29,6 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpPost("PostAtencionGrupal")]
-        public async Task<ActionResult> PostAtencionGrupal( [FromForm] AtencionGrupalDTO atenciongrupal, [FromForm] List<IFormFile> files)
-        {
-            var response = new { Titulo = "Bien echo!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK};
-
-            try
-            { 
-                AtencionGrupalAnexo atenciongrupalanexo = new AtencionGrupalAnexo();
-          
-
-                AtencionGrupal atenciongrupalDTO = _mapper.Map<AtencionGrupal>(atenciongrupal);
-                atenciongrupalDTO.DtFechaRegistro = DateTime.Now;
-
-
-                //bool grupalanexo = await _anexo.CreateAsync(atenciongrupalanexo);
-                bool guardo = await _service.CreateAsync(atenciongrupalDTO);
-              
-
-                if (!guardo)
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar atención grupal", Codigo = HttpStatusCode.BadRequest };
-                }
-                var modelResponse = new ModelResponse<AtencionGrupalDTO>(response.Codigo, response.Titulo, response.Mensaje, atenciongrupal);
-                return StatusCode((int)modelResponse.Codigo, modelResponse);
-
-
-                string rutaInicial = Environment.CurrentDirectory;
-                var nombreArchivo = files[0].FileName;
-                var rutaArchivo = rutaInicial + "/Upload/" + nombreArchivo;
-                var archivoArray = nombreArchivo.Split(".");
-                var extencion = archivoArray[archivoArray.Length - 1];
-
-                
-
-                //byte[] tamañoArchivo = System.IO.File.ReadAllBytes(rutaArchivo);
-
-                //atenciongrupalanexo.IBytes = tamañoArchivo;
-                //atenciongrupalanexo.VcNombre = nombreArchivo;
-
-                // FileInfo file = new FileInfo(rutaArchivo);
-
-                //if (file.Length > 1048576)
-                //{
-                //    response = new { Titulo = "Algo salio mal", Mensaje = "El archio PDF no debe superar los 2 megabytes", Codigo = HttpStatusCode.BadRequest };
-                //    return StatusCode((int)response.Codigo, response);
-                //}
-
-                if (files.Count == 0)
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No se recibio el archivo ", Codigo = HttpStatusCode.BadRequest };
-                }
-
-
-                if (extencion != "pdf")
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "El archio no contiene el formato PDF", Codigo = HttpStatusCode.BadRequest };
-                    return StatusCode((int)response.Codigo, response);
-                }
-                else
-                {
-                   
-                    if (files.Count == 1)
-                    {
-                        System.IO.File.Delete(rutaArchivo);
-                    }
-
-                    using (var str = System.IO.File.Create(rutaArchivo))
-                    {
-                        str.Position = 0;
-                        await files[0].CopyToAsync(str);
-                    }
-                }
-
-            }
-            catch (Exception)
-            {
-               response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
-                return StatusCode((int)response.Codigo, response);
-            }
-          
-        }
-
         [HttpPost("crear")]
         public async Task<ActionResult<AtencionGrupal>>  CrearAtencionGrupal([FromForm] AtencionGrupalUnifiedDTO atenciongrupalRequest)
         {
@@ -119,33 +37,56 @@ namespace WebApi.Controllers
 
             try
             {
-                
-                atencionGrupal.DtFechaRegistro = DateTime.Now;
-                bool guardo = await _service.CreateAsync(atencionGrupal);
-
-                if (guardo)
+                if(validarAnexo(atenciongrupalRequest.Anexo))
                 {
-                    var anexo = atenciongrupalRequest.Anexo;
-                    var responseCargo = CargarAnexo(anexo, atencionGrupal);
-                    
-                    AtencionGrupalAnexo atencionGrupalAnexo = new AtencionGrupalAnexo
-                    {
-                        AtencionGrupalId = atencionGrupal.Id,
-                        IBytes = (int)anexo.Length,
-                        VcNombre = anexo.FileName,
-                        UsuarioId = atencionGrupal.UsuarioId,
-                        DtFechaRegistro = atencionGrupal.DtFechaRegistro,
-                        VcRuta = responseCargo.Result.Codigo == HttpStatusCode.OK ? responseCargo.Result.Mensaje : "//",
-                        VcUrl = "//"
-                    
-                    };
+                    atencionGrupal.DtFechaRegistro = DateTime.Now;
+                    bool guardo = await _service.CreateAsync(atencionGrupal);
 
-                    bool guardoAnexo = await _anexo.CreateAsync(atencionGrupalAnexo);
+                    if (guardo)
+                    {
+                        var anexo = atenciongrupalRequest.Anexo;
+                        var responseCargo = CargarAnexo(anexo, atencionGrupal);
+
+                        if (responseCargo.Result.Codigo == HttpStatusCode.OK)
+                        {
+                            AtencionGrupalAnexo atencionGrupalAnexo = new AtencionGrupalAnexo
+                            {
+                                AtencionGrupalId = atencionGrupal.Id,
+                                IBytes = (int)anexo.Length,
+                                VcNombre = anexo.FileName,
+                                UsuarioId = atencionGrupal.UsuarioId,
+                                DtFechaRegistro = atencionGrupal.DtFechaRegistro,
+                                VcRuta = responseCargo.Result.Codigo == HttpStatusCode.OK ? responseCargo.Result.Mensaje : "//",
+                                VcUrl = "//"
+
+                            };
+
+                            bool guardoAnexo = await _anexo.CreateAsync(atencionGrupalAnexo);
+                            if (!guardoAnexo)
+                            {
+                                //Rollback
+                            }
+                        }
+                        else
+                        {
+                            //Rollback
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        //Rollback
+                        response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar la atención grupal", Codigo = HttpStatusCode.BadRequest };
+                    }
                 }
                 else
                 {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar la atención grupal", Codigo = HttpStatusCode.BadRequest };
+                    response = new { Titulo = "Algo salio mal", Mensaje = "El archivo PDF no debe superar los 2 megabytes y tiene que ser de tipo pdf", Codigo = HttpStatusCode.BadRequest };
+                    return StatusCode((int)response.Codigo, response);
                 }
+               
             }
             catch (Exception)
             {
@@ -160,47 +101,43 @@ namespace WebApi.Controllers
 
         }
 
-        public async Task<GenericResponse> CargarAnexo(IFormFile anexo,AtencionGrupal atencionGrupal)
+        private async Task<GenericResponse> CargarAnexo(IFormFile anexo,AtencionGrupal atencionGrupal)
         {
             var  response = new { Titulo = "Bien hecho", Mensaje = "Ruta", Codigo = HttpStatusCode.BadRequest };
             string rutaInicial = Environment.CurrentDirectory;
             string nombreArchivo = anexo.FileName;
             string ruta = rutaInicial + "\\Upload\\AtencionGrupal\\" + atencionGrupal.Id + "\\";
             var rutaArchivo = ruta + nombreArchivo;    
-            var archivoArray = nombreArchivo.Split(".");
-            var extension = archivoArray[archivoArray.Length - 1];
 
-            if (anexo.Length > 1048576)
+            var guardoAnexo = false;
+            Directory.CreateDirectory(Path.GetDirectoryName(ruta));
+
+            using (var str = System.IO.File.Create(rutaArchivo))
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "El archio PDF no debe superar los 2 megabytes", Codigo = HttpStatusCode.BadRequest };
-            }
-
-            if (extension != "pdf")
-            {
-                response = new { Titulo = "Algo salio mal", Mensaje = "El archio no contiene el formato PDF", Codigo = HttpStatusCode.BadRequest };
-
-            }
-            else
-            {
-                var guardoAnexo = false;
-                Directory.CreateDirectory(Path.GetDirectoryName(ruta));
-
-                using (var str = System.IO.File.Create(rutaArchivo))
-                {
-                    str.Position = 0;
+                str.Position = 0;
                     
-                    await anexo.CopyToAsync(str);
-                    guardoAnexo = System.IO.File.Exists(rutaArchivo);
-                }
-                if (guardoAnexo)
-                {
-                    response = new { Titulo = "Bien hecho", Mensaje = rutaArchivo, Codigo = HttpStatusCode.OK };
-                }
+                await anexo.CopyToAsync(str);
+                guardoAnexo = System.IO.File.Exists(rutaArchivo);
             }
-
+            if (guardoAnexo)
+            {
+                response = new { Titulo = "Bien hecho", Mensaje = rutaArchivo, Codigo = HttpStatusCode.OK };
+            }
+            
             var genericResponse = new GenericResponse(response.Codigo, response.Titulo, response.Mensaje);
 
             return genericResponse;
+        }
+
+
+        private bool validarAnexo(IFormFile anexo)
+        {
+            string nombreArchivo = anexo.FileName;
+            var archivoArray = nombreArchivo.Split(".");
+            var extension = archivoArray[archivoArray.Length - 1];
+
+            return anexo.Length <= 2097152 && extension == "pdf";
+          
         }
 
 
