@@ -23,8 +23,8 @@ builder.Services.AddDbContext<OrientacionDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
-
-builder.Services.AddScoped(typeof(ParametroService), typeof(ParametroService));
+builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrupalRepository));
+builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalService));
 
 
 

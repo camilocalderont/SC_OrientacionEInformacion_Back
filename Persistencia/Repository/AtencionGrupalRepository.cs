@@ -1,5 +1,6 @@
 ﻿using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
+using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 
 namespace Persistencia.Repository
@@ -17,35 +18,25 @@ namespace Persistencia.Repository
         }
 
 
-
-
-        //public IEnumerable<AtencionGrupalAnexoDTO> getAtencionGrupaAnexolDTO()
-
-        //{
-        //    var parametro = _context.AtencionGrupal
-        //            //.Where(p => p.BEstado == true && p.VcCodigoInterno == codigoIterno)
-        //            .Select(d => new AtencionGrupalDTO
-        //            {
-
-        //                DtFechaRegistro = d.DtFechaRegistro,
-        //                UsuarioId = d.UsuarioId,
-        //                INumeroUsuarios = d.INumeroUsuarios.
-
-        //                    Select(d => new AtencionGrupalAnexoDTO
-        //                    {
-        //                        VcNombre        = d.VcNombre,
-        //                        UsuarioId       = d.UsuarioId,
-        //                        DtFechaRegistro = d.DtFechaRegistro,
-        //                        DtFechaRegistro = d.DtFechaRegistro,
-        //                        VcDescripcion   = d.VcDescripcion,
-        //                        IBytes          = d.IBytes
-        //                    }).ToList()
-        //            })
-        //            .FirstOrDefault();
-
-        //    return parametro.ParametroDetalles;
-
-        //}
+        public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId)
+        {
+            if (usuarioId > 0)
+            {
+                return await _context.AtencionGrupal
+                            .Where(g => g.DtFechaRegistro >= DtFechaInicio && 
+                                        g.DtFechaRegistro <= DtFechaFin &&
+                                        g.UsuarioId == usuarioId
+                            ).ToListAsync();
+            }
+            else
+            {
+                return await _context.AtencionGrupal
+                            .Where(g => g.DtFechaRegistro >= DtFechaInicio &&
+                                        g.DtFechaRegistro <= DtFechaFin
+                            ).ToListAsync();
+            }
+           
+        }
 
 
     }

@@ -2,7 +2,7 @@
 
 using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
-using WebApi.Requests;
+using WebApi.Requests.AtencionesGrupales;
 
 namespace Aplicacion.Mapping
 {
@@ -17,7 +17,7 @@ namespace Aplicacion.Mapping
 
             CreateMap<AtencionGrupalAnexo, AnexosCasosDTO>().ReverseMap();
 
-            CreateMap<AtencionGrupal, AtencionGrupalUnifiedDTO>().ReverseMap();
+            CreateMap<AtencionGrupal, AtencionGrupalRequest>().ReverseMap();
 
         }
     }

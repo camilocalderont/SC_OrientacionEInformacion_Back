@@ -11,6 +11,7 @@ using WebApi.Requests;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Reflection.Metadata;
 using static System.Net.WebRequestMethods;
+using WebApi.Requests.AtencionesGrupales;
 
 namespace WebApi.Controllers
 {
@@ -18,26 +19,26 @@ namespace WebApi.Controllers
     [ApiController]
     public class AtencionGrupalController : ControllerBase
     {
-        private readonly IGenericService<AtencionGrupal> _service;
+        private readonly AtencionGrupalService _service;
         private readonly IGenericService<AtencionGrupalAnexo> _anexo;
         private readonly IMapper _mapper;
-        public AtencionGrupalController(IGenericService<AtencionGrupal> service, IGenericService<AtencionGrupalAnexo> anexo, IMapper mapper)
+        public AtencionGrupalController(AtencionGrupalService service, IGenericService<AtencionGrupalAnexo> anexo, IMapper mapper)
         {
             this._service = service;
-            this._mapper  = mapper;
-            this._anexo   = anexo;
+            this._mapper = mapper;
+            this._anexo = anexo;
         }
 
 
         [HttpPost("crear")]
-        public async Task<ActionResult<AtencionGrupal>>  CrearAtencionGrupal([FromForm] AtencionGrupalUnifiedDTO atenciongrupalRequest)
+        public async Task<ActionResult<AtencionGrupal>> CrearAtencionGrupal([FromForm] AtencionGrupalRequest atenciongrupalRequest)
         {
             var response = new { Titulo = "Bien echo!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
             AtencionGrupal atencionGrupal = _mapper.Map<AtencionGrupal>(atenciongrupalRequest);
 
             try
             {
-                if(validarAnexo(atenciongrupalRequest.Anexo))
+                if (validarAnexo(atenciongrupalRequest.Anexo))
                 {
                     atencionGrupal.DtFechaRegistro = DateTime.Now;
                     bool guardo = await _service.CreateAsync(atencionGrupal);
@@ -86,7 +87,7 @@ namespace WebApi.Controllers
                     response = new { Titulo = "Algo salio mal", Mensaje = "El archivo PDF no debe superar los 2 megabytes y tiene que ser de tipo pdf", Codigo = HttpStatusCode.BadRequest };
                     return StatusCode((int)response.Codigo, response);
                 }
-               
+
             }
             catch (Exception)
             {
@@ -101,13 +102,13 @@ namespace WebApi.Controllers
 
         }
 
-        private async Task<GenericResponse> CargarAnexo(IFormFile anexo,AtencionGrupal atencionGrupal)
+        private async Task<GenericResponse> CargarAnexo(IFormFile anexo, AtencionGrupal atencionGrupal)
         {
-            var  response = new { Titulo = "Bien hecho", Mensaje = "Ruta", Codigo = HttpStatusCode.BadRequest };
+            var response = new { Titulo = "Bien hecho", Mensaje = "Ruta", Codigo = HttpStatusCode.BadRequest };
             string rutaInicial = Environment.CurrentDirectory;
             string nombreArchivo = anexo.FileName;
             string ruta = rutaInicial + "\\Upload\\AtencionGrupal\\" + atencionGrupal.Id + "\\";
-            var rutaArchivo = ruta + nombreArchivo;    
+            var rutaArchivo = ruta + nombreArchivo;
 
             var guardoAnexo = false;
             Directory.CreateDirectory(Path.GetDirectoryName(ruta));
@@ -115,7 +116,7 @@ namespace WebApi.Controllers
             using (var str = System.IO.File.Create(rutaArchivo))
             {
                 str.Position = 0;
-                    
+
                 await anexo.CopyToAsync(str);
                 guardoAnexo = System.IO.File.Exists(rutaArchivo);
             }
@@ -123,7 +124,7 @@ namespace WebApi.Controllers
             {
                 response = new { Titulo = "Bien hecho", Mensaje = rutaArchivo, Codigo = HttpStatusCode.OK };
             }
-            
+
             var genericResponse = new GenericResponse(response.Codigo, response.Titulo, response.Mensaje);
 
             return genericResponse;
@@ -137,9 +138,30 @@ namespace WebApi.Controllers
             var extension = archivoArray[archivoArray.Length - 1];
 
             return anexo.Length <= 2097152 && extension == "pdf";
-          
+
         }
 
+
+        [HttpPost("bandeja")]
+        public async Task<ActionResult<ListModelResponse<AtencionGrupal>>> obtenerPorRangoFechasYUsuario(BandejaCasosGrupalRequest bandejaCasosGrupal)
+        {
+                      
+           
+
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionGrupal> AtencionesGrupales = null;
+            AtencionesGrupales = await _service.obtenerPorRangoFechasYUsuario(bandejaCasosGrupal.DtFechaInicio, bandejaCasosGrupal.DtFechaFin, bandejaCasosGrupal.UsuarioId);
+
+            if (AtencionesGrupales.Count() ==  0)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
+
+            }
+            var listModelResponse = new ListModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionesGrupales);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+
+        }
 
     }
 }
