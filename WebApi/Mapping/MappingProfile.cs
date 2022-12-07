@@ -2,7 +2,9 @@
 
 using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
+using Dominio.Models.AtencionesWeb;
 using WebApi.Requests.AtencionesGrupales;
+using WebApi.Requests.AtencionesWeb;
 
 namespace Aplicacion.Mapping
 {
@@ -18,6 +20,12 @@ namespace Aplicacion.Mapping
             CreateMap<AtencionGrupalAnexo, AnexosCasosDTO>().ReverseMap();
 
             CreateMap<AtencionGrupal, AtencionGrupalRequest>().ReverseMap();
+
+            CreateMap<AtencionWeb, AtencionWebRequest>().ReverseMap();
+
+            CreateMap<PersonaWeb, AtencionWebRequest>().ReverseMap();
+
+            CreateMap<AtencionWebAnexo, AtencionWenAnexoRequest>().ReverseMap();
 
         }
     }

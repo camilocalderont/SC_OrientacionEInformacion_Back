@@ -16,14 +16,14 @@ namespace Persistencia.FluentConfig.AtencionWebConfig
            .HasMany(p => p.AtencionesWeb)
            .WithOne(p => p.PersonasWeb)
            .HasForeignKey(p => p.PersonaWebId)              // Código de la caso asociado
-           .HasConstraintName("   FK_CasoW_A_CasoW")
+           .HasConstraintName("FK_PersonaWebId")
            .OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(p => p.VcPrimerNombre).IsRequired().HasMaxLength(100);
             entity.Property(p => p.VcSegundoNombre).IsRequired(false).HasMaxLength(100);
             entity.Property(p => p.VcPrimerApellido).IsRequired().HasMaxLength(100);
             entity.Property(p => p.VcSegundoApellido).IsRequired(false).HasMaxLength(100);
-            entity.Property(p => p.VcCorreo).IsRequired(false).HasMaxLength(100);
+            entity.Property(p => p.VcCorreo).IsRequired().HasMaxLength(100);
             entity.Property(p => p.VcTelefono1).IsRequired(false).HasMaxLength(50);
             entity.Property(p => p.VcTelefono2).IsRequired(false).HasMaxLength(50);
             entity.Property(p => p.DtFechaRegistro).IsRequired();

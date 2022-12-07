@@ -25,7 +25,7 @@ namespace Persistencia.Migrations
                     TiempoDuracionId = table.Column<long>(type: "bigint", nullable: false),
                     TipoActividadId = table.Column<long>(type: "bigint", nullable: false),
                     LocalidadId = table.Column<long>(type: "bigint", nullable: false),
-                    VcLugar = table.Column<long>(type: "bigint", maxLength: 100, nullable: false)
+                    VcLugar = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,32 +38,32 @@ namespace Persistencia.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TipoDocumentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TipoDocumentoId = table.Column<long>(type: "bigint", nullable: false),
                     VcDocumento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     VcPrimerNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     VcSegundoNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     VcPrimerApellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     VcSegundoApellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    GeneroId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GeneroId = table.Column<long>(type: "bigint", nullable: false),
                     VcOtroGenero = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     VcNombreIdentitario = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    OrientacionSexualId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrientacionSexualId = table.Column<long>(type: "bigint", nullable: false),
                     VcOtraOrientacionSexual = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    SexoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SexoId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EnfoquePoblacionalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HechoVictimizanteId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    DepartamentoOrigenVictimaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    MunicipioOrigenVictimaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    EtniaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubEtniaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    PoblacionPrioritariaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubPoblacionPrioritariaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    EnfoquePoblacionalId = table.Column<long>(type: "bigint", nullable: false),
+                    HechoVictimizanteId = table.Column<long>(type: "bigint", nullable: true),
+                    DepartamentoOrigenVictimaId = table.Column<long>(type: "bigint", nullable: true),
+                    MunicipioOrigenVictimaId = table.Column<long>(type: "bigint", nullable: true),
+                    EtniaId = table.Column<long>(type: "bigint", nullable: false),
+                    SubEtniaId = table.Column<long>(type: "bigint", nullable: true),
+                    PoblacionPrioritariaId = table.Column<long>(type: "bigint", nullable: false),
+                    SubPoblacionPrioritariaId = table.Column<long>(type: "bigint", nullable: true),
                     VcCorreo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaActualizacion = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UsuarioActualizacionId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UsuarioActualizacionId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -80,13 +80,13 @@ namespace Persistencia.Migrations
                     VcSegundoNombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     VcPrimerApellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     VcSegundoApellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    VcCorreo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    VcCorreo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     VcTelefono1 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     VcTelefono2 = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaActualizacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioActualizacionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioActualizacionId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,16 +127,16 @@ namespace Persistencia.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonaId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CanalAtencionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    CanalAtencionId = table.Column<long>(type: "bigint", nullable: false),
                     VcTurnoSat = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    TipoSolicitudId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MotivoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubMotivoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TipoSolicitudId = table.Column<long>(type: "bigint", nullable: false),
+                    MotivoId = table.Column<long>(type: "bigint", nullable: false),
+                    SubMotivoId = table.Column<long>(type: "bigint", nullable: false),
                     TxAclaracionMotivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TxGestionRealizada = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VcRadicadoBte = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    EstadoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    EstadoId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -157,12 +157,12 @@ namespace Persistencia.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonaId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RegimenId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AseguradoraId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EstadoAfiliacionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NivelSisbenId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    InstitucionInstrumentoVinculadoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    RegimenId = table.Column<long>(type: "bigint", nullable: false),
+                    AseguradoraId = table.Column<long>(type: "bigint", nullable: false),
+                    EstadoAfiliacionId = table.Column<long>(type: "bigint", nullable: false),
+                    NivelSisbenId = table.Column<long>(type: "bigint", nullable: false),
+                    InstitucionInstrumentoVinculadoId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -183,13 +183,13 @@ namespace Persistencia.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonaId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PaisId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DepartamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LocalidadId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UpzId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BarrioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ZonaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    PaisId = table.Column<long>(type: "bigint", nullable: false),
+                    DepartamentoId = table.Column<long>(type: "bigint", nullable: false),
+                    LocalidadId = table.Column<long>(type: "bigint", nullable: false),
+                    UpzId = table.Column<long>(type: "bigint", nullable: false),
+                    BarrioId = table.Column<long>(type: "bigint", nullable: false),
+                    ZonaId = table.Column<long>(type: "bigint", nullable: false),
                     VcDireccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TxDatosContactoAclaraciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VcTelefono1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -214,23 +214,23 @@ namespace Persistencia.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PersonaWebId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CanalAtencionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipoSolicitudId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MotivoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubMotivoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    CanalAtencionId = table.Column<long>(type: "bigint", nullable: false),
+                    TipoSolicitudId = table.Column<long>(type: "bigint", nullable: false),
+                    MotivoId = table.Column<long>(type: "bigint", nullable: false),
+                    SubMotivoId = table.Column<long>(type: "bigint", nullable: false),
                     TxAclaracionMotivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TxAsuntoCorreo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BProcesoFallido = table.Column<bool>(type: "bit", nullable: false),
-                    TipoProcesoFallidoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipoGestionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EstadoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    BProcesoFallido = table.Column<bool>(type: "bit", nullable: true),
+                    TipoProcesoFallidoId = table.Column<long>(type: "bigint", nullable: false),
+                    TipoGestionId = table.Column<long>(type: "bigint", nullable: true),
+                    EstadoId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AtencionWeb", x => x.Id);
                     table.ForeignKey(
-                        name: "   FK_CasoW_A_CasoW",
+                        name: "FK_PersonaWebId",
                         column: x => x.PersonaWebId,
                         principalTable: "PersonaWeb",
                         principalColumn: "Id",
@@ -244,11 +244,11 @@ namespace Persistencia.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AtencionIndividualId = table.Column<long>(type: "bigint", nullable: false),
-                    TipoActorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SedeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TipoActorId = table.Column<long>(type: "bigint", nullable: false),
+                    TipoId = table.Column<long>(type: "bigint", nullable: false),
+                    SedeId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -270,9 +270,9 @@ namespace Persistencia.Migrations
                     AtencionIndividualId = table.Column<long>(type: "bigint", nullable: false),
                     VcNombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    IBytes = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IBytes = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -296,7 +296,7 @@ namespace Persistencia.Migrations
                     DtFechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioAsignaId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaReAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioActualId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioActualId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -319,7 +319,7 @@ namespace Persistencia.Migrations
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     BCierraCaso = table.Column<bool>(type: "bit", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -343,7 +343,9 @@ namespace Persistencia.Migrations
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IBytes = table.Column<int>(type: "int", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    VcRuta = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VcUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -365,9 +367,9 @@ namespace Persistencia.Migrations
                     AtencionWebId = table.Column<long>(type: "bigint", nullable: false),
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     DtFechaAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioAsignaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioAsignaId = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaReAsignacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioActualId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioActualId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -390,7 +392,7 @@ namespace Persistencia.Migrations
                     VcDescripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BCierraCaso = table.Column<bool>(type: "bit", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {

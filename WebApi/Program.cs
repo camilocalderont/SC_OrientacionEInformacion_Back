@@ -24,7 +24,15 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
 builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrupalRepository));
+builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebRepository));
+
+
+builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService));
+
 builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalService));
+
+
+
 
 
 

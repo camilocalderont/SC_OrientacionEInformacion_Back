@@ -12,7 +12,7 @@ using Persistencia.Context;
 namespace Persistencia.Migrations
 {
     [DbContext(typeof(OrientacionDbContext))]
-    [Migration("20221124200226_FirstMigration")]
+    [Migration("20221207211142_FirstMigration")]
     partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,9 +63,10 @@ namespace Persistencia.Migrations
                     b.Property<long>("UsuarioId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("VcLugar")
-                        .HasMaxLength(100)
-                        .HasColumnType("bigint");
+                    b.Property<string>("VcLugar")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -130,17 +131,17 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("SedeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("SedeId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoActorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoActorId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -163,11 +164,11 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IBytes")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("IBytes")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDescripcion")
                         .HasMaxLength(500)
@@ -193,26 +194,26 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<Guid>("CanalAtencionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CanalAtencionId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EstadoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("EstadoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("MotivoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("MotivoId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PersonaId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("SubMotivoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("SubMotivoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoSolicitudId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoSolicitudId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TxAclaracionMotivo")
                         .IsRequired()
@@ -221,8 +222,8 @@ namespace Persistencia.Migrations
                     b.Property<string>("TxGestionRealizada")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcRadicadoBte")
                         .HasMaxLength(50)
@@ -256,8 +257,8 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaReAsignacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UsuarioActualId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioActualId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("UsuarioAsignaId")
                         .HasColumnType("bigint");
@@ -290,8 +291,8 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDescripcion")
                         .IsRequired()
@@ -313,8 +314,8 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<Guid?>("DepartamentoOrigenVictimaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("DepartamentoOrigenVictimaId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DtFechaActualizacion")
                         .HasColumnType("datetime2");
@@ -325,44 +326,44 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EnfoquePoblacionalId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("EnfoquePoblacionalId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("EtniaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("EtniaId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("GeneroId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("GeneroId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("HechoVictimizanteId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("HechoVictimizanteId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("MunicipioOrigenVictimaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("MunicipioOrigenVictimaId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrientacionSexualId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("OrientacionSexualId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("PoblacionPrioritariaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("PoblacionPrioritariaId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("SexoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("SexoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("SubEtniaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("SubEtniaId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("SubPoblacionPrioritariaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("SubPoblacionPrioritariaId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoDocumentoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoDocumentoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("UsuarioActualizacionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("UsuarioActualizacionId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcCorreo")
                         .HasMaxLength(100)
@@ -416,29 +417,29 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<Guid>("AseguradoraId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("AseguradoraId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EstadoAfiliacionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("EstadoAfiliacionId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("InstitucionInstrumentoVinculadoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("InstitucionInstrumentoVinculadoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("NivelSisbenId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("NivelSisbenId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PersonaId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("RegimenId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("RegimenId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -455,20 +456,20 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<Guid>("BarrioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("BarrioId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("DepartamentoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("DepartamentoId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("LocalidadId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("LocalidadId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("PaisId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("PaisId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PersonaId")
                         .HasColumnType("bigint");
@@ -476,11 +477,11 @@ namespace Persistencia.Migrations
                     b.Property<string>("TxDatosContactoAclaraciones")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UpzId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UpzId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDireccion")
                         .IsRequired()
@@ -492,8 +493,8 @@ namespace Persistencia.Migrations
                     b.Property<string>("VcTelefono2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ZonaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ZonaId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -510,35 +511,35 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<bool>("BProcesoFallido")
+                    b.Property<bool?>("BProcesoFallido")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("CanalAtencionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CanalAtencionId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EstadoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("EstadoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("MotivoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("MotivoId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("PersonaWebId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("SubMotivoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("SubMotivoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoGestionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("TipoGestionId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoProcesoFallidoId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoProcesoFallidoId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("TipoSolicitudId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("TipoSolicitudId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TxAclaracionMotivo")
                         .IsRequired()
@@ -548,8 +549,8 @@ namespace Persistencia.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -575,8 +576,8 @@ namespace Persistencia.Migrations
                     b.Property<int>("IBytes")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDescripcion")
                         .HasMaxLength(500)
@@ -586,6 +587,12 @@ namespace Persistencia.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("VcRuta")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VcUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -611,11 +618,11 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaReAsignacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UsuarioActualId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioActualId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioAsignaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioAsignaId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDescripcion")
                         .HasMaxLength(500)
@@ -645,8 +652,8 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcDescripcion")
                         .HasColumnType("nvarchar(max)");
@@ -672,13 +679,14 @@ namespace Persistencia.Migrations
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UsuarioActualizacionId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioActualizacionId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VcCorreo")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -816,7 +824,7 @@ namespace Persistencia.Migrations
                         .HasForeignKey("PersonaWebId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("   FK_CasoW_A_CasoW");
+                        .HasConstraintName("FK_PersonaWebId");
 
                     b.Navigation("PersonasWeb");
                 });

@@ -1,10 +1,6 @@
 ﻿using Dominio.Models.AtencionesGrupales;
 using Persistencia.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Aplicacion.Services
 {

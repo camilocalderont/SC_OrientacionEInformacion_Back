@@ -50,9 +50,9 @@ namespace Persistencia.FluentConfig.AtencionWebConfig
             entity.Property(p => p.SubMotivoId).IsRequired();
             entity.Property(p => p.TxAclaracionMotivo).IsRequired();
             entity.Property(p => p.TxAsuntoCorreo).IsRequired();
-            entity.Property(p => p.BProcesoFallido).IsRequired();
+            entity.Property(p => p.BProcesoFallido).IsRequired(false);
             entity.Property(p => p.TipoSolicitudId).IsRequired();
-            entity.Property(p => p.TipoGestionId).IsRequired();
+            entity.Property(p => p.TipoGestionId).IsRequired(false);
             entity.Property(p => p.EstadoId).IsRequired();
         }
     }

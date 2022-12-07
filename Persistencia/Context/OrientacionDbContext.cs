@@ -55,6 +55,7 @@ namespace Persistencia.Context
 
         #endregion
 
+
         #region ATENCIONES WEB DOMINIO
         public DbSet<AtencionWeb> AtencionWeb { get; set; }
         public DbSet<AtencionWebAnexo> AtencionWebAnexo { get; set; }

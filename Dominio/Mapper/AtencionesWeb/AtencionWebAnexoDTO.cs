@@ -1,6 +1,6 @@
 ﻿namespace Dominio.Models.AtencionesWeb
 {
-    public class AtencionWebAnexo
+    public class AtencionWebAnexoDTO
     {
         public long     Id { get; set; }
         public long      AtencionWebId { get; set; }
@@ -9,11 +9,6 @@
         public int      IBytes { get; set; }
         public DateTime DtFechaRegistro { get; set; }
         public long     UsuarioId { get; set; }
-        public string   VcRuta { get; set; }
-        public string   VcUrl { get; set; }
 
-
-
-        public AtencionWeb AtencionesWeb { get; set; }
     }
 }

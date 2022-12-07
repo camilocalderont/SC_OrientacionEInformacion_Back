@@ -1,19 +1,12 @@
 ﻿using Aplicacion.Services;
 using AutoMapper;
-using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Net;
-
 using WebApi.Responses;
-using WebApi.Requests;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using System.Reflection.Metadata;
-using static System.Net.WebRequestMethods;
 using WebApi.Requests.AtencionesGrupales;
 
-namespace WebApi.Controllers
+namespace WebApi.Controllers.AtencionesGrupales
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,9 +17,9 @@ namespace WebApi.Controllers
         private readonly IMapper _mapper;
         public AtencionGrupalController(AtencionGrupalService service, IGenericService<AtencionGrupalAnexo> anexo, IMapper mapper)
         {
-            this._service = service;
-            this._mapper = mapper;
-            this._anexo = anexo;
+            _service = service;
+            _mapper = mapper;
+            _anexo = anexo;
         }
 
 
@@ -133,26 +126,24 @@ namespace WebApi.Controllers
 
         private bool validarAnexo(IFormFile anexo)
         {
+
             string nombreArchivo = anexo.FileName;
             var archivoArray = nombreArchivo.Split(".");
             var extension = archivoArray[archivoArray.Length - 1];
 
             return anexo.Length <= 2097152 && extension == "pdf";
-
         }
 
 
         [HttpPost("bandeja")]
         public async Task<ActionResult<ListModelResponse<AtencionGrupal>>> obtenerPorRangoFechasYUsuario(BandejaCasosGrupalRequest bandejaCasosGrupal)
         {
-                      
-           
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionGrupal> AtencionesGrupales = null;
             AtencionesGrupales = await _service.obtenerPorRangoFechasYUsuario(bandejaCasosGrupal.DtFechaInicio, bandejaCasosGrupal.DtFechaFin, bandejaCasosGrupal.UsuarioId);
 
-            if (AtencionesGrupales.Count() ==  0)
+            if (AtencionesGrupales.Count() == 0)
             {
                 response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
 
@@ -163,10 +154,13 @@ namespace WebApi.Controllers
 
         }
 
+
+
+
     }
 }
 
 
 
 
-    
+

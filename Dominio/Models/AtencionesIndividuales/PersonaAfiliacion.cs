@@ -5,12 +5,12 @@
         public long     Id { get; set; }
         public long     PersonaId { get; set; }
         public DateTime DtFechaRegistro { get; set; }
-        public Guid     UsuarioId { get; set; }
-        public Guid     RegimenId { get; set; }
-        public Guid     AseguradoraId { get; set; }
-        public Guid     EstadoAfiliacionId { get; set; }
-        public Guid     NivelSisbenId { get; set; }
-        public Guid?    InstitucionInstrumentoVinculadoId { get; set; }
+        public long     UsuarioId { get; set; }
+        public long     RegimenId { get; set; }
+        public long     AseguradoraId { get; set; }
+        public long     EstadoAfiliacionId { get; set; }
+        public long     NivelSisbenId { get; set; }
+        public long?    InstitucionInstrumentoVinculadoId { get; set; }
 
         public Persona Personas { get; set; }
     }
