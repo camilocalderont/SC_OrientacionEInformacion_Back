@@ -1,4 +1,6 @@
-﻿namespace WebApi.Requests.AtencionesWeb
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApi.Requests.AtencionesWeb
 {
     public class AtencionWebRequest
     {

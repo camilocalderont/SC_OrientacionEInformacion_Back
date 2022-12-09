@@ -1,12 +1,12 @@
 ﻿using Aplicacion.Services;
 using AutoMapper;
-using Dominio.Mapper.AtencionesGrupales;
-using Dominio.Models.AtencionesGrupales;
 using Dominio.Models.AtencionesWeb;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Requests.AtencionesWeb;
 using WebApi.Responses;
+using WebApi.Validaciones;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -16,18 +16,19 @@ namespace WebApi.Controllers.AtencionesWeb
     {
 
         private readonly PersonaWebService _service;
+        private readonly ValidacionCorreo _validacorreo;
         private readonly IGenericService<AtencionWeb> _atencionWeb;
         private readonly IGenericService<AtencionWebAnexo> _anexo;
         private readonly IMapper _mapper;
 
-        public AtencionWebController(PersonaWebService service, IGenericService<AtencionWeb> atencionWeb, IMapper mapper, IGenericService<AtencionWebAnexo> anexo)
+        public AtencionWebController(PersonaWebService service, IGenericService<AtencionWeb> atencionWeb, IMapper mapper, IGenericService<AtencionWebAnexo> anexo, ValidacionCorreo validacorreo)
         {
             this._service = service;
             this._atencionWeb = atencionWeb;
             this._mapper = mapper;
             this._anexo = anexo;
+            this._validacorreo=validacorreo;
         }
-
 
 
         [HttpPost("crear")]
@@ -44,9 +45,18 @@ namespace WebApi.Controllers.AtencionesWeb
                 {
 
                     personaWeb.DtFechaActualizacion = DateTime.Now;
-                    personaWeb.DtFechaRegistro = DateTime.Now;
+                    personaWeb.DtFechaRegistro      = DateTime.Now;
 
                     var personaWebCorreo = _service.obtenerporCorreo(personaWeb.VcCorreo);
+
+                    var validacorreo = _validacorreo.ValidarEmail(personaWeb.VcCorreo);
+
+                    if (!validacorreo)
+                    {
+                        response = new { Titulo = "Algo salio mal", Mensaje = "Por favor digita un correo valido", Codigo = HttpStatusCode.BadRequest };
+                        return StatusCode((int)response.Codigo, response);
+                    }
+
 
                     bool guardopersonaWeb = false;
 
@@ -59,8 +69,6 @@ namespace WebApi.Controllers.AtencionesWeb
                         personaWeb.Id = personaWebCorreo.Id;
                         guardopersonaWeb = true;
                     }
-
-
 
                     if (guardopersonaWeb)
                     {
@@ -87,17 +95,10 @@ namespace WebApi.Controllers.AtencionesWeb
                                     DtFechaRegistro = atencionWeb.DtFechaRegistro,
                                     VcRuta = responseCargo.Result.Codigo == HttpStatusCode.OK ? responseCargo.Result.Mensaje : "//",
                                     VcUrl = "//"
-
                                 };
 
                                 bool guardoAnexo = await _anexo.CreateAsync(atencionwebAnexo);
-
-                                if (!guardoAnexo)
-                                {
-                                    //Rollback
-                                }
                             }
-
 
                         }
 
@@ -107,13 +108,7 @@ namespace WebApi.Controllers.AtencionesWeb
                         }
 
                     }
-
-                    //else
-                    //{
-                    //    response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar persona web", Codigo = HttpStatusCode.BadRequest };
-                    //}
                 }
-
 
                 else
                 {
@@ -123,14 +118,12 @@ namespace WebApi.Controllers.AtencionesWeb
 
             }
 
-            catch (Exception ex )
+            catch (Exception)
             {
-                throw;
-                //response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
-                //var modelResponseError = new ModelResponse<AtencionWeb>(response.Codigo, response.Titulo, response.Mensaje, null);
-                //return StatusCode((int)modelResponseError.Codigo, modelResponseError);
+                response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
+                var modelResponseError = new ModelResponse<AtencionWeb>(response.Codigo, response.Titulo, response.Mensaje, null);
+                return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }
-
 
             var modelResponse = new ModelResponse<PersonaWeb>(response.Codigo, response.Titulo, response.Mensaje, personaWeb);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
@@ -142,10 +135,8 @@ namespace WebApi.Controllers.AtencionesWeb
             string nombreArchivo = anexo.FileName;
             var archivoArray = nombreArchivo.Split(".");
             var extension = archivoArray[archivoArray.Length - 1];
-
             return anexo.Length <= 2097152 && extension == "pdf";
         }
-
 
         private async Task<GenericResponse> CargarAnexo(IFormFile anexo, AtencionWeb atencionWeb)
         {
@@ -175,10 +166,7 @@ namespace WebApi.Controllers.AtencionesWeb
             return genericResponse;
         }
 
-
-
-
-
+       
         [HttpGet("GetAtencionWeb")]
         public async Task<ActionResult<IEnumerable<AtencionWebRequest>>> GetAtencionWeb()
         {
@@ -188,11 +176,11 @@ namespace WebApi.Controllers.AtencionesWeb
 
                 IEnumerable<AtencionWeb> AtencionWebModel = null;
 
-                AtencionWebModel = (IEnumerable<AtencionWeb>)await _service.GetAsync();
+                AtencionWebModel = await _atencionWeb.GetAsync();
 
                 List<AtencionWebRequest> atencionwebDTO = _mapper.Map<List<AtencionWebRequest>>(AtencionWebModel);
 
-                if (!await _service.ExistsAsync(e => e.Id > 0))
+                if (!await _atencionWeb.ExistsAsync(e => e.Id > 0))
                 {
                     response = new { Titulo = "Algo salio mal", Mensaje = "No existen atenciones web", Codigo = HttpStatusCode.Accepted };
                 }
@@ -208,11 +196,7 @@ namespace WebApi.Controllers.AtencionesWeb
                 return StatusCode((int)response.Codigo, response);
             }
 
-
         }
-
-
-
 
     }
 }

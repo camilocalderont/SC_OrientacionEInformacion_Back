@@ -3,6 +3,7 @@ using Aplicacion.Services;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using Persistencia.Repository;
+using WebApi.Validaciones;
 using WebAPI.Midleware;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -31,7 +32,7 @@ builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService))
 
 builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalService));
 
-
+builder.Services.AddScoped(typeof(ValidacionCorreo), typeof(ValidacionCorreo));
 
 
 
