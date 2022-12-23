@@ -16,8 +16,10 @@ builder.Services.AddSwaggerGen();
 
 
 DotNetEnv.Env.Load();
+
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 builder.Services.AddDbContext<OrientacionDbContext>(options =>
-                       options.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING")),
+                       options.UseSqlServer(connectionString),
             ServiceLifetime.Transient);
 
 
