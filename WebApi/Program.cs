@@ -3,6 +3,7 @@ using Aplicacion.Services;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using Persistencia.Repository;
+using WebApi.Storage;
 using WebApi.Validaciones;
 using WebAPI.Midleware;
 
@@ -16,8 +17,10 @@ builder.Services.AddSwaggerGen();
 
 
 DotNetEnv.Env.Load();
+
+string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 builder.Services.AddDbContext<OrientacionDbContext>(options =>
-                       options.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING")),
+                       options.UseSqlServer(connectionString),
             ServiceLifetime.Transient);
 
 
@@ -34,7 +37,7 @@ builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalS
 
 builder.Services.AddScoped(typeof(ValidacionCorreo), typeof(ValidacionCorreo));
 
-
+builder.Services.AddScoped(typeof(AzureStorage), typeof(AzureStorage));
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

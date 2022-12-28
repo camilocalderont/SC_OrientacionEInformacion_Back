@@ -1,6 +1,6 @@
 ﻿namespace Dominio.Models.AtencionesIndividuales
 {
-    public class AtencionReasignacion
+    public class AtencionIndividualReasignacion
     {
         public long     Id { get; set; }
         public long     AtencionIndividualId { get; set; }

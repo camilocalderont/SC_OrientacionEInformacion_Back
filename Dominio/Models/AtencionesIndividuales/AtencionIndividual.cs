@@ -16,10 +16,10 @@
         public string   VcRadicadoBte { get; set; }
         public long     EstadoId { get; set; }
 
-        public virtual List<AtencionReasignacion> AtencionReasignaciones { get; set; }
-        public virtual List<AtencionSeguimiento> AtencionSeguimientos { get; set; }
-        public virtual List<AtencionAnexo> AtencionAnexos { get; set; }
-        public virtual List<AtencionActor> AtencionActores { get; set; }
+        public virtual List<AtencionIndividualReasignacion> AtencionReasignaciones { get; set; }
+        public virtual List<AtencionIndividualSeguimiento> AtencionSeguimientos { get; set; }
+        public virtual List<AtencionIndividualAnexo> AtencionAnexos { get; set; }
+        public virtual List<AtencionIndividualActor> AtencionActores { get; set; }
         public Persona Personas { get; set; }
     }
 }

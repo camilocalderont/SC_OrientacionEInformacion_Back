@@ -18,22 +18,22 @@ namespace Persistencia.Context
             base.OnModelCreating(modelBuilder);
 
             #region  FLUENTCONFIG ATENCION INDIVIDUAL CONFIG
-            new AtencionActorConfig(modelBuilder.Entity<AtencionActor>());
-            new AtencionAnexoConfig(modelBuilder.Entity<AtencionAnexo>());
-            new AtencionIndividualConfig(modelBuilder.Entity<AtencionIndividual>());
-            new AtencionReasignacionConfig(modelBuilder.Entity<AtencionReasignacion>());
-            new AtencionSeguimientoConfig(modelBuilder.Entity<AtencionSeguimiento>());
             new PersonaConfig(modelBuilder.Entity<Persona>());
             new PersonaAfiliacionConfig(modelBuilder.Entity<PersonaAfiliacion>());
             new PersonaContactoConfig(modelBuilder.Entity<PersonaContacto>());
+            new AtencionIndividualConfig(modelBuilder.Entity<AtencionIndividual>());
+            new AtencionIndividualActorConfig(modelBuilder.Entity<AtencionIndividualActor>());
+            new AtencionIndividualAnexoConfig(modelBuilder.Entity<AtencionIndividualAnexo>());            
+            new AtencionIndividualReasignacionConfig(modelBuilder.Entity<AtencionIndividualReasignacion>());
+            new AtencionIndividualSeguimientoConfig(modelBuilder.Entity<AtencionIndividualSeguimiento>());
             #endregion
 
             #region  FLUENTCONFIG ATENCION WEB CONFIG
+            new AtencionPersonaWebConfig(modelBuilder.Entity<PersonaWeb>());
             new AtencionWebConfig(modelBuilder.Entity<AtencionWeb>());
             new AtencionWebAnexoConfig(modelBuilder.Entity<AtencionWebAnexo>());
             new AtencionWebReasignacionConfig(modelBuilder.Entity<AtencionWebReasignacion>());
-            new AtencionSeguimientoConfig(modelBuilder.Entity<AtencionSeguimiento>());
-            new AtencionPersonaWebConfig(modelBuilder.Entity<PersonaWeb>());
+            new AtencionIndividualSeguimientoConfig(modelBuilder.Entity<AtencionIndividualSeguimiento>());
             #endregion
 
             #region  FLUENTCONFIG ATENCION GRUPAL CONFIG
@@ -44,11 +44,11 @@ namespace Persistencia.Context
         }
 
         #region ATENCIONES INDIVIDUALES DOMINIO
-        public DbSet<AtencionActor> AtencionActor { get; set; }
-        public DbSet<AtencionAnexo> AtencionAnexo { get; set; }
+        public DbSet<AtencionIndividualActor> AtencionIndividualActor { get; set; }
+        public DbSet<AtencionIndividualAnexo> AtencionIndividualAnexo { get; set; }
         public DbSet<AtencionIndividual> AtencionIndividual { get; set; }
-        public DbSet<AtencionReasignacion> AtencionReasignacion { get; set; }
-        public DbSet<AtencionSeguimiento> AtencionSeguimiento { get; set; }
+        public DbSet<AtencionIndividualReasignacion> AtencionIndividualReasignacion { get; set; }
+        public DbSet<AtencionIndividualSeguimiento> AtencionIndividualSeguimiento { get; set; }
         public DbSet<Persona> Persona { get; set; }
         public DbSet<PersonaAfiliacion> PersonaAfiliacion { get; set; }
         public DbSet<PersonaContacto> PersonaContacto { get; set; }

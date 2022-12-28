@@ -3,6 +3,7 @@
     public class AtencionGrupalRequest
     {
         public long Id { get; set; }
+        public DateTime DtFechaOrientacion { get; set; }
         public DateTime DtFechaRegistro { get; set; }
         public long UsuarioId { get; set; }
         public int INumeroUsuarios { get; set; }

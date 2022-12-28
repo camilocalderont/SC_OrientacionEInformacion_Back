@@ -30,6 +30,9 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("DtFechaOrientacion")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DtFechaRegistro")
                         .HasColumnType("datetime2");
 
@@ -101,87 +104,15 @@ namespace Persistencia.Migrations
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("VcRuta")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("VcUrl")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AtencionGrupalId");
 
                     b.ToTable("AtencionGrupalAnexo", (string)null);
-                });
-
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionActor", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long>("AtencionIndividualId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DtFechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("SedeId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TipoActorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("TipoId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UsuarioId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AtencionIndividualId");
-
-                    b.ToTable("AtencionActor", (string)null);
-                });
-
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionAnexo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long>("AtencionIndividualId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("DtFechaRegistro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("IBytes")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UsuarioId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("VcDescripcion")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("VcNombre")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AtencionIndividualId");
-
-                    b.ToTable("AtencionAnexo", (string)null);
                 });
 
             modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividual", b =>
@@ -238,7 +169,81 @@ namespace Persistencia.Migrations
                     b.ToTable("AtencionIndividual", (string)null);
                 });
 
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionReasignacion", b =>
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualActor", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long>("AtencionIndividualId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DtFechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("SedeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TipoActorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TipoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtencionIndividualId");
+
+                    b.ToTable("AtencionIndividualActor", (string)null);
+                });
+
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualAnexo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<long>("AtencionIndividualId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DtFechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("IBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UsuarioId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("VcDescripcion")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("VcNombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("VcRuta")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AtencionIndividualId");
+
+                    b.ToTable("AtencionIndividualAnexo", (string)null);
+                });
+
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualReasignacion", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -269,10 +274,10 @@ namespace Persistencia.Migrations
 
                     b.HasIndex("AtencionIndividualId");
 
-                    b.ToTable("AtencionReasignacion", (string)null);
+                    b.ToTable("AtencionIndividualReasignacion", (string)null);
                 });
 
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionSeguimiento", b =>
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualSeguimiento", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -587,10 +592,9 @@ namespace Persistencia.Migrations
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("VcRuta")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VcUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 
@@ -731,30 +735,6 @@ namespace Persistencia.Migrations
                     b.Navigation("AtencionGrupales");
                 });
 
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionActor", b =>
-                {
-                    b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
-                        .WithMany("AtencionActores")
-                        .HasForeignKey("AtencionIndividualId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_CasoI_A_CasoIAc");
-
-                    b.Navigation("AtencionIndividual");
-                });
-
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionAnexo", b =>
-                {
-                    b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
-                        .WithMany("AtencionAnexos")
-                        .HasForeignKey("AtencionIndividualId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("FK_CasoI_A_CasoIAn");
-
-                    b.Navigation("AtencionIndividual");
-                });
-
             modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividual", b =>
                 {
                     b.HasOne("Dominio.Models.AtencionesIndividuales.Persona", "Personas")
@@ -767,7 +747,31 @@ namespace Persistencia.Migrations
                     b.Navigation("Personas");
                 });
 
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionReasignacion", b =>
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualActor", b =>
+                {
+                    b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
+                        .WithMany("AtencionActores")
+                        .HasForeignKey("AtencionIndividualId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_CasoI_A_CasoIAc");
+
+                    b.Navigation("AtencionIndividual");
+                });
+
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualAnexo", b =>
+                {
+                    b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
+                        .WithMany("AtencionAnexos")
+                        .HasForeignKey("AtencionIndividualId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_CasoI_A_CasoIAn");
+
+                    b.Navigation("AtencionIndividual");
+                });
+
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualReasignacion", b =>
                 {
                     b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
                         .WithMany("AtencionReasignaciones")
@@ -779,7 +783,7 @@ namespace Persistencia.Migrations
                     b.Navigation("AtencionIndividual");
                 });
 
-            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionSeguimiento", b =>
+            modelBuilder.Entity("Dominio.Models.AtencionesIndividuales.AtencionIndividualSeguimiento", b =>
                 {
                     b.HasOne("Dominio.Models.AtencionesIndividuales.AtencionIndividual", "AtencionIndividual")
                         .WithMany("AtencionSeguimientos")

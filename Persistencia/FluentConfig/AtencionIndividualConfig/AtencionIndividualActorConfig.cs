@@ -4,19 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistencia.FluentConfig.AtencionIndividualConfig
 {
-    public class AtencionSeguimientoConfig
+    public class AtencionIndividualActorConfig
     {
-        public AtencionSeguimientoConfig(EntityTypeBuilder<AtencionSeguimiento>entity)
+        public AtencionIndividualActorConfig(EntityTypeBuilder<AtencionIndividualActor> entity)
         {
-            entity.ToTable("AtencionSeguimiento");
+            entity.ToTable("AtencionIndividualActor");
             entity.HasKey(p => p.Id);
 
             entity.Property(p => p.AtencionIndividualId).IsRequired();
-            entity.Property(p => p.VcDescripcion).IsRequired().HasMaxLength(500);
-            entity.Property(p => p.BCierraCaso).IsRequired();
+            entity.Property(p => p.TipoActorId).IsRequired();
+            entity.Property(p => p.TipoId).IsRequired();
+            entity.Property(p => p.SedeId).IsRequired();
             entity.Property(p => p.DtFechaRegistro).IsRequired();
             entity.Property(p => p.UsuarioId).IsRequired();
         }
-
     }
 }

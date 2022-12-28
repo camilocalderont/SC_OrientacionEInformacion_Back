@@ -15,8 +15,7 @@ namespace Persistencia.FluentConfig.AtencionGrupalConfig
             entity.Property(p => p.VcNombre).IsRequired().HasMaxLength(150);
             entity.Property(p => p.VcDescripcion).IsRequired(false).HasMaxLength(500);
             entity.Property(p => p.IBytes).IsRequired();
-            entity.Property(p => p.VcRuta).IsRequired(false).HasMaxLength(500);
-            entity.Property(p => p.VcUrl).IsRequired(false).HasMaxLength(50);
+            entity.Property(p => p.VcRuta).IsRequired(true).HasMaxLength(500);
             entity.Property(p => p.DtFechaRegistro).IsRequired();
             entity.Property(p => p.UsuarioId).IsRequired();
         }

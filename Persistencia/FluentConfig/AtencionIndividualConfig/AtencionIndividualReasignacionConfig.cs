@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistencia.FluentConfig.AtencionIndividualConfig
 {
-    public class AtencionReasignacionConfig
+    public class AtencionIndividualReasignacionConfig
     {
-        public AtencionReasignacionConfig(EntityTypeBuilder<AtencionReasignacion> entity)
+        public AtencionIndividualReasignacionConfig(EntityTypeBuilder<AtencionIndividualReasignacion> entity)
         {
-            entity.ToTable("AtencionReasignacion");
+            entity.ToTable("AtencionIndividualReasignacion");
             entity.HasKey(x => x.Id);
 
             entity.Property(p => p.AtencionIndividualId).IsRequired();
