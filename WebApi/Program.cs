@@ -3,6 +3,7 @@ using Aplicacion.Services;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using Persistencia.Repository;
+using WebApi.Storage;
 using WebApi.Validaciones;
 using WebAPI.Midleware;
 
@@ -36,7 +37,7 @@ builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalS
 
 builder.Services.AddScoped(typeof(ValidacionCorreo), typeof(ValidacionCorreo));
 
-
+builder.Services.AddScoped(typeof(AzureStorage), typeof(AzureStorage));
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Requests.AtencionesWeb;
 using WebApi.Responses;
+using WebApi.Storage;
 using WebApi.Validaciones;
-using static System.Net.Mime.MediaTypeNames;
+using Dominio.Utilities;
+using Dominio.Models.AtencionesGrupales;
+using WebApi.Requests.AtencionesGrupales;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -21,13 +24,23 @@ namespace WebApi.Controllers.AtencionesWeb
         private readonly IGenericService<AtencionWebAnexo> _anexo;
         private readonly IMapper _mapper;
 
-        public AtencionWebController(PersonaWebService service, IGenericService<AtencionWeb> atencionWeb, IMapper mapper, IGenericService<AtencionWebAnexo> anexo, ValidacionCorreo validacorreo)
+        private readonly AzureStorage _azureStorage;
+
+        public AtencionWebController(
+            PersonaWebService service, 
+            IGenericService<AtencionWeb> atencionWeb, 
+            IMapper mapper, 
+            IGenericService<AtencionWebAnexo> anexo, 
+            ValidacionCorreo validacorreo,
+            AzureStorage azureStorage
+        )
         {
             this._service = service;
             this._atencionWeb = atencionWeb;
             this._mapper = mapper;
             this._anexo = anexo;
             this._validacorreo=validacorreo;
+            this._azureStorage=azureStorage;
         }
 
 
@@ -35,13 +48,13 @@ namespace WebApi.Controllers.AtencionesWeb
         public async Task<ActionResult<AtencionWeb>> CrearPersonaWeb([FromForm] AtencionWebRequest atencionWebRequest)
         {
 
-            var response = new { Titulo = "Bien echo!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
             PersonaWeb personaWeb = _mapper.Map<PersonaWeb>(atencionWebRequest);
             AtencionWeb atencionWeb = _mapper.Map<AtencionWeb>(atencionWebRequest);
 
             try
             {
-                if (validarAnexo(atencionWebRequest.Anexo))
+                if (_azureStorage.validarAnexo(atencionWebRequest.Anexo, Constants.DOSMB, "pdf"))
                 {
 
                     personaWeb.DtFechaActualizacion = DateTime.Now;
@@ -81,10 +94,11 @@ namespace WebApi.Controllers.AtencionesWeb
                         if (guardoatencionWeb)
                         {
                             var anexo = atencionWebRequest.Anexo;
-                            var responseCargo = CargarAnexo(anexo, atencionWeb);
+                            var nombreEntidad = atencionWeb.GetType().Name;
+                            string rutaRemota = nombreEntidad + "/" + atencionWeb.Id + "/" + anexo.FileName;
+                            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);                          
 
-
-                            if (responseCargo.Result.Codigo == HttpStatusCode.OK)
+                            if (archivoCarga.rutaLocal.Length > 0)
                             {
                                 AtencionWebAnexo atencionwebAnexo = new AtencionWebAnexo
                                 {
@@ -93,8 +107,7 @@ namespace WebApi.Controllers.AtencionesWeb
                                     VcNombre = anexo.FileName,
                                     UsuarioId = atencionWeb.UsuarioId,
                                     DtFechaRegistro = atencionWeb.DtFechaRegistro,
-                                    VcRuta = responseCargo.Result.Codigo == HttpStatusCode.OK ? responseCargo.Result.Mensaje : "//",
-                                    VcUrl = "//"
+                                    VcRuta = archivoCarga.rutaLocal
                                 };
 
                                 bool guardoAnexo = await _anexo.CreateAsync(atencionwebAnexo);
@@ -128,42 +141,6 @@ namespace WebApi.Controllers.AtencionesWeb
             var modelResponse = new ModelResponse<PersonaWeb>(response.Codigo, response.Titulo, response.Mensaje, personaWeb);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
 
-        }
-
-        private bool validarAnexo(IFormFile anexo)
-        {
-            string nombreArchivo = anexo.FileName;
-            var archivoArray = nombreArchivo.Split(".");
-            var extension = archivoArray[archivoArray.Length - 1];
-            return anexo.Length <= 2097152 && extension == "pdf";
-        }
-
-        private async Task<GenericResponse> CargarAnexo(IFormFile anexo, AtencionWeb atencionWeb)
-        {
-            var response = new { Titulo = "Bien hecho", Mensaje = "Ruta", Codigo = HttpStatusCode.BadRequest };
-            string rutaInicial = Environment.CurrentDirectory;
-            string nombreArchivo = anexo.FileName;
-            string ruta = rutaInicial + "\\Upload\\AtencionWeb\\" + atencionWeb.Id + "\\";
-            var rutaArchivo = ruta + nombreArchivo;
-
-            var guardoAnexo = false;
-            Directory.CreateDirectory(Path.GetDirectoryName(ruta));
-
-            using (var str = System.IO.File.Create(rutaArchivo))
-            {
-                str.Position = 0;
-
-                await anexo.CopyToAsync(str);
-                guardoAnexo = System.IO.File.Exists(rutaArchivo);
-            }
-            if (guardoAnexo)
-            {
-                response = new { Titulo = "Bien hecho", Mensaje = rutaArchivo, Codigo = HttpStatusCode.OK };
-            }
-
-            var genericResponse = new GenericResponse(response.Codigo, response.Titulo, response.Mensaje);
-
-            return genericResponse;
         }
 
        

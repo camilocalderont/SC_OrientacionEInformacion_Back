@@ -15,6 +15,7 @@ namespace Persistencia.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    DtFechaOrientacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<long>(type: "bigint", nullable: false),
                     INumeroUsuarios = table.Column<int>(type: "int", nullable: false),
@@ -103,8 +104,7 @@ namespace Persistencia.Migrations
                     VcNombre = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IBytes = table.Column<int>(type: "int", nullable: false),
-                    VcRuta = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    VcUrl = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    VcRuta = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -238,7 +238,7 @@ namespace Persistencia.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AtencionActor",
+                name: "AtencionIndividualActor",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -252,7 +252,7 @@ namespace Persistencia.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AtencionActor", x => x.Id);
+                    table.PrimaryKey("PK_AtencionIndividualActor", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CasoI_A_CasoIAc",
                         column: x => x.AtencionIndividualId,
@@ -262,7 +262,7 @@ namespace Persistencia.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AtencionAnexo",
+                name: "AtencionIndividualAnexo",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -272,11 +272,12 @@ namespace Persistencia.Migrations
                     VcDescripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IBytes = table.Column<long>(type: "bigint", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UsuarioId = table.Column<long>(type: "bigint", nullable: false)
+                    UsuarioId = table.Column<long>(type: "bigint", nullable: false),
+                    VcRuta = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AtencionAnexo", x => x.Id);
+                    table.PrimaryKey("PK_AtencionIndividualAnexo", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CasoI_A_CasoIAn",
                         column: x => x.AtencionIndividualId,
@@ -286,7 +287,7 @@ namespace Persistencia.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AtencionReasignacion",
+                name: "AtencionIndividualReasignacion",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -300,7 +301,7 @@ namespace Persistencia.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AtencionReasignacion", x => x.Id);
+                    table.PrimaryKey("PK_AtencionIndividualReasignacion", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CasoI_A_CasoIR",
                         column: x => x.AtencionIndividualId,
@@ -344,8 +345,7 @@ namespace Persistencia.Migrations
                     IBytes = table.Column<int>(type: "int", nullable: false),
                     DtFechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UsuarioId = table.Column<long>(type: "bigint", nullable: false),
-                    VcRuta = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VcUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    VcRuta = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -406,16 +406,6 @@ namespace Persistencia.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AtencionActor_AtencionIndividualId",
-                table: "AtencionActor",
-                column: "AtencionIndividualId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AtencionAnexo_AtencionIndividualId",
-                table: "AtencionAnexo",
-                column: "AtencionIndividualId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AtencionGrupalAnexo_AtencionGrupalId",
                 table: "AtencionGrupalAnexo",
                 column: "AtencionGrupalId");
@@ -426,8 +416,18 @@ namespace Persistencia.Migrations
                 column: "PersonaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AtencionReasignacion_AtencionIndividualId",
-                table: "AtencionReasignacion",
+                name: "IX_AtencionIndividualActor_AtencionIndividualId",
+                table: "AtencionIndividualActor",
+                column: "AtencionIndividualId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AtencionIndividualAnexo_AtencionIndividualId",
+                table: "AtencionIndividualAnexo",
+                column: "AtencionIndividualId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AtencionIndividualReasignacion_AtencionIndividualId",
+                table: "AtencionIndividualReasignacion",
                 column: "AtencionIndividualId");
 
             migrationBuilder.CreateIndex(
@@ -469,16 +469,16 @@ namespace Persistencia.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AtencionActor");
-
-            migrationBuilder.DropTable(
-                name: "AtencionAnexo");
-
-            migrationBuilder.DropTable(
                 name: "AtencionGrupalAnexo");
 
             migrationBuilder.DropTable(
-                name: "AtencionReasignacion");
+                name: "AtencionIndividualActor");
+
+            migrationBuilder.DropTable(
+                name: "AtencionIndividualAnexo");
+
+            migrationBuilder.DropTable(
+                name: "AtencionIndividualReasignacion");
 
             migrationBuilder.DropTable(
                 name: "AtencionSeguimiento");
