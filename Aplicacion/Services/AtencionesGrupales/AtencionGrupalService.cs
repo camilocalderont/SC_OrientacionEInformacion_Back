@@ -2,7 +2,7 @@
 using Persistencia.Repository;
 
 
-namespace Aplicacion.Services
+namespace Aplicacion.Services.AtencionesGrupales
 {
     public class AtencionGrupalService : GenericService<AtencionGrupal>
     {
@@ -10,10 +10,10 @@ namespace Aplicacion.Services
 
         public AtencionGrupalRepository _atencionGrupalRepository { get; }
         public IGenericRepository<AtencionGrupal> _genericRepository { get; }
-        public AtencionGrupalService(IGenericRepository<AtencionGrupal> genericRepository, AtencionGrupalRepository atencionGrupalRepository): base(genericRepository)
+        public AtencionGrupalService(IGenericRepository<AtencionGrupal> genericRepository, AtencionGrupalRepository atencionGrupalRepository) : base(genericRepository)
         {
-            this._atencionGrupalRepository = atencionGrupalRepository;
-            this._genericRepository = genericRepository;
+            _atencionGrupalRepository = atencionGrupalRepository;
+            _genericRepository = genericRepository;
         }
 
         public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId)

@@ -26,6 +26,8 @@ namespace WebApi.Requests.AtencionesWeb
         public long TipoGestionId { get; set; }
         public long EstadoId { get; set; }
 
+        public DateTime DtFechaOrientacion { get; set; }
+
         public IFormFile Anexo { get; set; }
     }
 }

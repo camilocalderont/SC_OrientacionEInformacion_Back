@@ -43,6 +43,7 @@ namespace Persistencia.FluentConfig.AtencionWebConfig
 
             entity.Property(p => p.PersonaWebId).IsRequired();
             entity.Property(p => p.DtFechaRegistro).IsRequired();
+            entity.Property(p => p.DtFechaOrientacion).IsRequired();            
             entity.Property(p => p.UsuarioId).IsRequired();
             entity.Property(p => p.CanalAtencionId).IsRequired();
             entity.Property(p => p.TipoSolicitudId).IsRequired();

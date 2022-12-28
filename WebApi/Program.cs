@@ -1,5 +1,6 @@
 using Aplicacion.Mapping;
 using Aplicacion.Services;
+using Aplicacion.Services.AtencionesWeb;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using Persistencia.Repository;
@@ -28,12 +29,13 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
 builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrupalRepository));
+builder.Services.AddScoped(typeof(AtencionWebRepository), typeof(AtencionWebRepository));
 builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebRepository));
 
 
 builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService));
 
-builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalService));
+builder.Services.AddScoped(typeof(AtencionWebService), typeof(AtencionWebService));
 
 builder.Services.AddScoped(typeof(ValidacionCorreo), typeof(ValidacionCorreo));
 

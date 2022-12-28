@@ -8,8 +8,7 @@ using WebApi.Responses;
 using WebApi.Storage;
 using WebApi.Validaciones;
 using Dominio.Utilities;
-using Dominio.Models.AtencionesGrupales;
-using WebApi.Requests.AtencionesGrupales;
+using Aplicacion.Services.AtencionesWeb;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -17,28 +16,27 @@ namespace WebApi.Controllers.AtencionesWeb
     [ApiController]
     public class AtencionWebController : ControllerBase
     {
-
-        private readonly PersonaWebService _service;
+        private readonly PersonaWebService  _personaWebService;
+        private readonly AtencionWebService _atencionWebservice;
         private readonly ValidacionCorreo _validacorreo;
-        private readonly IGenericService<AtencionWeb> _atencionWeb;
-        private readonly IGenericService<AtencionWebAnexo> _anexo;
+        private readonly IGenericService<AtencionWebAnexo> _anexoWebService;
         private readonly IMapper _mapper;
 
         private readonly AzureStorage _azureStorage;
 
         public AtencionWebController(
-            PersonaWebService service, 
-            IGenericService<AtencionWeb> atencionWeb, 
+            AtencionWebService service,
+            PersonaWebService personaWebService,
             IMapper mapper, 
             IGenericService<AtencionWebAnexo> anexo, 
             ValidacionCorreo validacorreo,
             AzureStorage azureStorage
         )
         {
-            this._service = service;
-            this._atencionWeb = atencionWeb;
+            this._personaWebService = personaWebService;
+            this._atencionWebservice = service;
             this._mapper = mapper;
-            this._anexo = anexo;
+            this._anexoWebService = anexo;
             this._validacorreo=validacorreo;
             this._azureStorage=azureStorage;
         }
@@ -60,7 +58,7 @@ namespace WebApi.Controllers.AtencionesWeb
                     personaWeb.DtFechaActualizacion = DateTime.Now;
                     personaWeb.DtFechaRegistro      = DateTime.Now;
 
-                    var personaWebCorreo = _service.obtenerporCorreo(personaWeb.VcCorreo);
+                    var personaWebCorreo = _personaWebService.obtenerporCorreo(personaWeb.VcCorreo);
 
                     var validacorreo = _validacorreo.ValidarEmail(personaWeb.VcCorreo);
 
@@ -75,12 +73,13 @@ namespace WebApi.Controllers.AtencionesWeb
 
                     if (personaWebCorreo == null)
                     {
-                        guardopersonaWeb = await _service.CreateAsync(personaWeb);
+                        guardopersonaWeb = await _personaWebService.CreateAsync(personaWeb);
                     }
                     else
                     {
                         personaWeb.Id = personaWebCorreo.Id;
-                        guardopersonaWeb = true;
+                        guardopersonaWeb = await _personaWebService.UpdateAsync(personaWeb.Id,personaWeb);
+
                     }
 
                     if (guardopersonaWeb)
@@ -88,7 +87,7 @@ namespace WebApi.Controllers.AtencionesWeb
                         atencionWeb.PersonaWebId = personaWeb.Id;
                         atencionWeb.DtFechaRegistro = DateTime.Now;
 
-                        bool guardoatencionWeb = await _atencionWeb.CreateAsync(atencionWeb);
+                        bool guardoatencionWeb = await _atencionWebservice.CreateAsync(atencionWeb);
 
 
                         if (guardoatencionWeb)
@@ -110,7 +109,7 @@ namespace WebApi.Controllers.AtencionesWeb
                                     VcRuta = archivoCarga.rutaLocal
                                 };
 
-                                bool guardoAnexo = await _anexo.CreateAsync(atencionwebAnexo);
+                                bool guardoAnexo = await _anexoWebService.CreateAsync(atencionwebAnexo);
                             }
 
                         }
@@ -143,35 +142,29 @@ namespace WebApi.Controllers.AtencionesWeb
 
         }
 
-       
-        [HttpGet("GetAtencionWeb")]
-        public async Task<ActionResult<IEnumerable<AtencionWebRequest>>> GetAtencionWeb()
+
+        [HttpPost("bandeja")]
+        public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerPorRangoFechasYUsuario(BandejaCasosWebRequest bandejaCasosWeb)
         {
-            try
+
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionWebDTO> AtencionesWeb = null;
+            AtencionesWeb = await _atencionWebservice.obtenerPorRangoFechasEstadoUsuarioYCorreo(
+                    bandejaCasosWeb.EstadoId, 
+                    bandejaCasosWeb.DtFechaInicio, 
+                    bandejaCasosWeb.DtFechaFin, 
+                    bandejaCasosWeb.UsuarioId, 
+                    bandejaCasosWeb.VcCorreo
+            );
+
+            if (AtencionesWeb.Count() == 0)
             {
-                var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron atenciones web", Codigo = HttpStatusCode.OK };
-
-                IEnumerable<AtencionWeb> AtencionWebModel = null;
-
-                AtencionWebModel = await _atencionWeb.GetAsync();
-
-                List<AtencionWebRequest> atencionwebDTO = _mapper.Map<List<AtencionWebRequest>>(AtencionWebModel);
-
-                if (!await _atencionWeb.ExistsAsync(e => e.Id > 0))
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No existen atenciones web", Codigo = HttpStatusCode.Accepted };
-                }
-
-                var listModelResponse = new ListModelResponse<AtencionWebRequest>(response.Codigo, response.Titulo, response.Mensaje, atencionwebDTO);
-                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
 
             }
+            var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 
-            catch (Exception)
-            {
-                var response = new { Titulo = "Algo salio mal", Mensaje = "Mostrando atenciones web", Codigo = HttpStatusCode.RequestedRangeNotSatisfiable };
-                return StatusCode((int)response.Codigo, response);
-            }
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
 
         }
 

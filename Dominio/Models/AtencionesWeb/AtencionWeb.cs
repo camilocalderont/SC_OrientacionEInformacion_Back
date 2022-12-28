@@ -4,6 +4,7 @@
     {
         public long     Id { get; set; }
         public long     PersonaWebId { get; set; }
+        public DateTime DtFechaOrientacion { get; set; }
         public DateTime DtFechaRegistro { get; set; }
         public long     UsuarioId { get; set; }
         public long     CanalAtencionId { get; set; }
@@ -17,9 +18,9 @@
         public long?     TipoGestionId  { get; set; }
         public long     EstadoId { get; set; }
 
-        public virtual List<AtencionWebReasignacion> AtencionReasignaciones { get; set; }
-        public virtual List<AtencionWebSeguimiento> AtencionSeguimientos { get; set; }
-        public virtual List<AtencionWebAnexo> AtencionAnexos { get; set; }
+        public List<AtencionWebReasignacion> AtencionReasignaciones { get; set; }
+        public List<AtencionWebSeguimiento> AtencionSeguimientos { get; set; }
+        public List<AtencionWebAnexo> AtencionAnexos { get; set; }
         public PersonaWeb PersonasWeb { get; set; }
     }
 }

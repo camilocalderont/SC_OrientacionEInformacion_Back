@@ -1,4 +1,5 @@
 ﻿using Aplicacion.Services;
+using Aplicacion.Services.AtencionesGrupales;
 using AutoMapper;
 using Dominio.Models.AtencionesGrupales;
 using Microsoft.AspNetCore.Mvc;
