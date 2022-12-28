@@ -33,7 +33,7 @@ namespace WebApi.Controllers.AtencionesGrupales
         [HttpPost("crear")]
         public async Task<ActionResult<AtencionGrupal>> CrearAtencionGrupal([FromForm] AtencionGrupalRequest atenciongrupalRequest)
         {
-            var response = new { Titulo = "Bien Hecho!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
+            var response = new { Titulo = "Bien hecho!", Mensaje = "La atención grupal ha sido registrada con código No. {0}", Codigo = HttpStatusCode.OK };
             AtencionGrupal atencionGrupal = _mapper.Map<AtencionGrupal>(atenciongrupalRequest);
             //using (var transaction = new TransactionScope())
             //{
@@ -101,7 +101,7 @@ namespace WebApi.Controllers.AtencionesGrupales
 
             //}
 
-            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, atencionGrupal);
+            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, string.Format(response.Mensaje, atencionGrupal.Id), atencionGrupal);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
 
         }
