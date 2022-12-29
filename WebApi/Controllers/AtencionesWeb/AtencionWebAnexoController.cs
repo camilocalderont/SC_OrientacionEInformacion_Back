@@ -1,5 +1,6 @@
 ﻿using Aplicacion.Services;
 using AutoMapper;
+using Dominio.Models.AtencionesGrupales;
 using Dominio.Models.AtencionesWeb;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,40 +26,29 @@ namespace WebApi.Controllers.AtencionesWeb
 
 
 
-        [HttpGet("GetAtencionAnexo")]
-        public async Task<ActionResult<IEnumerable<AtencionWenAnexoRequest>>> GetAtencionAnexo()
+        [HttpGet("porAtencionWebId/{atencionWebId}")]
+        public async Task<ActionResult<IEnumerable<AtencionWebAnexo>>> GetActividadesPorModulo(long atencionWebId)
         {
-            try
+            var response = new { Titulo = "Bien Hecho!", Mensaje = $"Se encontraron los anexos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionWebAnexo> AtencionWebAnexos = null;
+            if (!await _service.ExistsAsync(e => e.Id > 0))
             {
-                var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron atenciones anexo", Codigo = HttpStatusCode.OK };
-
-                IEnumerable<AtencionWebAnexo> AtencionAnexoModel = null;
-
-                AtencionAnexoModel = await _service.GetAsync();
-
-                List<AtencionWenAnexoRequest> atencionanexoDTO = _mapper.Map<List<AtencionWenAnexoRequest>>(AtencionAnexoModel);
-
-                if (!await _service.ExistsAsync(e => e.Id > 0))
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No existen atenciones anexo", Codigo = HttpStatusCode.Accepted };
-                }
-
-                var listModelResponse = new ListModelResponse<AtencionWenAnexoRequest>(response.Codigo, response.Titulo, response.Mensaje, atencionanexoDTO);
-                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
-
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No existen anexos asociados a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.Accepted };
             }
 
-            catch (Exception)
+            AtencionWebAnexos = await _service.GetAsync(e => e.AtencionWebId == atencionWebId, e => e.OrderBy(e => e.Id), "");
+
+            if (AtencionWebAnexos.Count() == 0)
             {
-                var response = new { Titulo = "Algo salio mal", Mensaje = "Mostrando atenciones anexo", Codigo = HttpStatusCode.RequestedRangeNotSatisfiable };
-                return StatusCode((int)response.Codigo, response);
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron seguimientos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.NotFound };
             }
 
-
+            var listModelResponse = new ListModelResponse<AtencionWebAnexo>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebAnexos);
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
 
 
-        
+
     }
 }

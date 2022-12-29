@@ -2,6 +2,7 @@
 using AutoMapper;
 using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
+using Dominio.Models.AtencionesWeb;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Responses;
@@ -24,40 +25,29 @@ namespace WebApi.Controllers.AtencionesGrupales
         }
 
 
-
-        [HttpGet("GetAnexoCaso")]
-        public async Task<ActionResult<IEnumerable<AnexosCasosDTO>>> GetAnexoCaso()
+        [HttpGet("porAtencionGrupalId/{atencionGrupalId}")]
+        public async Task<ActionResult<IEnumerable<AtencionGrupalAnexo>>> GetActividadesPorModulo(long atencionGrupalId)
         {
-            try
+            var response = new { Titulo = "Bien Hecho!", Mensaje = $"Se encontraron los anexos correspondientes a la atención grupal con id: {atencionGrupalId}", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionGrupalAnexo> AtencioGrupalAnexos = null;
+            if (!await _service.ExistsAsync(e => e.Id > 0))
             {
-                var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron anexos caso", Codigo = HttpStatusCode.OK };
-
-                IEnumerable<AtencionGrupalAnexo> AtencionActorModel = null;
-
-                AtencionActorModel = await _service.GetAsync();
-
-                List<AnexosCasosDTO> atencionactorDTO = _mapper.Map<List<AnexosCasosDTO>>(AtencionActorModel);
-
-                if (!await _service.ExistsAsync(e => e.Id > 0))
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No existen anexos caso", Codigo = HttpStatusCode.Accepted };
-                }
-
-                var listModelResponse = new ListModelResponse<AnexosCasosDTO>(response.Codigo, response.Titulo, response.Mensaje, atencionactorDTO);
-                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
-
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No existen anexos asociados a la atención grupal con id: {atencionGrupalId}", Codigo = HttpStatusCode.Accepted };
             }
 
-            catch (Exception)
+            AtencioGrupalAnexos = await _service.GetAsync(e => e.AtencionGrupalId == atencionGrupalId, e => e.OrderBy(e => e.Id), "");
+
+            if (AtencioGrupalAnexos.Count() == 0)
             {
-                var response = new { Titulo = "Algo salio mal", Mensaje = "Mostrando anexos caso", Codigo = HttpStatusCode.RequestedRangeNotSatisfiable };
-                return StatusCode((int)response.Codigo, response);
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron seguimientos correspondientes a la atención grupal con id: {atencionGrupalId}", Codigo = HttpStatusCode.NotFound };
             }
 
-
+            var listModelResponse = new ListModelResponse<AtencionGrupalAnexo>(response.Codigo, response.Titulo, response.Mensaje, AtencioGrupalAnexos);
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
-
+        /*
+         * Se debe agregar funcionalidad de almacenamiento en Azure
         [HttpPost("PostAtencionGrupalAnexo")]
         public async Task<IActionResult> PostAtencionGrupalAnexo(AtencionGrupalAnexoDTO atenciongrupalanexo)
         {
@@ -84,7 +74,7 @@ namespace WebApi.Controllers.AtencionesGrupales
             }
 
         }
-
+        */
     }
 
 }
