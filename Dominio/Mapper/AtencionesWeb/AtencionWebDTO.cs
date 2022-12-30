@@ -24,6 +24,7 @@
         public string VcTelefono2 { get; set; }
         public DateTime DtFechaOrientacion { get; set; }
         public int  IAnexos { get; set; }
+        public long UsuarioActualId { get; set; }
 
 
     }

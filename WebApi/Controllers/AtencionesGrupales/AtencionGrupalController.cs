@@ -10,6 +10,20 @@ using Dominio.Utilities;
 using WebApi.Storage;
 using System.Transactions;
 
+
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using System.IO;
+using System.Text;
+using iText.IO.Image;
+using iText.Kernel.Geom;
+using iText.Kernel.Colors;
+using iText.Kernel.Events;
+using iText.Kernel.Pdf.Canvas;
+using WebApi.Pdf;
+
 namespace WebApi.Controllers.AtencionesGrupales
 {
     [Route("api/[controller]")]
@@ -125,10 +139,18 @@ namespace WebApi.Controllers.AtencionesGrupales
 
         }
 
-
-
+        
+        [HttpGet("pdf/{Id}")]
+        public string GeneratePdf(long Id)
+        {
+            AtencionGrupalPdf atencionGrupalPdf = new AtencionGrupalPdf();
+            return atencionGrupalPdf.generar(new AtencionGrupal { });
+            
+        }
+        
 
     }
+
 }
 
 

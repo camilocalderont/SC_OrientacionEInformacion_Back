@@ -35,6 +35,7 @@ namespace WebApi.Controllers.AtencionesWeb
                 if(ultimaAsignacion.UsuarioActualId != atencionWebReasignacion.UsuarioActualId)
                 {
                     ultimaAsignacion.DtFechaReAsignacion = atencionWebReasignacion.DtFechaAsignacion;
+                    atencionWebReasignacion.UsuarioAsignaId = ultimaAsignacion.UsuarioActualId;
                     await _service.UpdateAsync(ultimaAsignacion.Id, ultimaAsignacion);
                 }
                 else

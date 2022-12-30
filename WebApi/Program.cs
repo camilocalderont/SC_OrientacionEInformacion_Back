@@ -1,5 +1,6 @@
 using Aplicacion.Mapping;
 using Aplicacion.Services;
+using Aplicacion.Services.AtencionesGrupales;
 using Aplicacion.Services.AtencionesWeb;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
@@ -28,6 +29,8 @@ builder.Services.AddDbContext<OrientacionDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 
+
+builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalService));
 builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrupalRepository));
 builder.Services.AddScoped(typeof(AtencionWebRepository), typeof(AtencionWebRepository));
 builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebRepository));

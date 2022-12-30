@@ -75,7 +75,8 @@ namespace Persistencia.Repository
                 VcCorreo= a.PersonasWeb.VcCorreo,
                 VcNombreCompleto = $"{a.PersonasWeb.VcPrimerNombre} {a.PersonasWeb.VcSegundoNombre} {a.PersonasWeb.VcPrimerApellido} {a.PersonasWeb.VcSegundoApellido}",
                 VcTelefono1 = a.PersonasWeb.VcTelefono1,
-                VcTelefono2 = a.PersonasWeb.VcTelefono2
+                VcTelefono2 = a.PersonasWeb.VcTelefono2,
+                UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a=>a.Id).Last().UsuarioActualId : a.UsuarioId,
 
             }).ToListAsync();
 
