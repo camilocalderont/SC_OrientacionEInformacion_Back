@@ -1,0 +1,16 @@
+version:  "3"
+
+services:
+  mssql:
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    cap_add: [ 'SYS_PTRACE' ]
+    environment:
+      - "ACCEPT_EULA=1"
+      - "MSSQL_SA_PASSWORD=SU2orange!"
+    ports:
+      - "3341:1433"
+    hostname: mssql
+    volumes:
+      - "mssql-azuresql-edge-data:/var/opt/mssql"
+volumes:
+    mssql-azuresql-edge-data:
