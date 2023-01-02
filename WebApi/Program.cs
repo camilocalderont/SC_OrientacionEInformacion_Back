@@ -49,9 +49,6 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 
-
-
-
 builder.Services.AddCors(opt => {   
     opt.AddPolicy(name: myAllowSpecificOrigins,
         builder => {
