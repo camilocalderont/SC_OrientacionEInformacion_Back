@@ -8,21 +8,8 @@ using WebApi.Responses;
 using WebApi.Requests.AtencionesGrupales;
 using Dominio.Utilities;
 using WebApi.Storage;
-using System.Transactions;
 
 
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using System.IO;
-using System.Text;
-using iText.IO.Image;
-using iText.Kernel.Geom;
-using iText.Kernel.Colors;
-using iText.Kernel.Events;
-using iText.Kernel.Pdf.Canvas;
-using WebApi.Pdf;
 
 namespace WebApi.Controllers.AtencionesGrupales
 {
@@ -139,14 +126,38 @@ namespace WebApi.Controllers.AtencionesGrupales
 
         }
 
-        
-        [HttpGet("pdf/{Id}")]
-        public string GeneratePdf(long Id)
+
+
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetAtencionGrupal(long Id)
         {
-            AtencionGrupalPdf atencionGrupalPdf = new AtencionGrupalPdf();
-            return atencionGrupalPdf.generar(new AtencionGrupal { });
-            
+            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
+            AtencionGrupal AtencionGrupalModel = null;
+
+            if (!await _service.ExistsAsync(e => e.Id > 0))
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existen atención grupal", Codigo = HttpStatusCode.BadRequest };
+            }
+
+            var atenciongrupal = await _service.GetAsync(e => e.Id == Id, e => e.OrderBy(e => e.Id), "");
+
+            if (atenciongrupal.Count < 1)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención grupal con id " + Id, Codigo = HttpStatusCode.NotFound };
+            }
+            else
+            {
+                AtencionGrupalModel = atenciongrupal.First();
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención grupal con el Id solicitado", Codigo = HttpStatusCode.OK };
+            }
+
+
+            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionGrupalModel);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
+
+
+
         
 
     }

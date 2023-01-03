@@ -27,6 +27,8 @@ namespace Aplicacion.Mapping
 
             CreateMap<AtencionWebAnexo, AtencionWenAnexoRequest>().ReverseMap();
 
+            CreateMap<AtencionWeb, AtencionWebDTO>().ReverseMap();
+
         }
     }
 }

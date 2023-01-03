@@ -146,14 +146,13 @@ namespace WebApi.Controllers.AtencionesWeb
         [HttpPost("bandeja")]
         public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerPorRangoFechasYUsuario(BandejaCasosWebRequest bandejaCasosWeb)
         {
-
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionWebDTO> AtencionesWeb = null;
             AtencionesWeb = await _atencionWebservice.obtenerPorRangoFechasEstadoUsuarioYCorreo(
-                    bandejaCasosWeb.EstadoId, 
-                    bandejaCasosWeb.DtFechaInicio, 
-                    bandejaCasosWeb.DtFechaFin, 
-                    bandejaCasosWeb.UsuarioId, 
+                    bandejaCasosWeb.EstadoId,
+                    bandejaCasosWeb.DtFechaInicio,
+                    bandejaCasosWeb.DtFechaFin,
+                    bandejaCasosWeb.UsuarioId,
                     bandejaCasosWeb.VcCorreo
             );
 
@@ -165,8 +164,37 @@ namespace WebApi.Controllers.AtencionesWeb
             var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
-
         }
+
+
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetAtencionWeb(long Id)
+        {
+            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
+            AtencionWeb AtencionWebModelModel = null;
+
+            if (!await _atencionWebservice.ExistsAsync(e => e.Id > 0))
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existen atención Web", Codigo = HttpStatusCode.BadRequest };
+            }
+
+            var atencionweb = await _atencionWebservice.GetAsync(e => e.Id == Id, e => e.OrderBy(e => e.Id), "");
+
+            if (atencionweb.Count < 1)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención Web con id " + Id, Codigo = HttpStatusCode.NotFound };
+            }
+            else
+            {
+                AtencionWebModelModel = atencionweb.First();
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención Web con el Id solicitado", Codigo = HttpStatusCode.OK };
+            }
+
+
+            var modelResponse = new ModelResponse<AtencionWeb>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebModelModel);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
 
     }
 }
