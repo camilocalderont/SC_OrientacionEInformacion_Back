@@ -168,5 +168,26 @@ namespace WebApi.Controllers.AtencionesWeb
 
         }
 
+        
+        [HttpGet("otrosCasos/{PersonaWebId}/{AtencionWebId}")]
+        public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerOtrosCasosPersonaWeb(long PersonaWebId, long AtencionWebId)
+        {
+
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionWebDTO> AtencionesWeb = null;
+            AtencionesWeb = await _atencionWebservice.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
+
+            if (AtencionesWeb.Count() == 0)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
+
+            }
+            var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+
+        }
+        
+
     }
 }
