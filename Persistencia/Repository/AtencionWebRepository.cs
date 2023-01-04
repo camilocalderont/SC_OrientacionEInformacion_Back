@@ -73,7 +73,7 @@ namespace Persistencia.Repository
                 TxAsuntoCorreo = a.TxAsuntoCorreo,
                 UsuarioId= a.UsuarioId,
                 VcCorreo= a.PersonasWeb.VcCorreo,
-                VcNombreCompleto = $"{a.PersonasWeb.VcPrimerNombre} {a.PersonasWeb.VcSegundoNombre} {a.PersonasWeb.VcPrimerApellido} {a.PersonasWeb.VcSegundoApellido}",
+                VcNombreCompleto = $"{a.PersonasWeb.VcPrimerNombre ?? string.Empty} {a.PersonasWeb.VcSegundoNombre ?? string.Empty} {a.PersonasWeb.VcPrimerApellido ?? string.Empty} {a.PersonasWeb.VcSegundoApellido ?? string.Empty}",
                 VcTelefono1 = a.PersonasWeb.VcTelefono1,
                 VcTelefono2 = a.PersonasWeb.VcTelefono2,
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a=>a.Id).Last().UsuarioActualId : a.UsuarioId,

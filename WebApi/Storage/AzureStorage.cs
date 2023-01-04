@@ -12,6 +12,8 @@ namespace WebApi.Storage
     {
         public bool validarAnexo(IFormFile anexo, long tamano, string extension)
         {
+            if(anexo == null)
+                return true;
 
             string nombreArchivo = anexo.FileName;
             var archivoArray = nombreArchivo.Split(".");

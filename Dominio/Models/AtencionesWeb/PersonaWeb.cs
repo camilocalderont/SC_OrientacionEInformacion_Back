@@ -5,9 +5,9 @@ namespace Dominio.Models.AtencionesWeb
     public class PersonaWeb
     {
         public long     Id { get; set; }
-        public string   VcPrimerNombre { get; set; }
+        public string?   VcPrimerNombre { get; set; }
         public string?   VcSegundoNombre { get; set; }
-        public string   VcPrimerApellido { get; set; }
+        public string?   VcPrimerApellido { get; set; }
         public string?   VcSegundoApellido { get; set; }
         public string    VcCorreo { get; set; }
         public string?   VcTelefono1 { get; set; }

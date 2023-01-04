@@ -90,7 +90,7 @@ namespace WebApi.Controllers.AtencionesWeb
                         bool guardoatencionWeb = await _atencionWebservice.CreateAsync(atencionWeb);
 
 
-                        if (guardoatencionWeb)
+                        if (guardoatencionWeb && atencionWebRequest.Anexo != null)
                         {
                             var anexo = atencionWebRequest.Anexo;
                             var nombreEntidad = atencionWeb.GetType().Name;
@@ -121,7 +121,6 @@ namespace WebApi.Controllers.AtencionesWeb
 
                     }
                 }
-
                 else
                 {
                     response = new { Titulo = "Algo salio mal", Mensaje = "El archivo PDF no debe superar los 2 megabytes y tiene que ser de tipo pdf", Codigo = HttpStatusCode.BadRequest };

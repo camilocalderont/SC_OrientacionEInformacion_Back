@@ -28,6 +28,6 @@ namespace WebApi.Requests.AtencionesWeb
 
         public DateTime DtFechaOrientacion { get; set; }
 
-        public IFormFile Anexo { get; set; }
+        public IFormFile? Anexo { get; set; }
     }
 }
