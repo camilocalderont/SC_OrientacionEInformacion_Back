@@ -77,9 +77,9 @@ namespace WebApi.Controllers.AtencionesWeb
 
             AtencionWebReasignaciones = await _service.GetAsync(e => e.AtencionWebId == atencionWebId, e => e.OrderBy(e => e.Id), "");
 
-            if (AtencionWebReasignaciones.Count() == 0)
+            if (!AtencionWebReasignaciones.Any())
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron seguimientos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.NotFound };
+                response = new { Titulo = "No hay registros", Mensaje = $"No se encontraron seguimientos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.OK };
             }
 
             var listModelResponse = new ListModelResponse<AtencionWebReasignacion>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebReasignaciones);

@@ -155,10 +155,9 @@ namespace WebApi.Controllers.AtencionesWeb
                     bandejaCasosWeb.VcCorreo
             );
 
-            if (AtencionesWeb.Count() == 0)
+            if (!AtencionesWeb.Any())
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
-
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
             var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 
@@ -174,10 +173,9 @@ namespace WebApi.Controllers.AtencionesWeb
             IEnumerable<AtencionWebDTO> AtencionesWeb = null;
             AtencionesWeb = await _atencionWebservice.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
 
-            if (AtencionesWeb.Count() == 0)
+            if (!AtencionesWeb.Any())
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
-
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
             var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 

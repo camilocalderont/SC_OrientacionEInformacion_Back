@@ -38,9 +38,9 @@ namespace WebApi.Controllers.AtencionesWeb
 
             AtencionWebAnexos = await _service.GetAsync(e => e.AtencionWebId == atencionWebId, e => e.OrderBy(e => e.Id), "");
 
-            if (AtencionWebAnexos.Count() == 0)
+            if (!AtencionWebAnexos.Any())
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron seguimientos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.NotFound };
+                response = new { Titulo = "No hay registros", Mensaje = $"No se encontraron seguimientos correspondientes a la atención web con id: {atencionWebId}", Codigo = HttpStatusCode.OK };
             }
 
             var listModelResponse = new ListModelResponse<AtencionWebAnexo>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebAnexos);
