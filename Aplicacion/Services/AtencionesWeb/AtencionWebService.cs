@@ -28,5 +28,10 @@ namespace Aplicacion.Services.AtencionesWeb
             return await _AtencionWebRepository.obtenerPorRangoFechasEstadoUsuarioYCorreo(EstadoId,DtFechaInicio, DtFechaFin, usuarioId, VcCorreo);
         }
 
+        public async Task<IEnumerable<AtencionWebDTO>> obtenerPorPersonaWebYExcluyeCaso(long PersonaWebId, long AtencionWebId)
+        {
+            return await _AtencionWebRepository.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
+        }
+
     }
 }

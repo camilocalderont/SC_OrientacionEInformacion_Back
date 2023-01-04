@@ -86,6 +86,47 @@ namespace Persistencia.Repository
         }
 
 
+        public async Task<IEnumerable<AtencionWebDTO>> obtenerPorPersonaWebYExcluyeCaso(long PersonaWebId,long AtencionWebId)
+        {
+            IQueryable<AtencionWeb> atencionesWebQuery = _context.AtencionWeb.AsQueryable();
+
+            atencionesWebQuery = atencionesWebQuery.Where(p => p.PersonaWebId == PersonaWebId && p.Id != AtencionWebId);
+           
+
+
+
+            var atencionesWeb = await atencionesWebQuery.Select(a => new AtencionWebDTO
+            {
+                Id = a.Id,
+                DtFechaRegistro = a.DtFechaRegistro,
+                CanalAtencionId = a.CanalAtencionId,
+                DtFechaOrientacion = a.DtFechaOrientacion,
+                EstadoId = a.EstadoId,
+                IAnexos = a.AtencionAnexos.Count,
+                MotivoId = a.MotivoId,
+                SubMotivoId = a.SubMotivoId,
+                PersonaWebId = a.PersonaWebId,
+                TipoGestionId = a.TipoGestionId,
+                BProcesoFallido = a.BProcesoFallido,
+                TipoProcesoFallidoId = a.TipoProcesoFallidoId,
+                TipoSolicitudId = a.TipoSolicitudId,
+                TxAclaracionMotivo = a.TxAclaracionMotivo,
+                TxAsuntoCorreo = a.TxAsuntoCorreo,
+                UsuarioId = a.UsuarioId,
+                VcCorreo = a.PersonasWeb.VcCorreo,
+                VcNombreCompleto = $"{a.PersonasWeb.VcPrimerNombre} {a.PersonasWeb.VcSegundoNombre} {a.PersonasWeb.VcPrimerApellido} {a.PersonasWeb.VcSegundoApellido}",
+                VcTelefono1 = a.PersonasWeb.VcTelefono1,
+                VcTelefono2 = a.PersonasWeb.VcTelefono2,
+                UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
+
+            }).ToListAsync();
+
+            return atencionesWeb;
+
+
+        }
+
+
     }
 
 
