@@ -8,8 +8,7 @@ using WebApi.Responses;
 using WebApi.Requests.AtencionesGrupales;
 using Dominio.Utilities;
 using WebApi.Storage;
-
-
+using Dominio.Mapper.AtencionesGrupales;
 
 namespace WebApi.Controllers.AtencionesGrupales
 {
@@ -117,7 +116,7 @@ namespace WebApi.Controllers.AtencionesGrupales
 
             if (AtencionesGrupales.Count() == 0)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.Accepted };
+                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron casos de atención grupal con el fitro indicado", Codigo = HttpStatusCode.NoContent };
 
             }
             var listModelResponse = new ListModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionesGrupales);
@@ -132,34 +131,25 @@ namespace WebApi.Controllers.AtencionesGrupales
         public async Task<IActionResult> GetAtencionGrupal(long Id)
         {
             var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
-            AtencionGrupal AtencionGrupalModel = null;
+            AtencionGrupalDTO AtencionGrupalModel = null;
 
-            if (!await _service.ExistsAsync(e => e.Id > 0))
+            var atenciongrupal = await _service.obtenerPorId(Id);
+
+            if (atenciongrupal == null)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existen atención grupal", Codigo = HttpStatusCode.BadRequest };
-            }
-
-            var atenciongrupal = await _service.GetAsync(e => e.Id == Id, e => e.OrderBy(e => e.Id), "");
-
-            if (atenciongrupal.Count < 1)
-            {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención grupal con id " + Id, Codigo = HttpStatusCode.NotFound };
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención grupal con id " + Id, Codigo = HttpStatusCode.NoContent };
             }
             else
             {
-                AtencionGrupalModel = atenciongrupal.First();
+                AtencionGrupalModel = atenciongrupal;
                 response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención grupal con el Id solicitado", Codigo = HttpStatusCode.OK };
             }
 
 
-            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionGrupalModel);
+            var modelResponse = new ModelResponse<AtencionGrupalDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionGrupalModel);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
-
-
-
         
-
     }
 
 }

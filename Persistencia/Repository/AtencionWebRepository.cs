@@ -1,5 +1,4 @@
-﻿using Dominio.Mapper.AtencionesGrupales;
-using Dominio.Models.AtencionesWeb;
+﻿using Dominio.Models.AtencionesWeb;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using System.Reflection.Metadata;
@@ -124,6 +123,38 @@ namespace Persistencia.Repository
             return atencionesWeb;
 
 
+        }
+
+
+        public async Task<AtencionWebDTO> obtenerPorId(long atencionWebId)
+        {
+            var atencionGrupalDto = _context.AtencionWeb.Where(p => p.Id == atencionWebId)
+                .Select(a => new AtencionWebDTO
+                {
+                    Id = a.Id,
+                    DtFechaRegistro = a.DtFechaRegistro,
+                    CanalAtencionId = a.CanalAtencionId,
+                    DtFechaOrientacion = a.DtFechaOrientacion,
+                    EstadoId = a.EstadoId,
+                    IAnexos = a.AtencionAnexos.Count,
+                    MotivoId = a.MotivoId,
+                    SubMotivoId = a.SubMotivoId,
+                    PersonaWebId = a.PersonaWebId,
+                    TipoGestionId = a.TipoGestionId,
+                    BProcesoFallido = a.BProcesoFallido,
+                    TipoProcesoFallidoId = a.TipoProcesoFallidoId,
+                    TipoSolicitudId = a.TipoSolicitudId,
+                    TxAclaracionMotivo = a.TxAclaracionMotivo,
+                    TxAsuntoCorreo = a.TxAsuntoCorreo,
+                    UsuarioId = a.UsuarioId,
+                    VcCorreo = a.PersonasWeb.VcCorreo,
+                    VcNombreCompleto = $"{a.PersonasWeb.VcPrimerNombre} {a.PersonasWeb.VcSegundoNombre} {a.PersonasWeb.VcPrimerApellido} {a.PersonasWeb.VcSegundoApellido}",
+                    VcTelefono1 = a.PersonasWeb.VcTelefono1,
+                    VcTelefono2 = a.PersonasWeb.VcTelefono2,
+                    UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
+
+                }).FirstOrDefault();
+            return atencionGrupalDto;
         }
 
 

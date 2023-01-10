@@ -1,4 +1,5 @@
-﻿using Dominio.Models.AtencionesGrupales;
+﻿using Dominio.Mapper.AtencionesGrupales;
+using Dominio.Models.AtencionesGrupales;
 using Persistencia.Repository;
 
 
@@ -21,5 +22,9 @@ namespace Aplicacion.Services.AtencionesGrupales
             return await _atencionGrupalRepository.obtenerPorRangoFechasYUsuario(DtFechaInicio, DtFechaFin, usuarioId);
         }
 
+        public async Task<AtencionGrupalDTO> obtenerPorId(long atencionGrupalId)
+        {
+            return await _atencionGrupalRepository.obtenerPorId(atencionGrupalId);
+        }
     }
 }

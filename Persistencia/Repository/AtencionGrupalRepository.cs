@@ -33,6 +33,30 @@ namespace Persistencia.Repository
             return await atencionesGrupalQuery.ToListAsync();
         }
 
+        public async Task<AtencionGrupalDTO> obtenerPorId(long atencionGrupalId)
+        {
+            var atencionGrupalDto = _context.AtencionGrupal.Where(p => p.Id == atencionGrupalId)
+                .Select(a => new AtencionGrupalDTO
+                {
+                    Id= a.Id,
+                    DtFechaRegistro= a.DtFechaRegistro,
+                    DtFechaOrientacion = a.DtFechaOrientacion,
+                    INumeroUsuarios = a.INumeroUsuarios,
+                    LocalidadId= a.LocalidadId,
+                    MotivoId= a.MotivoId,
+                    SubMotivoId = a.SubMotivoId,
+                    TiempoDuracionId = a.TiempoDuracionId,
+                    TipoActividadId= a.TipoActividadId,
+                    TipoSolicitudId = a.TipoSolicitudId,
+                    TxAclaracionMotivo = a.TxAclaracionMotivo,
+                    UsuarioId= a.UsuarioId,
+                    VcLugar = a.VcLugar,
+                    IAnexos = a.AtencionGrupalesAnexos.Count()
+
+                }).FirstOrDefault();
+            return atencionGrupalDto;
+        }
+
 
     }
 

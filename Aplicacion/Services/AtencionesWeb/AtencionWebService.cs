@@ -33,5 +33,10 @@ namespace Aplicacion.Services.AtencionesWeb
             return await _AtencionWebRepository.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
         }
 
+        public async Task<AtencionWebDTO> obtenerPorId(long atencionWebId)
+        {
+            return await _AtencionWebRepository.obtenerPorId(atencionWebId);
+        }
+
     }
 }
