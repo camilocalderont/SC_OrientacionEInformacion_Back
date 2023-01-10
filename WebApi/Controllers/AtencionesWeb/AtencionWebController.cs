@@ -131,7 +131,7 @@ namespace WebApi.Controllers.AtencionesWeb
 
             catch (Exception)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
+                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de atención web", Codigo = HttpStatusCode.BadRequest };
                 var modelResponseError = new ModelResponse<AtencionWeb>(response.Codigo, response.Titulo, response.Mensaje, null);
                 return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }

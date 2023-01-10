@@ -1,5 +1,9 @@
 ﻿
+using Aplicacion.Services.AtencionesWeb;
+using Dominio.Models.AtencionesWeb;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using WebApi.Responses;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -8,21 +12,39 @@ namespace WebApi.Controllers.AtencionesWeb
     public class PersonaWebController : ControllerBase
     {
 
-        //private readonly PersonaWebService _service;
-        //private readonly IGenericService<AtencionWeb> _atencionWeb;
-        //private readonly IGenericService<AtencionWebAnexo> _anexo;
-        //private readonly IMapper _mapper;
-
-        //public PersonaWebController(PersonaWebService service ,IGenericService<AtencionWeb> atencionWeb, IMapper mapper, IGenericService<AtencionWebAnexo> anexo )
-        //{
-        //    this._service       = service;
-        //    this._atencionWeb = atencionWeb;
-        //    this._mapper = mapper;
-        //    this._anexo = anexo;
-        //}
+        private readonly PersonaWebService _service;
 
 
+        public PersonaWebController(PersonaWebService service)
+        {
+            this._service = service;
+        }
 
-       
+
+        [HttpGet("{VcCorreo}")]
+        public async Task<IActionResult> ObtenerporCorreo(string VcCorreo)
+        {
+            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
+            PersonaWeb PersonaWebModel = null;
+
+
+            var personaWeb = _service.obtenerporCorreo(VcCorreo);
+
+            if (personaWeb == null)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe la persona Web con correo " + VcCorreo, Codigo = HttpStatusCode.OK };
+            }
+            else
+            {
+                PersonaWebModel = personaWeb;
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención Web con el Id solicitado", Codigo = HttpStatusCode.OK };
+            }
+
+
+            var modelResponse = new ModelResponse<PersonaWeb>(response.Codigo, response.Titulo, response.Mensaje, PersonaWebModel);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
+
     }
 }

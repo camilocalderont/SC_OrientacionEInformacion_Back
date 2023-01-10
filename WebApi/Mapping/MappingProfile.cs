@@ -1,4 +1,4 @@
-﻿                      using AutoMapper;
+﻿using AutoMapper;
 
 using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;

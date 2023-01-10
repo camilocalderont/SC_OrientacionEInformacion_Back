@@ -38,11 +38,9 @@ namespace Persistencia.Repository
 
         }
 
-
-
         public PersonaWeb obtenerporCorreo(string correo)
         {
-            return _context.PersonaWeb.Where(p => p.VcCorreo == correo).FirstOrDefault();
+            return _context.PersonaWeb.Where(p => p.VcCorreo == correo.ToLower()).FirstOrDefault();
         }
     }
 }

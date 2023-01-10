@@ -19,9 +19,9 @@ namespace Persistencia.FluentConfig.AtencionWebConfig
            .HasConstraintName("FK_PersonaWebId")
            .OnDelete(DeleteBehavior.Restrict);
 
-            entity.Property(p => p.VcPrimerNombre).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.VcPrimerNombre).IsRequired(false).HasMaxLength(100);
             entity.Property(p => p.VcSegundoNombre).IsRequired(false).HasMaxLength(100);
-            entity.Property(p => p.VcPrimerApellido).IsRequired().HasMaxLength(100);
+            entity.Property(p => p.VcPrimerApellido).IsRequired(false).HasMaxLength(100);
             entity.Property(p => p.VcSegundoApellido).IsRequired(false).HasMaxLength(100);
             entity.Property(p => p.VcCorreo).IsRequired().HasMaxLength(100);
             entity.Property(p => p.VcTelefono1).IsRequired(false).HasMaxLength(50);
