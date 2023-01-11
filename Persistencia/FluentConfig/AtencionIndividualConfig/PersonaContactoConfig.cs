@@ -16,11 +16,12 @@ namespace Persistencia.FluentConfig.AtencionIndividualConfig
             entity.Property(p => p.UsuarioId).IsRequired();
             entity.Property(p => p.PaisId).IsRequired();
             entity.Property(p => p.DepartamentoId).IsRequired();
+            entity.Property(p => p.MunicipioId).IsRequired();
             entity.Property(p => p.LocalidadId).IsRequired();
-            entity.Property(p => p.UpzId).IsRequired();
-            entity.Property(p => p.BarrioId).IsRequired();
+            entity.Property(p => p.UpzId).IsRequired(false);
+            entity.Property(p => p.BarrioId).IsRequired(false);
             entity.Property(p => p.ZonaId).IsRequired();
-            entity.Property(p => p.VcDireccion).IsRequired();
+            entity.Property(p => p.VcDireccion).IsRequired().HasMaxLength(100);
             entity.Property(p => p.TxDatosContactoAclaraciones).IsRequired(false);
             entity.Property(p => p.VcTelefono1).IsRequired(false);
             entity.Property(p => p.VcTelefono2).IsRequired(false);

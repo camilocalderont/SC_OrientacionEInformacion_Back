@@ -1,6 +1,6 @@
 ﻿namespace Dominio.Mapper.AtencionesIndividuales
 {
-    public class AtencionActorDTO
+    public class AtencionIndividualActorDTO
     {
         public long     Id { get; set; }
         public long     AtencionIndividualId { get; set; }

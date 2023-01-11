@@ -8,7 +8,7 @@ namespace Persistencia.FluentConfig.AtencionIndividualConfig
     {
         public AtencionIndividualSeguimientoConfig(EntityTypeBuilder<AtencionIndividualSeguimiento>entity)
         {
-            entity.ToTable("AtencionSeguimiento");
+            entity.ToTable("AtencionIndividualSeguimiento");
             entity.HasKey(p => p.Id);
 
             entity.Property(p => p.AtencionIndividualId).IsRequired();

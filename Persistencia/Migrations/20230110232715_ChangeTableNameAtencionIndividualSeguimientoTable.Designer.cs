@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistencia.Context;
 
@@ -11,9 +12,10 @@ using Persistencia.Context;
 namespace Persistencia.Migrations
 {
     [DbContext(typeof(OrientacionDbContext))]
-    partial class OrientacionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230110232715_ChangeTableNameAtencionIndividualSeguimientoTable")]
+    partial class ChangeTableNameAtencionIndividualSeguimientoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,8 +161,8 @@ namespace Persistencia.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("VcTurnoSat")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -323,7 +325,7 @@ namespace Persistencia.Migrations
                     b.Property<DateTime?>("DtFechaActualizacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DtFechaNacimiento")
+                    b.Property<DateTime>("DtFechaNacimiento")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DtFechaRegistro")
@@ -459,7 +461,7 @@ namespace Persistencia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<long?>("BarrioId")
+                    b.Property<long>("BarrioId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("DepartamentoId")
@@ -471,9 +473,6 @@ namespace Persistencia.Migrations
                     b.Property<long>("LocalidadId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MunicipioId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("PaisId")
                         .HasColumnType("bigint");
 
@@ -483,7 +482,7 @@ namespace Persistencia.Migrations
                     b.Property<string>("TxDatosContactoAclaraciones")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("UpzId")
+                    b.Property<long>("UpzId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("UsuarioId")
@@ -491,8 +490,7 @@ namespace Persistencia.Migrations
 
                     b.Property<string>("VcDireccion")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VcTelefono1")
                         .HasColumnType("nvarchar(max)");

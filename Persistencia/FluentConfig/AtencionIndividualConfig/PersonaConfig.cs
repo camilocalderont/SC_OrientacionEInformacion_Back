@@ -45,7 +45,7 @@ namespace Persistencia.FluentConfig.AtencionIndividualConfig
             entity.Property(p => p.OrientacionSexualId).IsRequired();
             entity.Property(p => p.VcOtraOrientacionSexual).IsRequired(false).HasMaxLength(100);
             entity.Property(p => p.SexoId).IsRequired();
-            entity.Property(p => p.DtFechaNacimiento).IsRequired();
+            entity.Property(p => p.DtFechaNacimiento).IsRequired(false);
             entity.Property(p => p.EnfoquePoblacionalId).IsRequired();
             entity.Property(p => p.HechoVictimizanteId).IsRequired(false);
             entity.Property(p => p.DepartamentoOrigenVictimaId).IsRequired(false);

@@ -46,7 +46,7 @@ namespace Persistencia.FluentConfig.AtencionIndividualConfig
            entity.Property(p => p.DtFechaRegistro).IsRequired();
            entity.Property(p => p.UsuarioId).IsRequired();
            entity.Property(p => p.CanalAtencionId).IsRequired();
-           entity.Property(p => p.VcTurnoSat).IsRequired(false).HasMaxLength(50);
+           entity.Property(p => p.VcTurnoSat).IsRequired(false).HasMaxLength(20);
            entity.Property(p => p.TipoSolicitudId).IsRequired();
            entity.Property(p => p.MotivoId).IsRequired();
            entity.Property(p => p.SubMotivoId).IsRequired();

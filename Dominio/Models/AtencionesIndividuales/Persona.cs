@@ -15,7 +15,7 @@
         public  long     OrientacionSexualId { get; set; }
         public  string   VcOtraOrientacionSexual { get; set; }
         public  long     SexoId { get; set; }
-        public  DateTime DtFechaNacimiento { get; set; }
+        public  DateTime? DtFechaNacimiento { get; set; }
         public  long     EnfoquePoblacionalId { get; set; }
         public  long?     HechoVictimizanteId { get; set; }
         public  long?     DepartamentoOrigenVictimaId { get; set; }
