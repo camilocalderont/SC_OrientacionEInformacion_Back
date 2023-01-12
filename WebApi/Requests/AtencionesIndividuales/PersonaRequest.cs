@@ -1,8 +1,8 @@
-﻿namespace Dominio.Mapper.AtencionesIndividuales
+namespace WebApi.Requests.AtencionesIndividuales
 {
-    public class PersonaDTO
+    public class PersonaRequest
     {
-        public  long     Id{ get; set; }
+        public  long     Id { get; set; }
         public  long     TipoDocumentoId { get; set; }
         public  string   VcDocumento { get; set; }
         public  string   VcPrimerNombre { get; set; }
@@ -29,5 +29,25 @@
         public  long     UsuarioId { get; set; }
         public  DateTime? DtFechaActualizacion { get; set; }
         public  long?     UsuarioActualizacionId { get; set; }
+
+
+        public long     RegimenId { get; set; }
+        public long     AseguradoraId { get; set; }
+        public long     EstadoAfiliacionId { get; set; }
+        public long     NivelSisbenId { get; set; }
+        public long?    InstitucionInstrumentoVinculadoId { get; set; }        
+
+
+        public long     PaisId { get; set; }
+        public long     DepartamentoId { get; set; }
+        public long     MunicipioId { get; set; }
+        public long     LocalidadId { get; set; }
+        public long?    UpzId { get; set; }
+        public long?    BarrioId { get; set; }
+        public long     ZonaId { get; set; }
+        public string   VcDireccion { get; set; }
+        public string   TxDatosContactoAclaraciones { get; set; }
+        public string   VcTelefono1 { get; set; }
+        public string   VcTelefono2 { get; set; }        
     }
 }

@@ -2,6 +2,7 @@ using Aplicacion.Mapping;
 using Aplicacion.Services;
 using Aplicacion.Services.AtencionesGrupales;
 using Aplicacion.Services.AtencionesWeb;
+using Aplicacion.Services.AtencionesIndividuales;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using Persistencia.Repository;
@@ -34,15 +35,17 @@ builder.Services.AddScoped(typeof(AtencionGrupalService), typeof(AtencionGrupalS
 builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrupalRepository));
 builder.Services.AddScoped(typeof(AtencionWebRepository), typeof(AtencionWebRepository));
 builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebRepository));
+builder.Services.AddScoped(typeof(PersonaRepository), typeof(PersonaRepository));
 
 
 builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService));
-
 builder.Services.AddScoped(typeof(AtencionWebService), typeof(AtencionWebService));
-
 builder.Services.AddScoped(typeof(ValidacionCorreo), typeof(ValidacionCorreo));
-
 builder.Services.AddScoped(typeof(AzureStorage), typeof(AzureStorage));
+
+builder.Services.AddScoped(typeof(PersonaService), typeof(PersonaService));
+builder.Services.AddScoped(typeof(PersonaAfiliacionService), typeof(PersonaAfiliacionService));
+builder.Services.AddScoped(typeof(PersonaContactoService), typeof(PersonaContactoService));
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

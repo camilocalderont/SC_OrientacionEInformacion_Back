@@ -3,8 +3,10 @@
 using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
 using Dominio.Models.AtencionesWeb;
+using Dominio.Models.AtencionesIndividuales;
 using WebApi.Requests.AtencionesGrupales;
 using WebApi.Requests.AtencionesWeb;
+using WebApi.Requests.AtencionesIndividuales;
 
 namespace Aplicacion.Mapping
 {
@@ -25,9 +27,15 @@ namespace Aplicacion.Mapping
 
             CreateMap<PersonaWeb, AtencionWebRequest>().ReverseMap();
 
-            CreateMap<AtencionWebAnexo, AtencionWenAnexoRequest>().ReverseMap();
+            CreateMap<AtencionWebAnexo, AtencionWebAnexoRequest>().ReverseMap();
 
             CreateMap<AtencionWeb, AtencionWebDTO>().ReverseMap();
+
+            CreateMap<Persona, PersonaRequest>().ReverseMap();
+
+            CreateMap<PersonaAfiliacion, PersonaRequest>().ReverseMap();
+
+            CreateMap<PersonaContacto, PersonaRequest>().ReverseMap();
 
         }
     }

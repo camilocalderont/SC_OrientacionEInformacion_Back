@@ -1,6 +1,6 @@
 ﻿namespace WebApi.Requests.AtencionesWeb
 {
-    public class AtencionWenAnexoRequest
+    public class AtencionWebAnexoRequest
     {
         public long Id { get; set; }
         public long AtencionWebId { get; set; }

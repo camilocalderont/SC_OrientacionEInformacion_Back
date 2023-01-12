@@ -8,6 +8,6 @@
         public DateTime DtFechaAsignacion { get; set; }
         public long     UsuarioAsignaId { get; set; }
         public DateTime DtFechaReAsignacion { get; set; }
-        public Guid     UsuarioActualId { get; set; }
+        public long     UsuarioActualId { get; set; }
     }
 }

@@ -7,6 +7,6 @@
         public string   VcDescripcion { get; set; }
         public Boolean  BCierraCaso { get; set; }
         public DateTime DtFechaRegistro { get; set; }
-        public Guid     UsuarioId { get; set; }
+        public long     UsuarioId { get; set; }
     }
 }
