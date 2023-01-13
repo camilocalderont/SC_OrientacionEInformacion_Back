@@ -37,6 +37,10 @@ namespace Aplicacion.Mapping
 
             CreateMap<PersonaContacto, PersonaRequest>().ReverseMap();
 
+            CreateMap<AtencionIndividual, AtencionIndividualRequest>().ReverseMap();
+
+            
+
         }
     }
 }

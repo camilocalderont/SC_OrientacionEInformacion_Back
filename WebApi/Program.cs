@@ -38,6 +38,7 @@ builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebReposi
 builder.Services.AddScoped(typeof(PersonaRepository), typeof(PersonaRepository));
 builder.Services.AddScoped(typeof(PersonaAfiliacionRepository), typeof(PersonaAfiliacionRepository));
 builder.Services.AddScoped(typeof(PersonaContactoRepository), typeof(PersonaContactoRepository));
+builder.Services.AddScoped(typeof(AtencionIndividualRepository), typeof(AtencionIndividualRepository));
 
 
 builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService));
@@ -48,6 +49,7 @@ builder.Services.AddScoped(typeof(AzureStorage), typeof(AzureStorage));
 builder.Services.AddScoped(typeof(PersonaService), typeof(PersonaService));
 builder.Services.AddScoped(typeof(PersonaAfiliacionService), typeof(PersonaAfiliacionService));
 builder.Services.AddScoped(typeof(PersonaContactoService), typeof(PersonaContactoService));
+builder.Services.AddScoped(typeof(AtencionIndividualService), typeof(AtencionIndividualService));
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

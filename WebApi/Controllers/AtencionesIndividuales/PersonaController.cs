@@ -10,7 +10,7 @@ using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
 
-namespace WebApi.Controllers.AtencionesWeb
+namespace WebApi.Controllers.AtencionesIndividuales
 {
     [Route("api/[controller]")]
     [ApiController]

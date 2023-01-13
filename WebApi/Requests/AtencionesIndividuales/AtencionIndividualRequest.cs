@@ -1,6 +1,7 @@
-﻿namespace Dominio.Mapper.AtencionesIndividuales
+﻿
+namespace WebApi.Requests.AtencionesIndividuales
 {
-    public class AtencionIndividualDTO
+    public class AtencionIndividualRequest
     {
         public long     Id { get; set; }
         public long     PersonaId { get; set; }
@@ -15,8 +16,6 @@
         public string   TxGestionRealizada { get; set; }
         public string   VcRadicadoBte { get; set; }
         public long     EstadoId { get; set; }
-        public int      IAnexos { get; set; }
-        public long     UsuarioActualId { get; set; }
-
+        public IFormFile? Anexo { get; set; }
     }
 }

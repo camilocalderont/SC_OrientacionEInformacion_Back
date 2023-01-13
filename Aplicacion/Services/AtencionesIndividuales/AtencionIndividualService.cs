@@ -1,0 +1,41 @@
+﻿
+using Dominio.Models.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesIndividuales;
+using Persistencia.Repository;
+
+
+namespace Aplicacion.Services.AtencionesIndividuales
+{
+    public class AtencionIndividualService : GenericService<AtencionIndividual>
+    {
+        public AtencionIndividualRepository _AtencionIndividualRepository { get; }
+        public IGenericRepository<AtencionIndividual> _genericRepository { get; }
+        public AtencionIndividualService(IGenericRepository<AtencionIndividual> genericRepository, AtencionIndividualRepository AtencionIndividualRepository) : base(genericRepository)
+        {
+            _AtencionIndividualRepository = AtencionIndividualRepository;
+            _genericRepository = genericRepository;
+        }
+
+        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
+            long EstadoId,
+            DateTime DtFechaInicio,
+            DateTime DtFechaFin,
+            long usuarioId,
+            string VcDocumento
+        )
+        {
+            return await _AtencionIndividualRepository.obtenerPorRangoFechasEstadoUsuarioYDocumento(EstadoId,DtFechaInicio, DtFechaFin, usuarioId, VcDocumento);
+        }
+
+        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId, long AtencionIndividualId)
+        {
+            return await _AtencionIndividualRepository.obtenerPorPersonaYExcluyeCaso(PersonaId, AtencionIndividualId);
+        }
+
+        public async Task<AtencionIndividualDTO> obtenerPorId(long atencionIndividualId)
+        {
+            return await _AtencionIndividualRepository.obtenerPorId(atencionIndividualId);
+        }
+
+    }
+}

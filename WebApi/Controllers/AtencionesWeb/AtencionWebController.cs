@@ -157,7 +157,7 @@ namespace WebApi.Controllers.AtencionesWeb
 
             if (!AtencionesWeb.Any())
             {
-                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones web  con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
             var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 
@@ -169,13 +169,13 @@ namespace WebApi.Controllers.AtencionesWeb
         public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerOtrosCasosPersonaWeb(long PersonaWebId, long AtencionWebId)
         {
 
-            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención web", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionWebDTO> AtencionesWeb = null;
             AtencionesWeb = await _atencionWebservice.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
 
             if (!AtencionesWeb.Any())
             {
-                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones web con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
             var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
 

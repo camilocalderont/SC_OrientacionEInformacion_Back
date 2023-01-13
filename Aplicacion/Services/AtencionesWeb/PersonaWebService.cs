@@ -16,12 +16,6 @@ namespace Aplicacion.Services.AtencionesWeb
             _personaWebRepository = personaWebRepository;
         }
 
-        public async Task<IEnumerable<PersonaWeb>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId, string correo)
-        {
-            return await _personaWebRepository.obtenerPorRangoFechasYUsuario(DtFechaInicio, DtFechaFin, usuarioId, correo);
-        }
-
-
         public PersonaWeb obtenerporCorreo(string correo)
         {
             return _personaWebRepository.obtenerporCorreo(correo);

@@ -128,7 +128,7 @@ namespace Persistencia.Repository
 
         public async Task<AtencionWebDTO> obtenerPorId(long atencionWebId)
         {
-            var atencionGrupalDto = _context.AtencionWeb.Where(p => p.Id == atencionWebId)
+            var atencionWebDto = _context.AtencionWeb.Where(p => p.Id == atencionWebId)
                 .Select(a => new AtencionWebDTO
                 {
                     Id = a.Id,
@@ -154,7 +154,7 @@ namespace Persistencia.Repository
                     UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
 
                 }).FirstOrDefault();
-            return atencionGrupalDto;
+            return atencionWebDto;
         }
 
 
