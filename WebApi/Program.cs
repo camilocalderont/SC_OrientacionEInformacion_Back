@@ -36,6 +36,8 @@ builder.Services.AddScoped(typeof(AtencionGrupalRepository), typeof(AtencionGrup
 builder.Services.AddScoped(typeof(AtencionWebRepository), typeof(AtencionWebRepository));
 builder.Services.AddScoped(typeof(PersonaWebRepository), typeof(PersonaWebRepository));
 builder.Services.AddScoped(typeof(PersonaRepository), typeof(PersonaRepository));
+builder.Services.AddScoped(typeof(PersonaAfiliacionRepository), typeof(PersonaAfiliacionRepository));
+builder.Services.AddScoped(typeof(PersonaContactoRepository), typeof(PersonaContactoRepository));
 
 
 builder.Services.AddScoped(typeof(PersonaWebService), typeof(PersonaWebService));

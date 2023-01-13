@@ -102,14 +102,22 @@ namespace WebApi.Controllers.AtencionesWeb
                     personaContacto.PersonaId = persona.Id;
                     personaContacto.DtFechaRegistro = persona.DtFechaRegistro;        
 
+                    bool guardoPersonaAfiliacion = true;
+                    bool guardoPersonaContacto  = true;
                     //Obtener el último persona afiliacion
                     //Si existe compare con los datos que vienen del request
-                    bool guardoPersonaAfiliacion = await _personaAfiliacionService.CreateAsync(personaAfiliacion);
-
-
+                    bool CambioModeloAfiliacion = await _personaAfiliacionService.CambioModelo(personaAfiliacion, persona.Id);
+                    if(CambioModeloAfiliacion)
+                    {
+                        guardoPersonaAfiliacion = await _personaAfiliacionService.CreateAsync(personaAfiliacion);
+                    }
                     //Obtener el último persona contacto
-                    //Si existe compare con los datos que vienen del request                     
-                    bool guardoPersonaContacto = await _personaContactoService.CreateAsync(personaContacto);
+                    //Si existe compare con los datos que vienen del request        
+                    bool CambioModeloContacto = await _personaContactoService.CambioModelo(personaContacto, persona.Id);
+                    if(CambioModeloContacto)
+                    {
+                        guardoPersonaContacto = await _personaContactoService.CreateAsync(personaContacto);
+                    }                                 
                     guardoPersonaAfiliacionContacto = guardoPersonaAfiliacion && guardoPersonaContacto;
                 }
                 else{
