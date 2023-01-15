@@ -37,5 +37,10 @@ namespace Aplicacion.Services.AtencionesIndividuales
             return await _AtencionIndividualRepository.obtenerPorId(atencionIndividualId);
         }
 
+        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
+        {
+            return await _AtencionIndividualRepository.obtenerPorTipoDocumentoDocumentoYEstado(tipoDocumentoId,VcDocumento,EstadoId);
+        }        
+
     }
 }

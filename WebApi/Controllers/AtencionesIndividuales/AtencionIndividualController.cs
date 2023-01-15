@@ -131,13 +131,13 @@ namespace WebApi.Controllers.AtencionesIndividuales
         public async Task<ActionResult<ListModelResponse<AtencionIndividualDTO>>> obtenerOtrosCasosPersona(long PersonaId, long AtencionIndividualId)
         {
 
-            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención individual ", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionIndividualDTO> AtencionesIndividuales = null;
             AtencionesIndividuales = await _atencionIndividualservice.obtenerPorPersonaYExcluyeCaso(PersonaId, AtencionIndividualId);
 
             if (!AtencionesIndividuales.Any())
             {
-                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones individuales con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
             var listModelResponse = new ListModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
 
@@ -170,7 +170,23 @@ namespace WebApi.Controllers.AtencionesIndividuales
             return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
 
+        [HttpGet("casosPersona/{tipoDocumentoId}/{VcDocumento}/{EstadoId}")]
+        public async Task<ActionResult<ListModelResponse<AtencionIndividualDTO>>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
+        {
 
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención individual ", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionIndividualDTO> AtencionesIndividuales = null;
+            AtencionesIndividuales = await _atencionIndividualservice.obtenerPorTipoDocumentoDocumentoYEstado(tipoDocumentoId, VcDocumento, EstadoId);
+
+            if (!AtencionesIndividuales.Any())
+            {
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones individuales con el fitro indicado", Codigo = HttpStatusCode.OK };
+            }
+            var listModelResponse = new ListModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+
+        }
 
 
     }

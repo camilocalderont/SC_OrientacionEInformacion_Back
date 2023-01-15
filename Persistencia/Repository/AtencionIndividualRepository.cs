@@ -43,11 +43,11 @@ namespace Persistencia.Repository
 
             if (VcDocumento.Length > 0)
             {
-                var personaWeb = _context.Persona.Where(p=>p.VcDocumento== VcDocumento).FirstOrDefault();
-                _context.Entry(personaWeb).State = EntityState.Detached;
-                if (personaWeb != null)
+                var persona = _context.Persona.Where(p=>p.VcDocumento== VcDocumento).FirstOrDefault();
+                _context.Entry(persona).State = EntityState.Detached;
+                if (persona != null)
                 {
-                    atencionesIndividualesQuery = atencionesIndividualesQuery.Where(g => g.PersonaId == personaWeb.Id);
+                    atencionesIndividualesQuery = atencionesIndividualesQuery.Where(g => g.PersonaId == persona.Id);
                 }
 
             }
@@ -136,6 +136,52 @@ namespace Persistencia.Repository
                 }).FirstOrDefault();
             return atencionIndividualDto;
         }
+
+
+        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(
+            long tipoDocumentoId, 
+            string VcDocumento,
+            long EstadoId
+        )
+        {
+            IQueryable<AtencionIndividual> atencionesIndividualesQuery = _context.AtencionIndividual.AsQueryable();
+
+            atencionesIndividualesQuery = atencionesIndividualesQuery.Where(p => p.EstadoId == EstadoId);
+
+            if (VcDocumento.Length > 0 && tipoDocumentoId>0)
+            {
+                var persona = _context.Persona.Where(p=>p.VcDocumento== VcDocumento && p.TipoDocumentoId == tipoDocumentoId).FirstOrDefault();
+                _context.Entry(persona).State = EntityState.Detached;
+                if (persona != null)
+                {
+                    atencionesIndividualesQuery = atencionesIndividualesQuery.Where(g => g.PersonaId == persona.Id);
+                }
+
+            }
+
+            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new AtencionIndividualDTO
+            {
+                Id = a.Id,
+                DtFechaRegistro = a.DtFechaRegistro,
+                CanalAtencionId = a.CanalAtencionId,
+                EstadoId = a.EstadoId,
+                IAnexos = a.AtencionAnexos.Count,
+                MotivoId = a.MotivoId,
+                SubMotivoId = a.SubMotivoId,
+                PersonaId = a.PersonaId,
+                TipoSolicitudId = a.TipoSolicitudId,
+                TxAclaracionMotivo = a.TxAclaracionMotivo,
+                TxGestionRealizada = a.TxGestionRealizada,
+                UsuarioId = a.UsuarioId,
+                UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
+                VcTurnoSat = a.VcTurnoSat,
+
+            }).ToListAsync();
+
+            return atencionesIndividuales;
+        }
+
+
 
 
     }
