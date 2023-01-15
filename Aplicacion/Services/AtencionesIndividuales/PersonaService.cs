@@ -1,5 +1,6 @@
 
 using Dominio.Models.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesIndividuales;
 using Persistencia.Repository;
 
 
@@ -16,10 +17,15 @@ namespace Aplicacion.Services.AtencionesIndividuales
             _personaRepository = personaRepository;
         }
 
-        public async Task<Persona> obtenerPorTipoDocumentoyDocumento(long tipoDocumentoId,string vcDocumento)
+        public async Task<PersonaDTO> obtenerPorTipoDocumentoyDocumento(long tipoDocumentoId,string vcDocumento)
         {
             return await _personaRepository.obtenerPorTipoDocumentoyDocumento(tipoDocumentoId,vcDocumento);
         }
-        
+
+        public async Task<PersonaDTO> obtenerPorId(long personaId)
+        {
+            return await _personaRepository.obtenerPorId(personaId);
+        }
+
     }
 }

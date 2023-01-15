@@ -44,82 +44,43 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
 
         [HttpPost("crear")]
-        public async Task<ActionResult<AtencionIndividual>> CrearPersona([FromForm] AtencionIndividualRequest atencionIndividualRequest)
+        public async Task<ActionResult<AtencionIndividual>> CrearAtencionIndividual([FromForm] AtencionIndividualRequest atencionIndividualRequest)
         {
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
-            Persona persona = _mapper.Map<Persona>(atencionIndividualRequest);
             AtencionIndividual atencionIndividual = _mapper.Map<AtencionIndividual>(atencionIndividualRequest);
 
             try
             {
                 if (_azureStorage.validarAnexo(atencionIndividualRequest.Anexo, Constants.DOSMB, "pdf"))
-                {
-
-                    persona.DtFechaActualizacion = DateTime.Now;
-                    persona.DtFechaRegistro      = DateTime.Now;
-
-                    var personaBD = _personaService.obtenerPorTipoDocumentoyDocumento(persona.TipoDocumentoId,persona.VcDocumento);
-
-                    var validacorreo = _validacorreo.ValidarEmail(persona.VcCorreo);
-
-                    if (!validacorreo)
+                {                   
+                    bool guardoatencionIndividual = await _atencionIndividualservice.CreateAsync(atencionIndividual);
+                    if (guardoatencionIndividual && atencionIndividualRequest.Anexo != null)
                     {
-                        response = new { Titulo = "Algo salio mal", Mensaje = "Por favor digita un correo valido", Codigo = HttpStatusCode.BadRequest };
-                        return StatusCode((int)response.Codigo, response);
-                    }
+                        var anexo = atencionIndividualRequest.Anexo;
+                        var nombreEntidad = atencionIndividual.GetType().Name;
+                        string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
+                        ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);                          
 
+                        if (archivoCarga.rutaLocal.Length > 0)
+                        {
+                            AtencionIndividualAnexo atencionIndividualAnexo = new AtencionIndividualAnexo
+                            {
+                                AtencionIndividualId = atencionIndividual.Id,
+                                IBytes = (int)anexo.Length,
+                                VcNombre = anexo.FileName,
+                                UsuarioId = atencionIndividual.UsuarioId,
+                                DtFechaRegistro = atencionIndividual.DtFechaRegistro,
+                                VcRuta = archivoCarga.rutaLocal
+                            };
 
-                    bool guardopersona = false;
+                            bool guardoAnexo = await _anexoIndividualService.CreateAsync(atencionIndividualAnexo);
+                        }
 
-                    if (personaBD == null)
-                    {
-                        guardopersona = await _personaService.CreateAsync(persona);
                     }
                     else
                     {
-                        persona.Id = personaBD.Id;
-                        guardopersona = await _personaService.UpdateAsync(persona.Id,persona);
-
-                    }
-
-                    if (guardopersona)
-                    {
-                        atencionIndividual.PersonaId = persona.Id;
-                        atencionIndividual.DtFechaRegistro = DateTime.Now;
-
-                        bool guardoatencionIndividual = await _atencionIndividualservice.CreateAsync(atencionIndividual);
-
-
-                        if (guardoatencionIndividual && atencionIndividualRequest.Anexo != null)
-                        {
-                            var anexo = atencionIndividualRequest.Anexo;
-                            var nombreEntidad = atencionIndividual.GetType().Name;
-                            string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
-                            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);                          
-
-                            if (archivoCarga.rutaLocal.Length > 0)
-                            {
-                                AtencionIndividualAnexo atencionwebAnexo = new AtencionIndividualAnexo
-                                {
-                                    AtencionIndividualId = atencionIndividual.Id,
-                                    IBytes = (int)anexo.Length,
-                                    VcNombre = anexo.FileName,
-                                    UsuarioId = atencionIndividual.UsuarioId,
-                                    DtFechaRegistro = atencionIndividual.DtFechaRegistro,
-                                    VcRuta = archivoCarga.rutaLocal
-                                };
-
-                                bool guardoAnexo = await _anexoIndividualService.CreateAsync(atencionwebAnexo);
-                            }
-
-                        }
-
-                        else if (!guardoatencionIndividual && guardopersona)
-                        {
-                            response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar persona web", Codigo = HttpStatusCode.BadRequest };
-                        }
-
+                        response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar el caso atención individual", Codigo = HttpStatusCode.BadRequest };
                     }
                 }
                 else
@@ -132,12 +93,12 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
             catch (Exception)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de atención web", Codigo = HttpStatusCode.BadRequest };
+                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de caso atención individual", Codigo = HttpStatusCode.BadRequest };
                 var modelResponseError = new ModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, null);
                 return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }
 
-            var modelResponse = new ModelResponse<Persona>(response.Codigo, response.Titulo, response.Mensaje, persona);
+            var modelResponse = new ModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, atencionIndividual);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
 
         }
@@ -192,16 +153,16 @@ namespace WebApi.Controllers.AtencionesIndividuales
             AtencionIndividualDTO AtencionIndividualModelModel = null;
 
 
-            var atencionweb = await _atencionIndividualservice.obtenerPorId(Id);
+            var atencionIndividual = await _atencionIndividualservice.obtenerPorId(Id);
 
-            if (atencionweb == null)
+            if (atencionIndividual == null)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención Web con id " + Id, Codigo = HttpStatusCode.NoContent };
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención individual con id " + Id, Codigo = HttpStatusCode.NoContent };
             }
             else
             {
-                AtencionIndividualModelModel = atencionweb;
-                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención Web con el Id solicitado", Codigo = HttpStatusCode.OK };
+                AtencionIndividualModelModel = atencionIndividual;
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención individual con el Id solicitado", Codigo = HttpStatusCode.OK };
             }
 
 

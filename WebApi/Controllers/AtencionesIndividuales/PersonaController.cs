@@ -1,6 +1,7 @@
 ﻿using Aplicacion.Services;
 using AutoMapper;
 using Dominio.Models.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesIndividuales;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Requests.AtencionesIndividuales;
@@ -48,24 +49,48 @@ namespace WebApi.Controllers.AtencionesIndividuales
         public async Task<IActionResult> obtenerPorTipoDocumentoyDocumento(long tipoDocumentoId,string vcDocumento)
         {
             var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
-            Persona PersonaModel = null;
+            PersonaDTO PersonaModel = null;
 
 
             var persona = await _personaService.obtenerPorTipoDocumentoyDocumento(tipoDocumentoId,vcDocumento);
 
             if (persona == null)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = $"No existe la persona Web con tipo de documento: {tipoDocumentoId} y documento {vcDocumento}  "  , Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No existe la persona con el tipo de documento: {tipoDocumentoId} y documento {vcDocumento}  "  , Codigo = HttpStatusCode.OK };
             }
             else
             {
                 PersonaModel = persona;
-                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención Web con el tipo de documento y documento solicitado", Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo la persona con el tipo de documento y documento solicitado", Codigo = HttpStatusCode.OK };
             }
 
-            var modelResponse = new ModelResponse<Persona>(response.Codigo, response.Titulo, response.Mensaje, PersonaModel);
+            var modelResponse = new ModelResponse<PersonaDTO>(response.Codigo, response.Titulo, response.Mensaje, PersonaModel);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
+
+        [HttpGet("{personaId}")]
+        public async Task<IActionResult> obtenerPorId(long personaId)
+        {
+            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
+            PersonaDTO PersonaModel = null;
+
+
+            var persona = await _personaService.obtenerPorId(personaId);
+
+            if (persona == null)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No existe la persona con el ID : {personaId} ", Codigo = HttpStatusCode.OK };
+            }
+            else
+            {
+                PersonaModel = persona;
+                response = new { Titulo = "Bien Hecho!", Mensaje = $"Se obtuvo la persona con el ID: {personaId}", Codigo = HttpStatusCode.OK };
+            }
+
+            var modelResponse = new ModelResponse<PersonaDTO>(response.Codigo, response.Titulo, response.Mensaje, PersonaModel);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
 
         [HttpPost("crear")]
         public async Task<ActionResult<Persona>> CrearPersona(PersonaRequest personaRequest)
@@ -143,77 +168,6 @@ namespace WebApi.Controllers.AtencionesIndividuales
             return StatusCode((int)modelResponse.Codigo, modelResponse);
           
         }
-
-
-        /*
-        [HttpPost("bandeja")]
-        public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerPorRangoFechasYUsuario(BandejaCasosWebRequest bandejaCasosWeb)
-        {
-            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionWebDTO> AtencionesWeb = null;
-            AtencionesWeb = await _atencionWebservice.obtenerPorRangoFechasEstadoUsuarioYCorreo(
-                    bandejaCasosWeb.EstadoId,
-                    bandejaCasosWeb.DtFechaInicio,
-                    bandejaCasosWeb.DtFechaFin,
-                    bandejaCasosWeb.UsuarioId,
-                    bandejaCasosWeb.VcCorreo
-            );
-
-            if (!AtencionesWeb.Any())
-            {
-                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
-            }
-            var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
-
-            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
-        }
-
-        
-        [HttpGet("otrosCasos/{PersonaWebId}/{AtencionWebId}")]
-        public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerOtrosCasosPersonaWeb(long PersonaWebId, long AtencionWebId)
-        {
-
-            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionWebDTO> AtencionesWeb = null;
-            AtencionesWeb = await _atencionWebservice.obtenerPorPersonaWebYExcluyeCaso(PersonaWebId, AtencionWebId);
-
-            if (!AtencionesWeb.Any())
-            {
-                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron actividades con el fitro indicado", Codigo = HttpStatusCode.OK };
-            }
-            var listModelResponse = new ListModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesWeb);
-
-            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
-
-        }
-        
-
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetAtencionWeb(long Id)
-        {
-            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
-            AtencionWebDTO AtencionWebModelModel = null;
-
-
-            var atencionweb = await _atencionWebservice.obtenerPorId(Id);
-
-            if (atencionweb == null)
-            {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención Web con id " + Id, Codigo = HttpStatusCode.NoContent };
-            }
-            else
-            {
-                AtencionWebModelModel = atencionweb;
-                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo atención Web con el Id solicitado", Codigo = HttpStatusCode.OK };
-            }
-
-
-            var modelResponse = new ModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebModelModel);
-            return StatusCode((int)modelResponse.Codigo, modelResponse);
-        }
-
-        */
-
 
     }
 }
