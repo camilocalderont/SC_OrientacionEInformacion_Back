@@ -70,6 +70,9 @@ namespace Persistencia.Repository
                 UsuarioId = a.UsuarioId,
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                 VcTurnoSat = a.VcTurnoSat,
+                TipoDocumentoId = a.Persona.TipoDocumentoId,
+                VcDocumento =   a.Persona.VcDocumento,
+                VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
 
             }).ToListAsync();
 
@@ -104,6 +107,9 @@ namespace Persistencia.Repository
                 UsuarioId = a.UsuarioId,
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                 VcTurnoSat = a.VcTurnoSat,
+                TipoDocumentoId = a.Persona.TipoDocumentoId,
+                VcDocumento = a.Persona.VcDocumento,
+                VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
 
             }).ToListAsync();
 
@@ -132,6 +138,9 @@ namespace Persistencia.Repository
                     UsuarioId = a.UsuarioId,
                     UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                     VcTurnoSat = a.VcTurnoSat,
+                    TipoDocumentoId = a.Persona.TipoDocumentoId,
+                    VcDocumento = a.Persona.VcDocumento,
+                    VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
 
                 }).FirstOrDefault();
             return atencionIndividualDto;
@@ -150,10 +159,10 @@ namespace Persistencia.Repository
 
             if (VcDocumento.Length > 0 && tipoDocumentoId>0)
             {
-                var persona = _context.Persona.Where(p=>p.VcDocumento== VcDocumento && p.TipoDocumentoId == tipoDocumentoId).FirstOrDefault();
-                _context.Entry(persona).State = EntityState.Detached;
+                var persona = _context.Persona.Where(p=>p.VcDocumento== VcDocumento && p.TipoDocumentoId == tipoDocumentoId).FirstOrDefault();               
                 if (persona != null)
                 {
+                    _context.Entry(persona).State = EntityState.Detached;
                     atencionesIndividualesQuery = atencionesIndividualesQuery.Where(g => g.PersonaId == persona.Id);
                 }
 
@@ -175,6 +184,9 @@ namespace Persistencia.Repository
                 UsuarioId = a.UsuarioId,
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                 VcTurnoSat = a.VcTurnoSat,
+                TipoDocumentoId = a.Persona.TipoDocumentoId,
+                VcDocumento = a.Persona.VcDocumento,
+                VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
 
             }).ToListAsync();
 

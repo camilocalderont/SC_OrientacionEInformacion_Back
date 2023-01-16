@@ -20,6 +20,6 @@
         public virtual List<AtencionIndividualSeguimiento> AtencionSeguimientos { get; set; }
         public virtual List<AtencionIndividualAnexo> AtencionAnexos { get; set; }
         public virtual List<AtencionIndividualActor> AtencionActores { get; set; }
-        public Persona Personas { get; set; }
+        public Persona Persona { get; set; }
     }
 }

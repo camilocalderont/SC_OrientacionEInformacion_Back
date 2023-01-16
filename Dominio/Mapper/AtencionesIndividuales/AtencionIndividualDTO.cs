@@ -17,6 +17,9 @@
         public long     EstadoId { get; set; }
         public int      IAnexos { get; set; }
         public long     UsuarioActualId { get; set; }
+        public long    TipoDocumentoId { get; set; }
+        public string  VcDocumento   { get; set; }
+        public string VcNombrecompleto { get; set; }
 
     }
 }

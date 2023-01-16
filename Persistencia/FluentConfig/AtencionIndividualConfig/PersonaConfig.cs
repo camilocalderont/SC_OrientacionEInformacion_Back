@@ -13,7 +13,7 @@ namespace Persistencia.FluentConfig.AtencionIndividualConfig
 
             entity
            .HasMany(p => p.AtencionIndividual)
-           .WithOne(p => p.Personas)
+           .WithOne(p => p.Persona)
            .HasForeignKey(p => p.PersonaId)              // Código de la caso asociado
            .HasConstraintName("FK_Persona_A_CasoI")
            .OnDelete(DeleteBehavior.Restrict);
