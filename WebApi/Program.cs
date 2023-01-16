@@ -9,6 +9,7 @@ using Persistencia.Repository;
 using WebApi.Storage;
 using WebApi.Validaciones;
 using WebAPI.Midleware;
+using Azure.Identity;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -21,7 +22,18 @@ builder.Services.AddSwaggerGen();
 
 DotNetEnv.Env.Load();
 
+var keyVaultUrl = $"https://{Environment.GetEnvironmentVariable("KeyVaultUrl")}.vault.azure.net/";
+var clientId = Environment.GetEnvironmentVariable("ClientId");
+var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
+var TenantId = Environment.GetEnvironmentVariable("TenantId");
+builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUrl), new ClientSecretCredential(TenantId, clientId, clientSecret));
+
 string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+//if (!builder.Environment.IsDevelopment())
+//{
+    connectionString = builder.Configuration.GetValue<string>("CONNECTION-STRING-OEI");
+//}
+
 builder.Services.AddDbContext<OrientacionDbContext>(options =>
                        options.UseSqlServer(connectionString),
             ServiceLifetime.Transient);
@@ -59,7 +71,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddCors(opt => {   
     opt.AddPolicy(name: myAllowSpecificOrigins,
         builder => {
-            builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+            builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
         });

@@ -10,6 +10,12 @@ namespace WebApi.Storage
 {
     public class AzureStorage
     {
+        private readonly IConfiguration Configuration;
+
+        public AzureStorage(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }        
         public bool validarAnexo(IFormFile anexo, long tamano, string extension)
         {
             if(anexo == null)
@@ -57,7 +63,10 @@ namespace WebApi.Storage
             {
                 DotNetEnv.Env.Load();
                 // Retrieve the connection string for use with the application. 
-                string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+
+                string connectionString  = Configuration.GetValue<string>("CONNECTION-BLOB-STORAGE");
+               
+
 
 
                 // Create a BlobServiceClient object 
