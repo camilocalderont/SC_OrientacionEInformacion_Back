@@ -5,7 +5,6 @@ namespace WebApi.Requests.AtencionesIndividuales
     {
         public long     Id { get; set; }
         public long     PersonaId { get; set; }
-        public DateTime DtFechaRegistro { get; set; }
         public long     UsuarioId { get; set; }
         public long     CanalAtencionId { get; set; }
         public string   VcTurnoSat { get; set; }

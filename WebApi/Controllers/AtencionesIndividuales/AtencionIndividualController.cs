@@ -53,7 +53,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
             try
             {
                 if (_azureStorage.validarAnexo(atencionIndividualRequest.Anexo, Constants.DOSMB, "pdf"))
-                {                   
+                {
+                    atencionIndividual.DtFechaRegistro = DateTime.Now;
                     bool guardoatencionIndividual = await _atencionIndividualservice.CreateAsync(atencionIndividual);
                     if (guardoatencionIndividual && atencionIndividualRequest.Anexo != null)
                     {
@@ -91,9 +92,9 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
             }
 
-            catch (Exception)
+            catch (Exception ex)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de caso atención individual", Codigo = HttpStatusCode.BadRequest };
+                response = new { Titulo = "Algo salio mal", Mensaje = $"Error creando el registro de caso atención individual {ex}", Codigo = HttpStatusCode.BadRequest };
                 var modelResponseError = new ModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, null);
                 return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }

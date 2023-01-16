@@ -2,7 +2,7 @@
 {
    public class PersonaAfiliacion
    {
-        public long     Id { get; set; }
+        public long? Id { get; set; }
         public long     PersonaId { get; set; }
         public DateTime DtFechaRegistro { get; set; }
         public long     UsuarioId { get; set; }

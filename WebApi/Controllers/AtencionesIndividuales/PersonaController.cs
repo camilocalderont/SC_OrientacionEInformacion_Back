@@ -104,6 +104,9 @@ namespace WebApi.Controllers.AtencionesIndividuales
             {
                 persona.DtFechaActualizacion = DateTime.Now;
                 persona.DtFechaRegistro      = DateTime.Now;
+                
+                personaAfiliacion.Id = null;
+                personaContacto.Id = null;
 
                 bool guardoPersona = false;
                 bool guardoPersonaAfiliacionContacto = false;
@@ -151,15 +154,15 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
                 if(!guardoPersonaAfiliacionContacto)
                 {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de persona web", Codigo = HttpStatusCode.OK };
+                    response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de persona individual ", Codigo = HttpStatusCode.OK };
                     var modelResponseError = new ModelResponse<Persona>(response.Codigo, response.Titulo, response.Mensaje, null);
                     return StatusCode((int)modelResponseError.Codigo, modelResponseError);
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de persona web", Codigo = HttpStatusCode.OK };
+                response = new { Titulo = "Algo salio mal", Mensaje = "Error creando el registro de persona individual "+ ex.Message, Codigo = HttpStatusCode.OK };
                 var modelResponseError = new ModelResponse<Persona>(response.Codigo, response.Titulo, response.Mensaje, null);
                 return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }
