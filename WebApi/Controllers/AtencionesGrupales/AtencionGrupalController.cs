@@ -137,7 +137,7 @@ namespace WebApi.Controllers.AtencionesGrupales
 
             if (atenciongrupal == null)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención grupal con id " + Id, Codigo = HttpStatusCode.NoContent };
+                response = new { Titulo = "Algo salio mal", Mensaje = "No existe atención grupal con id " + Id, Codigo = HttpStatusCode.OK };
             }
             else
             {

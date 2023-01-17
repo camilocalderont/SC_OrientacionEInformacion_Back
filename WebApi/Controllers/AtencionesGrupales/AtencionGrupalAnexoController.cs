@@ -39,7 +39,7 @@ namespace WebApi.Controllers.AtencionesGrupales
 
             if (AtencioGrupalAnexos.Count() == 0)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron seguimientos correspondientes a la atención grupal con id: {atencionGrupalId}", Codigo = HttpStatusCode.NotFound };
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No se encontraron anexos correspondientes a la atención grupal con id: {atencionGrupalId}", Codigo = HttpStatusCode.NotFound };
             }
 
             var listModelResponse = new ListModelResponse<AtencionGrupalAnexo>(response.Codigo, response.Titulo, response.Mensaje, AtencioGrupalAnexos);
