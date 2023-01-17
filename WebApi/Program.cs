@@ -28,11 +28,19 @@ var clientSecret = Environment.GetEnvironmentVariable("ClientSecret");
 var TenantId = Environment.GetEnvironmentVariable("TenantId");
 builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUrl), new ClientSecretCredential(TenantId, clientId, clientSecret));
 
-string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-//if (!builder.Environment.IsDevelopment())
-//{
+string connectionString, blobStorageConnection = "";
+bool env = builder.Environment.IsDevelopment();
+if (!env)
+{
     connectionString = builder.Configuration.GetValue<string>("CONNECTION-STRING-OEI");
-//}
+    blobStorageConnection = builder.Configuration.GetValue<string>("CONNECTION-BLOB-STORAGE");
+}else{
+    connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+    blobStorageConnection = Environment.GetEnvironmentVariable("CONNECTION_BLOB_STORAGE");
+}
+
+Environment.SetEnvironmentVariable("CONNECTION_BLOB_STORAGE", blobStorageConnection, EnvironmentVariableTarget.Process);
+
 
 builder.Services.AddDbContext<OrientacionDbContext>(options =>
                        options.UseSqlServer(connectionString),

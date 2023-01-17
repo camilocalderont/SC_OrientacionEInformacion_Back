@@ -63,8 +63,8 @@ namespace WebApi.Storage
             {
                 DotNetEnv.Env.Load();
                 // Retrieve the connection string for use with the application. 
-
-                string connectionString  = Configuration.GetValue<string>("CONNECTION-BLOB-STORAGE");
+                string connectionString = Environment.GetEnvironmentVariable("CONNECTION_BLOB_STORAGE");
+                //string connectionString  = Configuration.GetValue<string>("CONNECTION-BLOB-STORAGE");
                
 
 
