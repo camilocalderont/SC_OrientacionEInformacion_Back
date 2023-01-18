@@ -25,8 +25,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
 
 
-        [HttpGet("porAtencionWebId/{atencionIndividualId}")]
-        public async Task<ActionResult<IEnumerable<AtencionIndividualAnexo>>> GetActividadesPorModulo(long atencionIndividualId)
+        [HttpGet("porAtencionIndividualId/{atencionIndividualId}")]
+        public async Task<ActionResult<IEnumerable<AtencionIndividualAnexo>>> GetAtencionIndividualAnexoPorId(long atencionIndividualId)
         {
             var response = new { Titulo = "Bien Hecho!", Mensaje = $"Se encontraron los anexos correspondientes a la atención individual con id: {atencionIndividualId}", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionIndividualAnexo> AtencionIndividualAnexos = null;

@@ -2,7 +2,7 @@
 {
     public class AtencionIndividualActor
     {
-        public long     Id { get; set; }
+        public long?     Id { get; set; }
         public long     AtencionIndividualId { get; set; }
         public long     TipoActorId { get; set; }
         public long     TipoId { get; set; }

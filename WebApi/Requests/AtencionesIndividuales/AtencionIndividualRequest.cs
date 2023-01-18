@@ -14,6 +14,7 @@ namespace WebApi.Requests.AtencionesIndividuales
         public string   TxAclaracionMotivo { get; set; }
         public string   TxGestionRealizada { get; set; }
         public string   VcRadicadoBte { get; set; }
+        public string   TxActores { get; set; }
         public long     EstadoId { get; set; }
         public IFormFile? Anexo { get; set; }
     }

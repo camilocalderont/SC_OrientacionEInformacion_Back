@@ -10,6 +10,7 @@ using WebApi.Storage;
 using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
+using Newtonsoft.Json;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -21,6 +22,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         private readonly AtencionIndividualService _atencionIndividualservice;
         private readonly ValidacionCorreo _validacorreo;
         private readonly IGenericService<AtencionIndividualAnexo> _anexoIndividualService;
+        private readonly IGenericService<AtencionIndividualActor> _actorIndividualservice;
         private readonly IMapper _mapper;
 
         private readonly AzureStorage _azureStorage;
@@ -31,7 +33,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
             IMapper mapper, 
             IGenericService<AtencionIndividualAnexo> anexo, 
             ValidacionCorreo validacorreo,
-            AzureStorage azureStorage
+            AzureStorage azureStorage,
+            IGenericService<AtencionIndividualActor>  actorIndividualservice
         )
         {
             this._personaService = personaService;
@@ -40,6 +43,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             this._anexoIndividualService = anexo;
             this._validacorreo=validacorreo;
             this._azureStorage=azureStorage;
+            this._actorIndividualservice = actorIndividualservice;
         }
 
 
@@ -56,27 +60,43 @@ namespace WebApi.Controllers.AtencionesIndividuales
                 {
                     atencionIndividual.DtFechaRegistro = DateTime.Now;
                     bool guardoatencionIndividual = await _atencionIndividualservice.CreateAsync(atencionIndividual);
-                    if (guardoatencionIndividual && atencionIndividualRequest.Anexo != null)
+                    if (guardoatencionIndividual)
                     {
-                        var anexo = atencionIndividualRequest.Anexo;
-                        var nombreEntidad = atencionIndividual.GetType().Name;
-                        string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
-                        ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);                          
-
-                        if (archivoCarga.rutaLocal.Length > 0)
+                        IEnumerable<AtencionIndividualActor> actores = JsonConvert.DeserializeObject<IEnumerable<AtencionIndividualActor>>(atencionIndividualRequest.TxActores);
+                        if(actores != null)
                         {
-                            AtencionIndividualAnexo atencionIndividualAnexo = new AtencionIndividualAnexo
+                            foreach (AtencionIndividualActor atencionIndividualActor in actores)
                             {
-                                AtencionIndividualId = atencionIndividual.Id,
-                                IBytes = (int)anexo.Length,
-                                VcNombre = anexo.FileName,
-                                UsuarioId = atencionIndividual.UsuarioId,
-                                DtFechaRegistro = atencionIndividual.DtFechaRegistro,
-                                VcRuta = archivoCarga.rutaLocal
-                            };
-
-                            bool guardoAnexo = await _anexoIndividualService.CreateAsync(atencionIndividualAnexo);
+                                atencionIndividualActor.Id = null;
+                                atencionIndividualActor.AtencionIndividualId = atencionIndividual.Id;
+                                atencionIndividualActor.DtFechaRegistro = atencionIndividual.DtFechaRegistro;
+                                bool guardoActor = await _actorIndividualservice.CreateAsync(atencionIndividualActor);
+                            }
                         }
+
+                        if (atencionIndividualRequest.Anexo != null)
+                        {
+                            var anexo = atencionIndividualRequest.Anexo;
+                            var nombreEntidad = atencionIndividual.GetType().Name;
+                            string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
+                            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
+
+                            if (archivoCarga.rutaLocal.Length > 0)
+                            {
+                                AtencionIndividualAnexo atencionIndividualAnexo = new AtencionIndividualAnexo
+                                {
+                                    AtencionIndividualId = atencionIndividual.Id,
+                                    IBytes = (int)anexo.Length,
+                                    VcNombre = anexo.FileName,
+                                    UsuarioId = atencionIndividual.UsuarioId,
+                                    DtFechaRegistro = atencionIndividual.DtFechaRegistro,
+                                    VcRuta = archivoCarga.rutaLocal
+                                };
+
+                                bool guardoAnexo = await _anexoIndividualService.CreateAsync(atencionIndividualAnexo);
+                            }
+                        }
+
 
                     }
                     else
