@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WebApi.Responses;
+using WebApi.Requests.AtencionesWeb;
+using AutoMapper;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -12,18 +14,27 @@ namespace WebApi.Controllers.AtencionesWeb
     public class AtencionWebSeguimientoController : ControllerBase
     {
         private readonly IGenericService<AtencionWebSeguimiento> _service;
-        public AtencionWebSeguimientoController(IGenericService<AtencionWebSeguimiento> service)
+        private readonly IGenericService<AtencionWeb> _atencionWebservice;
+        private readonly IMapper _mapper;
+        public AtencionWebSeguimientoController(
+            IGenericService<AtencionWebSeguimiento> service,
+            IGenericService<AtencionWeb> atencionWebservice,
+            IMapper mapper
+        )
         {
             this._service = service;
+            this._atencionWebservice = atencionWebservice;
+            this._mapper = mapper;
         }
 
         [HttpPost("crear")]
-        public async Task<IActionResult> crear(AtencionWebSeguimiento atencionWebSeguimiento)
+        public async Task<IActionResult> crear(AtencionWebSeguimientoRequest atencionWebSeguimientoRequest)
         {
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Seguimiento creado de forma correcta", Codigo = HttpStatusCode.Created };
             AtencionWebSeguimiento atencionWebSeguimientoModel = null;
 
+            AtencionWebSeguimiento atencionWebSeguimiento = _mapper.Map<AtencionWebSeguimiento>(atencionWebSeguimientoRequest);
             atencionWebSeguimiento.DtFechaRegistro = DateTime.Now;
             bool guardo = await _service.CreateAsync(atencionWebSeguimiento);
             if (!guardo)
@@ -32,6 +43,22 @@ namespace WebApi.Controllers.AtencionesWeb
             }
             else
             {
+                if (atencionWebSeguimiento.BCierraCaso)
+                {
+                    AtencionWeb atencionWeb = await _atencionWebservice.FindAsync(atencionWebSeguimiento.AtencionWebId);
+                    if (atencionWeb != null)
+                    {
+                        if (atencionWeb.EstadoId != atencionWebSeguimientoRequest.EstadoId)
+                        {
+                            atencionWeb.EstadoId = atencionWebSeguimientoRequest.EstadoId;
+                            bool actualizo = await _atencionWebservice.UpdateAsync(atencionWeb.Id, atencionWeb);
+                            if (actualizo)
+                            {
+                                response = new { Titulo = "Bien Hecho!", Mensaje = "Seguimiento creado de forma correcta, se ha cambiado el estado de caso a cerrado", Codigo = HttpStatusCode.OK };
+                            }
+                        }
+                    }
+                }                
                 atencionWebSeguimientoModel = atencionWebSeguimiento;
             }
 

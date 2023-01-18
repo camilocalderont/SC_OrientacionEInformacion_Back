@@ -39,6 +39,10 @@ namespace Aplicacion.Mapping
 
             CreateMap<AtencionIndividual, AtencionIndividualRequest>().ReverseMap();
 
+            CreateMap<AtencionIndividualSeguimiento, AtencionIndividualSeguimientoRequest>().ReverseMap();
+
+            CreateMap<AtencionWebSeguimiento, AtencionWebSeguimientoRequest>().ReverseMap();
+            
             
 
         }
