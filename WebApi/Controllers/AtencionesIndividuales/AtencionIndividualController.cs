@@ -126,10 +126,10 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
 
         [HttpPost("bandeja")]
-        public async Task<ActionResult<ListModelResponse<AtencionIndividualDTO>>> obtenerPorRangoFechasYUsuario(BandejaCasosIndividualRequest bandejaCasosIndividual)
+        public async Task<ActionResult<ListModelResponse<BandejaIndividualDTO>>> obtenerPorRangoFechasYUsuario(BandejaCasosIndividualRequest bandejaCasosIndividual)
         {
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención individual", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionIndividualDTO> AtencionesIndividuales = null;
+            IEnumerable<BandejaIndividualDTO> AtencionesIndividuales = null;
             AtencionesIndividuales = await _atencionIndividualservice.obtenerPorRangoFechasEstadoUsuarioYDocumento(
                     bandejaCasosIndividual.EstadoId,
                     bandejaCasosIndividual.DtFechaInicio,
@@ -142,25 +142,25 @@ namespace WebApi.Controllers.AtencionesIndividuales
             {
                 response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atención individual con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
-            var listModelResponse = new ListModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
+            var listModelResponse = new ListModelResponse<BandejaIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
         
         [HttpGet("otrosCasos/{PersonaId}/{AtencionIndividualId}")]
-        public async Task<ActionResult<ListModelResponse<AtencionIndividualDTO>>> obtenerOtrosCasosPersona(long PersonaId, long AtencionIndividualId)
+        public async Task<ActionResult<ListModelResponse<BandejaIndividualDTO>>> obtenerOtrosCasosPersona(long PersonaId, long AtencionIndividualId)
         {
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención individual ", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionIndividualDTO> AtencionesIndividuales = null;
+            IEnumerable<BandejaIndividualDTO> AtencionesIndividuales = null;
             AtencionesIndividuales = await _atencionIndividualservice.obtenerPorPersonaYExcluyeCaso(PersonaId, AtencionIndividualId);
 
             if (!AtencionesIndividuales.Any())
             {
                 response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones individuales con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
-            var listModelResponse = new ListModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
+            var listModelResponse = new ListModelResponse<BandejaIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
 
@@ -171,7 +171,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         public async Task<IActionResult> GetAtencionIndividual(long Id)
         {
             var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
-            AtencionIndividualDTO AtencionIndividualModelModel = null;
+            BandejaIndividualDTO AtencionIndividualModelModel = null;
 
 
             var atencionIndividual = await _atencionIndividualservice.obtenerPorId(Id);
@@ -187,23 +187,23 @@ namespace WebApi.Controllers.AtencionesIndividuales
             }
 
 
-            var modelResponse = new ModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionIndividualModelModel);
+            var modelResponse = new ModelResponse<BandejaIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionIndividualModelModel);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
 
         [HttpGet("casosPersona/{tipoDocumentoId}/{VcDocumento}/{EstadoId}")]
-        public async Task<ActionResult<ListModelResponse<AtencionIndividualDTO>>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
+        public async Task<ActionResult<ListModelResponse<BandejaIndividualDTO>>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
         {
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención individual ", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionIndividualDTO> AtencionesIndividuales = null;
+            IEnumerable<BandejaIndividualDTO> AtencionesIndividuales = null;
             AtencionesIndividuales = await _atencionIndividualservice.obtenerPorTipoDocumentoDocumentoYEstado(tipoDocumentoId, VcDocumento, EstadoId);
 
             if (!AtencionesIndividuales.Any())
             {
                 response = new { Titulo = "No hay registros", Mensaje = "No se encontraron casos de atenciones individuales con el fitro indicado", Codigo = HttpStatusCode.OK };
             }
-            var listModelResponse = new ListModelResponse<AtencionIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
+            var listModelResponse = new ListModelResponse<BandejaIndividualDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionesIndividuales);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
 

@@ -16,7 +16,7 @@ namespace Aplicacion.Services.AtencionesIndividuales
             _genericRepository = genericRepository;
         }
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
             long EstadoId,
             DateTime DtFechaInicio,
             DateTime DtFechaFin,
@@ -27,17 +27,17 @@ namespace Aplicacion.Services.AtencionesIndividuales
             return await _AtencionIndividualRepository.obtenerPorRangoFechasEstadoUsuarioYDocumento(EstadoId,DtFechaInicio, DtFechaFin, usuarioId, VcDocumento);
         }
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId, long AtencionIndividualId)
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId, long AtencionIndividualId)
         {
             return await _AtencionIndividualRepository.obtenerPorPersonaYExcluyeCaso(PersonaId, AtencionIndividualId);
         }
 
-        public async Task<AtencionIndividualDTO> obtenerPorId(long atencionIndividualId)
+        public async Task<BandejaIndividualDTO> obtenerPorId(long atencionIndividualId)
         {
             return await _AtencionIndividualRepository.obtenerPorId(atencionIndividualId);
         }
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(long tipoDocumentoId, string VcDocumento, long EstadoId)
         {
             return await _AtencionIndividualRepository.obtenerPorTipoDocumentoDocumentoYEstado(tipoDocumentoId,VcDocumento,EstadoId);
         }        
