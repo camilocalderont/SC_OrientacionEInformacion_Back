@@ -19,7 +19,7 @@ namespace Persistencia.Repository
         }
 
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
             long EstadoId, 
             DateTime DtFechaInicio, 
             DateTime DtFechaFin, 
@@ -44,9 +44,10 @@ namespace Persistencia.Repository
             if (VcDocumento.Length > 0)
             {
                 var persona = _context.Persona.Where(p=>p.VcDocumento== VcDocumento).FirstOrDefault();
-                _context.Entry(persona).State = EntityState.Detached;
+                
                 if (persona != null)
                 {
+                    _context.Entry(persona).State = EntityState.Detached;
                     atencionesIndividualesQuery = atencionesIndividualesQuery.Where(g => g.PersonaId == persona.Id);
                 }
 
@@ -54,7 +55,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new AtencionIndividualDTO
+            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -73,6 +74,42 @@ namespace Persistencia.Repository
                 TipoDocumentoId = a.Persona.TipoDocumentoId,
                 VcDocumento =   a.Persona.VcDocumento,
                 VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
+                GeneroId = a.Persona.GeneroId,
+                VcOtroGenero = a.Persona.VcOtroGenero,
+                VcNombreIdentitario = a.Persona.VcNombreIdentitario,
+                OrientacionSexualId = a.Persona.OrientacionSexualId,
+                VcOtraOrientacionSexual = a.Persona.VcOtraOrientacionSexual,
+                SexoId = a.Persona.SexoId,
+                DtFechaNacimiento = a.Persona.DtFechaNacimiento,
+                EnfoquePoblacionalId = a.Persona.EnfoquePoblacionalId,
+                HechoVictimizanteId = a.Persona.HechoVictimizanteId,
+                DepartamentoOrigenVictimaId = a.Persona.DepartamentoOrigenVictimaId,
+                MunicipioOrigenVictimaId = a.Persona.MunicipioOrigenVictimaId,
+                EtniaId = a.Persona.EtniaId,
+                SubEtniaId = a.Persona.SubEtniaId,
+                PoblacionPrioritariaId = a.Persona.PoblacionPrioritariaId,
+                SubPoblacionPrioritariaId = a.Persona.SubPoblacionPrioritariaId,
+                VcCorreo = a.Persona.VcCorreo,
+                DtFechaActualizacion = a.Persona.DtFechaActualizacion,
+                UsuarioActualizacionId = a.Persona.UsuarioActualizacionId,
+
+                RegimenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().RegimenId : 0,
+                AseguradoraId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().AseguradoraId : 0,
+                EstadoAfiliacionId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().EstadoAfiliacionId : 0,
+                NivelSisbenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().NivelSisbenId : 0,
+                InstitucionInstrumentoVinculadoId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().InstitucionInstrumentoVinculadoId : 0,
+                
+                PaisId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().PaisId : 0,
+                DepartamentoId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().DepartamentoId : 0,
+                MunicipioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().MunicipioId : 0,
+                LocalidadId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().LocalidadId : 0,
+                UpzId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().UpzId : 0,
+                BarrioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().BarrioId : 0,
+                ZonaId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().ZonaId : 0,
+                VcDireccion = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcDireccion : "",
+                TxDatosContactoAclaraciones = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().TxDatosContactoAclaraciones : "",
+                VcTelefono1 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono1 : "",
+                VcTelefono2 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono2 : "",                
 
             }).ToListAsync();
 
@@ -82,7 +119,7 @@ namespace Persistencia.Repository
         }
 
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId,long AtencionIndividualId)
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId,long AtencionIndividualId)
         {
             IQueryable<AtencionIndividual> atencionesIndividualesQuery = _context.AtencionIndividual.AsQueryable();
 
@@ -91,7 +128,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a => new AtencionIndividualDTO
+            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a => new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -108,9 +145,45 @@ namespace Persistencia.Repository
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                 VcTurnoSat = a.VcTurnoSat,
                 TipoDocumentoId = a.Persona.TipoDocumentoId,
-                VcDocumento = a.Persona.VcDocumento,
+                VcDocumento =   a.Persona.VcDocumento,
                 VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
+                GeneroId = a.Persona.GeneroId,
+                VcOtroGenero = a.Persona.VcOtroGenero,
+                VcNombreIdentitario = a.Persona.VcNombreIdentitario,
+                OrientacionSexualId = a.Persona.OrientacionSexualId,
+                VcOtraOrientacionSexual = a.Persona.VcOtraOrientacionSexual,
+                SexoId = a.Persona.SexoId,
+                DtFechaNacimiento = a.Persona.DtFechaNacimiento,
+                EnfoquePoblacionalId = a.Persona.EnfoquePoblacionalId,
+                HechoVictimizanteId = a.Persona.HechoVictimizanteId,
+                DepartamentoOrigenVictimaId = a.Persona.DepartamentoOrigenVictimaId,
+                MunicipioOrigenVictimaId = a.Persona.MunicipioOrigenVictimaId,
+                EtniaId = a.Persona.EtniaId,
+                SubEtniaId = a.Persona.SubEtniaId,
+                PoblacionPrioritariaId = a.Persona.PoblacionPrioritariaId,
+                SubPoblacionPrioritariaId = a.Persona.SubPoblacionPrioritariaId,
+                VcCorreo = a.Persona.VcCorreo,
+                DtFechaActualizacion = a.Persona.DtFechaActualizacion,
+                UsuarioActualizacionId = a.Persona.UsuarioActualizacionId,
 
+                RegimenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().RegimenId : 0,
+                AseguradoraId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().AseguradoraId : 0,
+                EstadoAfiliacionId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().EstadoAfiliacionId : 0,
+                NivelSisbenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().NivelSisbenId : 0,
+                InstitucionInstrumentoVinculadoId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().InstitucionInstrumentoVinculadoId : 0,
+                
+                PaisId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().PaisId : 0,
+                DepartamentoId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().DepartamentoId : 0,
+                MunicipioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().MunicipioId : 0,
+                LocalidadId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().LocalidadId : 0,
+                UpzId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().UpzId : 0,
+                BarrioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().BarrioId : 0,
+                ZonaId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().ZonaId : 0,
+                VcDireccion = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcDireccion : "",
+                TxDatosContactoAclaraciones = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().TxDatosContactoAclaraciones : "",
+                VcTelefono1 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono1 : "",
+                VcTelefono2 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono2 : "",
+            
             }).ToListAsync();
 
             return atencionesIndividuales;
@@ -119,10 +192,10 @@ namespace Persistencia.Repository
         }
 
 
-        public async Task<AtencionIndividualDTO> obtenerPorId(long atencionIndividualId)
+        public async Task<BandejaIndividualDTO> obtenerPorId(long atencionIndividualId)
         {
             var atencionIndividualDto = _context.AtencionIndividual.Where(p => p.Id == atencionIndividualId)
-                .Select(a => new AtencionIndividualDTO
+                .Select(a => new BandejaIndividualDTO
                 {
                     Id = a.Id,
                     DtFechaRegistro = a.DtFechaRegistro,
@@ -139,15 +212,76 @@ namespace Persistencia.Repository
                     UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                     VcTurnoSat = a.VcTurnoSat,
                     TipoDocumentoId = a.Persona.TipoDocumentoId,
-                    VcDocumento = a.Persona.VcDocumento,
+                    VcDocumento =   a.Persona.VcDocumento,
                     VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
+                    GeneroId = a.Persona.GeneroId,
+                    VcOtroGenero = a.Persona.VcOtroGenero,
+                    VcNombreIdentitario = a.Persona.VcNombreIdentitario,
+                    OrientacionSexualId = a.Persona.OrientacionSexualId,
+                    VcOtraOrientacionSexual = a.Persona.VcOtraOrientacionSexual,
+                    SexoId = a.Persona.SexoId,
+                    DtFechaNacimiento = a.Persona.DtFechaNacimiento,
+                    EnfoquePoblacionalId = a.Persona.EnfoquePoblacionalId,
+                    HechoVictimizanteId = a.Persona.HechoVictimizanteId,
+                    DepartamentoOrigenVictimaId = a.Persona.DepartamentoOrigenVictimaId,
+                    MunicipioOrigenVictimaId = a.Persona.MunicipioOrigenVictimaId,
+                    EtniaId = a.Persona.EtniaId,
+                    SubEtniaId = a.Persona.SubEtniaId,
+                    PoblacionPrioritariaId = a.Persona.PoblacionPrioritariaId,
+                    SubPoblacionPrioritariaId = a.Persona.SubPoblacionPrioritariaId,
+                    VcCorreo = a.Persona.VcCorreo,
+                    DtFechaActualizacion = a.Persona.DtFechaActualizacion,
+                    UsuarioActualizacionId = a.Persona.UsuarioActualizacionId,
+
+                    RegimenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().RegimenId : 0,
+                    AseguradoraId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().AseguradoraId : 0,
+                    EstadoAfiliacionId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().EstadoAfiliacionId : 0,
+                    NivelSisbenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().NivelSisbenId : 0,
+                    InstitucionInstrumentoVinculadoId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().InstitucionInstrumentoVinculadoId : 0,
+                    
+                    PaisId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().PaisId : 0,
+                    DepartamentoId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().DepartamentoId : 0,
+                    MunicipioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().MunicipioId : 0,
+                    LocalidadId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().LocalidadId : 0,
+                    UpzId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().UpzId : 0,
+                    BarrioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().BarrioId : 0,
+                    ZonaId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().ZonaId : 0,
+                    VcDireccion = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcDireccion : "",
+                    TxDatosContactoAclaraciones = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().TxDatosContactoAclaraciones : "",
+                    VcTelefono1 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono1 : "",
+                    VcTelefono2 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono2 : "",
+                    
+                    Actores = a.AtencionActores.Select( a=> new AtencionIndividualActorDTO{
+                            AtencionIndividualId = a.AtencionIndividualId,
+                            DtFechaRegistro = a.DtFechaRegistro,
+                            SedeId = a.SedeId,
+                            TipoActorId = a.TipoActorId,
+                            TipoId = a.TipoId,
+                            UsuarioId = a.UsuarioId,
+                        }).ToList(),
+                    
+                    Seguimientos = a.AtencionSeguimientos.Select(a=> new AtencionIndividualSeguimientoDTO{
+                        AtencionIndividualId = a.AtencionIndividualId,
+                        BCierraCaso = a.BCierraCaso,
+                        DtFechaRegistro = a.DtFechaRegistro,
+                        UsuarioId = a.UsuarioId,
+                        VcDescripcion = a.VcDescripcion,                        
+                    }).ToList(),
+                    Reasignaciones = a.AtencionReasignaciones.Select(a => new AtencionIndividualReasignacionDTO{
+                        AtencionIndividualId = a.AtencionIndividualId,
+                        DtFechaAsignacion = a.DtFechaAsignacion,
+                        DtFechaReAsignacion = a.DtFechaAsignacion,
+                        UsuarioActualId = a.UsuarioActualId,
+                        UsuarioAsignaId = a.UsuarioAsignaId,
+                        VcDescripcion = a.VcDescripcion
+                    }).ToList()
 
                 }).FirstOrDefault();
             return atencionIndividualDto;
         }
 
 
-        public async Task<IEnumerable<AtencionIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(
+        public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorTipoDocumentoDocumentoYEstado(
             long tipoDocumentoId, 
             string VcDocumento,
             long EstadoId
@@ -168,7 +302,7 @@ namespace Persistencia.Repository
 
             }
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new AtencionIndividualDTO
+            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -185,8 +319,44 @@ namespace Persistencia.Repository
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
                 VcTurnoSat = a.VcTurnoSat,
                 TipoDocumentoId = a.Persona.TipoDocumentoId,
-                VcDocumento = a.Persona.VcDocumento,
+                VcDocumento =   a.Persona.VcDocumento,
                 VcNombrecompleto = $"{a.Persona.VcPrimerNombre ?? string.Empty} {a.Persona.VcSegundoNombre ?? string.Empty} {a.Persona.VcPrimerApellido ?? string.Empty} {a.Persona.VcSegundoApellido ?? string.Empty}",
+                GeneroId = a.Persona.GeneroId,
+                VcOtroGenero = a.Persona.VcOtroGenero,
+                VcNombreIdentitario = a.Persona.VcNombreIdentitario,
+                OrientacionSexualId = a.Persona.OrientacionSexualId,
+                VcOtraOrientacionSexual = a.Persona.VcOtraOrientacionSexual,
+                SexoId = a.Persona.SexoId,
+                DtFechaNacimiento = a.Persona.DtFechaNacimiento,
+                EnfoquePoblacionalId = a.Persona.EnfoquePoblacionalId,
+                HechoVictimizanteId = a.Persona.HechoVictimizanteId,
+                DepartamentoOrigenVictimaId = a.Persona.DepartamentoOrigenVictimaId,
+                MunicipioOrigenVictimaId = a.Persona.MunicipioOrigenVictimaId,
+                EtniaId = a.Persona.EtniaId,
+                SubEtniaId = a.Persona.SubEtniaId,
+                PoblacionPrioritariaId = a.Persona.PoblacionPrioritariaId,
+                SubPoblacionPrioritariaId = a.Persona.SubPoblacionPrioritariaId,
+                VcCorreo = a.Persona.VcCorreo,
+                DtFechaActualizacion = a.Persona.DtFechaActualizacion,
+                UsuarioActualizacionId = a.Persona.UsuarioActualizacionId,
+
+                RegimenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().RegimenId : 0,
+                AseguradoraId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().AseguradoraId : 0,
+                EstadoAfiliacionId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().EstadoAfiliacionId : 0,
+                NivelSisbenId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().NivelSisbenId : 0,
+                InstitucionInstrumentoVinculadoId = a.Persona.PersonaAfiliaciones.Any() ? a.Persona.PersonaAfiliaciones.OrderBy(a => a.Id).Last().InstitucionInstrumentoVinculadoId : 0,
+                
+                PaisId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().PaisId : 0,
+                DepartamentoId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().DepartamentoId : 0,
+                MunicipioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().MunicipioId : 0,
+                LocalidadId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().LocalidadId : 0,
+                UpzId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().UpzId : 0,
+                BarrioId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().BarrioId : 0,
+                ZonaId = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().ZonaId : 0,
+                VcDireccion = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcDireccion : "",
+                TxDatosContactoAclaraciones = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().TxDatosContactoAclaraciones : "",
+                VcTelefono1 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono1 : "",
+                VcTelefono2 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono2 : "",               
 
             }).ToListAsync();
 

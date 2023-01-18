@@ -21,5 +21,9 @@
         public string  VcDocumento   { get; set; }
         public string VcNombrecompleto { get; set; }
 
+        public IEnumerable<AtencionIndividualActorDTO> Actores {get; set; }
+        public IEnumerable<AtencionIndividualSeguimientoDTO> Seguimientos {get; set; }
+        public IEnumerable<AtencionIndividualReasignacionDTO> Reasignaciones {get; set; }
+
     }
 }
