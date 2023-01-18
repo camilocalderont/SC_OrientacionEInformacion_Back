@@ -69,13 +69,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         public async Task<ActionResult<IEnumerable<AtencionIndividualReasignacion>>> GetActividadesPorModulo(long atencionIndividualId)
         {
             var response = new { Titulo = "Bien Hecho!", Mensaje = $"Se encontraron los asignaciones correspondientes a la atención individual con id: {atencionIndividualId}", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionIndividualReasignacion> AtencionIndividualReasignaciones = null;
-            if (!await _service.ExistsAsync(e => e.Id > 0))
-            {
-                response = new { Titulo = "Algo salio mal", Mensaje = "No existen atenciones individuales", Codigo = HttpStatusCode.Accepted };
-            }
-
-            AtencionIndividualReasignaciones = await _service.GetAsync(e => e.AtencionIndividualId == atencionIndividualId, e => e.OrderBy(e => e.Id), "");
+            IEnumerable<AtencionIndividualReasignacion> AtencionIndividualReasignaciones = await _service.GetAsync(e => e.AtencionIndividualId == atencionIndividualId, e => e.OrderBy(e => e.Id), "");
 
             if (!AtencionIndividualReasignaciones.Any())
             {
