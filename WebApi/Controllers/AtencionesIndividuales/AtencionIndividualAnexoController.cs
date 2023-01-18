@@ -29,13 +29,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         public async Task<ActionResult<IEnumerable<AtencionIndividualAnexo>>> GetAtencionIndividualAnexoPorId(long atencionIndividualId)
         {
             var response = new { Titulo = "Bien Hecho!", Mensaje = $"Se encontraron los anexos correspondientes a la atención individual con id: {atencionIndividualId}", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionIndividualAnexo> AtencionIndividualAnexos = null;
-            if (!await _service.ExistsAsync(e => e.Id > 0))
-            {
-                response = new { Titulo = "Algo salio mal", Mensaje = $"No existen anexos asociados a la atención individual con id: {atencionIndividualId}", Codigo = HttpStatusCode.Accepted };
-            }
-
-            AtencionIndividualAnexos = await _service.GetAsync(e => e.AtencionIndividualId == atencionIndividualId, e => e.OrderBy(e => e.Id), "");
+            IEnumerable<AtencionIndividualAnexo> AtencionIndividualAnexos = await _service.GetAsync(e => e.AtencionIndividualId == atencionIndividualId, e => e.OrderBy(e => e.Id), "");
 
             if (!AtencionIndividualAnexos.Any())
             {
