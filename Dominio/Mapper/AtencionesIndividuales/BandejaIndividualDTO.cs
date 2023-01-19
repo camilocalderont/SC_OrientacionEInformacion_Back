@@ -10,7 +10,7 @@
         public string           VcTurnoSat { get; set; }
         public long             TipoSolicitudId { get; set; }
         public long             MotivoId { get; set; }
-        public long             SubMotivoId { get; set; }
+o        public long             SubMtivoId { get; set; }
         public string           TxAclaracionMotivo { get; set; }
         public string           TxGestionRealizada { get; set; }
         public string           VcRadicadoBte { get; set; }
@@ -62,7 +62,7 @@
 
         public IEnumerable<AtencionIndividualActorDTO> Actores {get; set; }
         public IEnumerable<AtencionIndividualSeguimientoDTO> Seguimientos {get; set; }
-        public IEnumerable<AtencionIndividualReasignacionDTO> Reasignaciones {get; set; }
+        public IEnumerable<AtencionIndividualReasignacionDTO> Reasignaciones {get; set; } 
 
     }
 }
