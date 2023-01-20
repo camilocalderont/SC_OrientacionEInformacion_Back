@@ -39,6 +39,17 @@ if (!env)
     blobStorageConnection = Environment.GetEnvironmentVariable("CONNECTION_BLOB_STORAGE");
 }
 
+
+var logger = LoggerFactory.Create(config =>
+{
+    config.AddConsole();
+}).CreateLogger("Program");
+
+logger.LogInformation("CADENA DE CONEXION BLOB:" + blobStorageConnection);
+logger.LogInformation("CADENA DE CONEXION DB: " + connectionString);
+
+
+
 Environment.SetEnvironmentVariable("CONNECTION_BLOB_STORAGE", blobStorageConnection, EnvironmentVariableTarget.Process);
 
 
