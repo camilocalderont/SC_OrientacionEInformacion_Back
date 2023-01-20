@@ -149,7 +149,85 @@ namespace WebApi.Controllers.AtencionesGrupales
             var modelResponse = new ModelResponse<AtencionGrupalDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionGrupalModel);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
-        
+
+
+        [HttpPut("crear")]
+        public async Task<ActionResult<AtencionGrupal>> CrearAtencionGrupalPut([FromForm] AtencionGrupalRequest atenciongrupalRequest)
+        {
+            var response = new { Titulo = "Bien hecho!", Mensaje = "La atención grupal ha sido registrada con código No. {0}", Codigo = HttpStatusCode.OK };
+            AtencionGrupal atencionGrupal = _mapper.Map<AtencionGrupal>(atenciongrupalRequest);
+            //using (var transaction = new TransactionScope())
+            //{
+
+            try
+            {
+                if (_azureStorage.validarAnexo(atenciongrupalRequest.Anexo, Constants.DOSMB, "pdf"))
+                {
+                    atencionGrupal.DtFechaRegistro = DateTime.Now;
+                    bool guardo = await _service.CreateAsync(atencionGrupal);
+
+                    if (guardo)
+                    {
+                        var anexo = atenciongrupalRequest.Anexo;
+                        var nombreEntidad = atencionGrupal.GetType().Name;
+                        string rutaRemota = nombreEntidad + "/" + atencionGrupal.Id + "/" + anexo.FileName;
+                        ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
+
+                        if (archivoCarga.rutaLocal.Length > 0)
+                        {
+                            AtencionGrupalAnexo atencionGrupalAnexo = new AtencionGrupalAnexo
+                            {
+                                AtencionGrupalId = atencionGrupal.Id,
+                                IBytes = (int)anexo.Length,
+                                VcNombre = anexo.FileName,
+                                UsuarioId = atencionGrupal.UsuarioId,
+                                DtFechaRegistro = atencionGrupal.DtFechaRegistro,
+                                VcRuta = archivoCarga.rutaLocal
+
+                            };
+
+                            bool guardoAnexo = await _anexo.CreateAsync(atencionGrupalAnexo);
+                            if (guardoAnexo)
+                            {
+                                //transaction.Complete();
+                            }
+                        }
+                        else
+                        {
+                            //Rollback
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        //Rollback
+                        response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar la atención grupal", Codigo = HttpStatusCode.BadRequest };
+                    }
+                }
+                else
+                {
+                    response = new { Titulo = "Algo salio mal", Mensaje = "El archivo PDF no debe superar los 2 megabytes y tiene que ser de tipo pdf", Codigo = HttpStatusCode.BadRequest };
+                    return StatusCode((int)response.Codigo, response);
+                }
+
+            }
+            catch (Exception)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
+                var modelResponseError = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, null);
+                return StatusCode((int)modelResponseError.Codigo, modelResponseError);
+            }
+
+            //}
+
+            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, string.Format(response.Mensaje, atencionGrupal.Id), atencionGrupal);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+
+        }
+
+
     }
 
 }
