@@ -151,80 +151,29 @@ namespace WebApi.Controllers.AtencionesGrupales
         }
 
 
-        [HttpPut("crear")]
-        public async Task<ActionResult<AtencionGrupal>> CrearAtencionGrupalPut([FromForm] AtencionGrupalRequest atenciongrupalRequest)
+        [HttpPost("anexo")]
+        public  ActionResult cargarAnexo([FromForm] List<IFormFile> anexo)
         {
-            var response = new { Titulo = "Bien hecho!", Mensaje = "La atención grupal ha sido registrada con código No. {0}", Codigo = HttpStatusCode.OK };
-            AtencionGrupal atencionGrupal = _mapper.Map<AtencionGrupal>(atenciongrupalRequest);
-            //using (var transaction = new TransactionScope())
-            //{
+            var response = "";
+
 
             try
             {
-                if (_azureStorage.validarAnexo(atenciongrupalRequest.Anexo, Constants.DOSMB, "pdf"))
+                using (var ms = new MemoryStream())
                 {
-                    atencionGrupal.DtFechaRegistro = DateTime.Now;
-                    bool guardo = await _service.CreateAsync(atencionGrupal);
 
-                    if (guardo)
-                    {
-                        var anexo = atenciongrupalRequest.Anexo;
-                        var nombreEntidad = atencionGrupal.GetType().Name;
-                        string rutaRemota = nombreEntidad + "/" + atencionGrupal.Id + "/" + anexo.FileName;
-                        ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
-
-                        if (archivoCarga.rutaLocal.Length > 0)
-                        {
-                            AtencionGrupalAnexo atencionGrupalAnexo = new AtencionGrupalAnexo
-                            {
-                                AtencionGrupalId = atencionGrupal.Id,
-                                IBytes = (int)anexo.Length,
-                                VcNombre = anexo.FileName,
-                                UsuarioId = atencionGrupal.UsuarioId,
-                                DtFechaRegistro = atencionGrupal.DtFechaRegistro,
-                                VcRuta = archivoCarga.rutaLocal
-
-                            };
-
-                            bool guardoAnexo = await _anexo.CreateAsync(atencionGrupalAnexo);
-                            if (guardoAnexo)
-                            {
-                                //transaction.Complete();
-                            }
-                        }
-                        else
-                        {
-                            //Rollback
-                        }
-
-
-
-                    }
-                    else
-                    {
-                        //Rollback
-                        response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar la atención grupal", Codigo = HttpStatusCode.BadRequest };
-                    }
+                    anexo[0].CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+                    response = Convert.ToBase64String(fileBytes);
                 }
-                else
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "El archivo PDF no debe superar los 2 megabytes y tiene que ser de tipo pdf", Codigo = HttpStatusCode.BadRequest };
-                    return StatusCode((int)response.Codigo, response);
-                }
-
+                return StatusCode(200, response);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                response = new { Titulo = "Algo salio mal", Mensaje = "Error cargando el archivo PDf", Codigo = HttpStatusCode.BadRequest };
-                var modelResponseError = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, null);
-                return StatusCode((int)modelResponseError.Codigo, modelResponseError);
-            }
-
-            //}
-
-            var modelResponse = new ModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, string.Format(response.Mensaje, atencionGrupal.Id), atencionGrupal);
-            return StatusCode((int)modelResponse.Codigo, modelResponse);
-
+                response = ex.Message;
+                
+                return StatusCode(200, response);
+            }          
         }
 
 
