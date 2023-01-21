@@ -177,6 +177,37 @@ namespace WebApi.Controllers.AtencionesGrupales
         }
 
 
+        [HttpPost("cargar")]
+        public async Task<ActionResult> Cargar([FromForm] List<IFormFile> files)
+        {
+            
+
+            var response = "";
+            try
+            {
+                var errores = new List<string>();
+                var registros = 0;
+
+                if (files.Count == 0)
+                {
+                    response = "Algo salio mal";
+                }
+
+                var nombreArchivo = files[0].FileName;  
+
+                response = nombreArchivo;
+
+            }
+            catch (Exception ex)
+            {
+                response =ex.Message;
+            }
+           
+
+            return StatusCode(200, response);
+        }
+
+
     }
 
 }
