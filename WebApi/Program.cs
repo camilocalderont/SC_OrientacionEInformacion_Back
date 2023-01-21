@@ -90,9 +90,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddCors(opt => {   
     opt.AddPolicy(name: myAllowSpecificOrigins,
         builder => {
-            builder
-            .WithOrigins("*")
-            .WithHeaders("*");
+            builder.AllowAnyOrigin()
+            .AllowAnyMethod()          
+            .AllowAnyHeader();
         });
 });
 
