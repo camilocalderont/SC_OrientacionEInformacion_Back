@@ -29,7 +29,7 @@ namespace Persistencia.FluentConfig.AtencionGrupalConfig
             entity.Property(p => p.TiempoDuracionId).IsRequired();
             entity.Property(p => p.TipoActividadId).IsRequired();
             entity.Property(p => p.LocalidadId).IsRequired();
-            entity.Property(p => p.VcLugar).IsRequired().HasMaxLength(200);
+            entity.Property(p => p.VcLugar).IsRequired().HasMaxLength(250);
         }
     }
 }
