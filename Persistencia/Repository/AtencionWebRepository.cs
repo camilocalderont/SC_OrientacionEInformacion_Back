@@ -1,4 +1,5 @@
-﻿using Dominio.Models.AtencionesWeb;
+﻿using Dominio.Mapper.AtencionesIndividuales;
+using Dominio.Models.AtencionesWeb;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using System.Reflection.Metadata;
@@ -152,11 +153,26 @@ namespace Persistencia.Repository
                     VcTelefono1 = a.PersonasWeb.VcTelefono1,
                     VcTelefono2 = a.PersonasWeb.VcTelefono2,
                     UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a => a.Id).Last().UsuarioActualId : a.UsuarioId,
-
+                    Seguimientos = a.AtencionSeguimientos.Select(a => new AtencionWebSeguimientoDTO
+                    {
+                        AtencionWebId = a.AtencionWebId,
+                        BCierraCaso = a.BCierraCaso,
+                        DtFechaRegistro = a.DtFechaRegistro,
+                        UsuarioId = a.UsuarioId,
+                        VcDescripcion = a.VcDescripcion,
+                    }).ToList(),
+                    Reasignaciones = a.AtencionReasignaciones.Select(a => new AtencionWebReasignacionDTO
+                    {
+                        AtencionWebId = a.AtencionWebId,
+                        DtFechaAsignacion = a.DtFechaAsignacion,
+                        DtFechaReAsignacion = a.DtFechaAsignacion,
+                        UsuarioActualId = a.UsuarioActualId,
+                        UsuarioAsignaId = a.UsuarioAsignaId,
+                        VcDescripcion = a.VcDescripcion
+                    }).ToList()
                 }).FirstOrDefault();
             return atencionWebDto;
         }
-
 
     }
 
