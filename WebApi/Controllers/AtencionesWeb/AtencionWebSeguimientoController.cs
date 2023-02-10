@@ -48,14 +48,11 @@ namespace WebApi.Controllers.AtencionesWeb
                     AtencionWeb atencionWeb = await _atencionWebservice.FindAsync(atencionWebSeguimiento.AtencionWebId);
                     if (atencionWeb != null)
                     {
-                        if (atencionWeb.EstadoId != atencionWebSeguimientoRequest.EstadoId)
+                        atencionWeb.EstadoId = atencionWebSeguimientoRequest.EstadoId;
+                        bool actualizo = await _atencionWebservice.UpdateAsync(atencionWeb.Id, atencionWeb);
+                        if (actualizo)
                         {
-                            atencionWeb.EstadoId = atencionWebSeguimientoRequest.EstadoId;
-                            bool actualizo = await _atencionWebservice.UpdateAsync(atencionWeb.Id, atencionWeb);
-                            if (actualizo)
-                            {
-                                response = new { Titulo = "Bien Hecho!", Mensaje = "Seguimiento creado de forma correcta, se ha cambiado el estado de caso a cerrado", Codigo = HttpStatusCode.OK };
-                            }
+                            response = new { Titulo = "Bien Hecho!", Mensaje = "Seguimiento creado de forma correcta, se ha cambiado el estado de caso a cerrado", Codigo = HttpStatusCode.OK };
                         }
                     }
                 }                
