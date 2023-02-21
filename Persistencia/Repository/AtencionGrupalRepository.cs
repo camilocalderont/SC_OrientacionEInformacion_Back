@@ -33,6 +33,16 @@ namespace Persistencia.Repository
             return await atencionesGrupalQuery.ToListAsync();
         }
 
+        public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        {
+            IQueryable<AtencionGrupal> atencionesGrupalQuery = _context.AtencionGrupal.AsQueryable();
+
+            atencionesGrupalQuery = atencionesGrupalQuery.Where(p =>  (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio)>=0) &&
+                                            (DateTime.Compare(p.DtFechaRegistro,DtFechaFin)<=0) );
+           
+            return await atencionesGrupalQuery.ToListAsync();
+        }
+
         public async Task<AtencionGrupalDTO> obtenerPorId(long atencionGrupalId)
         {
             var atencionGrupalDto = _context.AtencionGrupal.Where(p => p.Id == atencionGrupalId)
