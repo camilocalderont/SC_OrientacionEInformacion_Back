@@ -127,6 +127,29 @@ namespace WebApi.Controllers.AtencionesGrupales
 
 
 
+        [HttpGet("obtenerPorRangoFechas")]
+        public async Task<ActionResult<ListModelResponse<AtencionGrupal>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        {
+
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionGrupal> AtencionesGrupales = null;
+            AtencionesGrupales = await _service.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+
+            if (AtencionesGrupales.Count() == 0)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron casos de atención grupal con el fitro indicado", Codigo = HttpStatusCode.NoContent };
+
+            }
+            var listModelResponse = new ListModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionesGrupales);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+
+        }
+
+
+
+
+
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetAtencionGrupal(long Id)
         {
