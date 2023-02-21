@@ -22,6 +22,11 @@ namespace Aplicacion.Services.AtencionesGrupales
             return await _atencionGrupalRepository.obtenerPorRangoFechasYUsuario(DtFechaInicio, DtFechaFin, usuarioId);
         }
 
+        public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        {
+            return await _atencionGrupalRepository.obtenerPorRangoFechas(DtFechaInicio, DtFechaFin);
+        }
+
         public async Task<AtencionGrupalDTO> obtenerPorId(long atencionGrupalId)
         {
             return await _atencionGrupalRepository.obtenerPorId(atencionGrupalId);
