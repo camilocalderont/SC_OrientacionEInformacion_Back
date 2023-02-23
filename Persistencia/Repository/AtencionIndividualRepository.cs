@@ -3,6 +3,10 @@ using Dominio.Mapper.AtencionesIndividuales;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
 using System.Reflection.Metadata;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Build.ObjectModelRemoting;
+using Dominio.Utilities;
 
 namespace Persistencia.Repository
 {
@@ -118,6 +122,72 @@ namespace Persistencia.Repository
 
         }
 
+        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechas(DateTime fechaInicio, DateTime fechaFinal)
+        {
+            IQueryable<AtencionIndividual> query = _context.AtencionIndividual.AsQueryable();
+
+            query = query
+                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechaFinal) <= 0));
+
+            query = query
+                .Include(atencionIndividual => atencionIndividual.Persona)
+                .ThenInclude(persona => persona.PersonaContactos.OrderByDescending(personaCont => personaCont.DtFechaRegistro))
+                .Include(atencionIndividual => atencionIndividual.Persona)
+                .ThenInclude(persona => persona.PersonaAfiliaciones.OrderByDescending(personaAfi => personaAfi.DtFechaRegistro));
+
+
+            var atencionesIndividuales = await query.
+                Select(item =>
+                new AtencionIndividualReporteDto
+                {
+                    consecutivo = item.PersonaId,
+                    cas_Id = item.Id,
+                    mes = item.DtFechaRegistro.Month,
+                    fechaAlmacenamiento = item.DtFechaRegistro,
+                    tipoDocumentoId= item.Persona.TipoDocumentoId,
+                    numeroIdent = item.Persona.VcDocumento,
+                    primerApellido = item.Persona.VcPrimerApellido,
+                    segundoApellido = item.Persona.VcSegundoApellido,
+                    primerNombre = item.Persona.VcPrimerNombre,
+                    segundoNombre = item.Persona.VcSegundoNombre,
+                    edadAlRegistroDelCaso = OperacionesFechas.restar(item.DtFechaRegistro, item.Persona.DtFechaNacimiento).ToString(),
+                    fechaNacimiento = item.Persona.DtFechaNacimiento == null ? "" : item.Persona.DtFechaNacimiento.Value.ToString("yyyy-MM-dd"),
+                    sexoId = item.Persona.SexoId,
+                    generoId = item.Persona.GeneroId,
+                    orientacionSexualId = item.Persona.OrientacionSexualId,
+                    enfoquePoblacionalId = item.Persona.EnfoquePoblacionalId,
+                    poblacionPrioritariaId = item.Persona.PoblacionPrioritariaId,
+                    subPoblacionPrioritariaId = item.Persona.SubPoblacionPrioritariaId == null ? -1 : item.Persona.SubPoblacionPrioritariaId.Value,
+                    subEtniaId = item.Persona.SubEtniaId == null ? -1 : item.Persona.SubEtniaId.Value,
+                    etniaId = item.Persona.EtniaId,
+                    regimenId = item.Persona.PersonaAfiliaciones.First().RegimenId,
+                    aseguradoraId = item.Persona.PersonaAfiliaciones.First().AseguradoraId,
+                    nivelSisbenId = item.Persona.PersonaAfiliaciones.First().NivelSisbenId,
+                    departamentoId = item.Persona.PersonaContactos.First().DepartamentoId,
+                    municipioId = item.Persona.PersonaContactos.First().MunicipioId,
+                    direccion = item.Persona.PersonaContactos.First().VcDireccion,
+                    localidadId = item.Persona.PersonaContactos.First().LocalidadId,
+                    barrioId = item.Persona.PersonaContactos.First().BarrioId == null ? -1 : item.Persona.PersonaContactos.First().BarrioId.Value,
+                    upzId = item.Persona.PersonaContactos.First().UpzId == null ? -1 : item.Persona.PersonaContactos.First().UpzId.Value,
+                    correoElectronico = item.Persona.VcCorreo,
+                    telefono1 = item.Persona.PersonaContactos.First().VcTelefono1,
+                    Telefono2 = item.Persona.PersonaContactos.First().VcTelefono2,
+                    aclaracionesTelfDir = item.Persona.PersonaContactos.First().TxDatosContactoAclaraciones,
+                    tipoOrientacion = item.TipoSolicitudId,
+                    motivoId = item.MotivoId,
+                    subMotivoId = item.SubMotivoId,
+                    aclaracionMotivoOrientacion = item.TxAclaracionMotivo,
+                    gestionResolucionPAcceso = item.TxGestionRealizada,
+                    datosDeContactoAclaración = item.Persona.PersonaContactos.First().TxDatosContactoAclaraciones,
+                    canalAtencionId = item.CanalAtencionId,
+                    estadoCasoId = item.EstadoId,
+                    usuarioId = item.Persona.UsuarioId
+                }
+            ).ToListAsync<AtencionIndividualReporteDto>();
+
+
+            return atencionesIndividuales;
+        }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId,long AtencionIndividualId)
         {
