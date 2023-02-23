@@ -20,7 +20,9 @@ namespace Persistencia.Repository
 
         public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
-            IQueryable<AtencionIndividual> atencionQuery = _context.AtencionIndividual.AsQueryable();
+            IQueryable<AtencionIndividual> atencionQuery = _context.AtencionIndividual
+                .Include(a => a.Persona)
+                .AsQueryable();
 
             atencionQuery = atencionQuery.Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
                                             (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0));
