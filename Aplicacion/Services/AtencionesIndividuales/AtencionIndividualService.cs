@@ -32,6 +32,13 @@ namespace Aplicacion.Services.AtencionesIndividuales
             return await _AtencionIndividualRepository.obtenerPorRangoFechasEstadoUsuarioYDocumento(EstadoId,DtFechaInicio, DtFechaFin, usuarioId, VcDocumento);
         }
 
+
+        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechasParaReporteOYP(DateTime fechaInicio, DateTime fechaFinal)
+        {
+            return await _AtencionIndividualRepository.obtenerPorRangoFechasParaReporteOYP(fechaInicio, fechaFinal);
+        }
+
+
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorPersonaYExcluyeCaso(long PersonaId, long AtencionIndividualId)
         {
             return await _AtencionIndividualRepository.obtenerPorPersonaYExcluyeCaso(PersonaId, AtencionIndividualId);
