@@ -22,6 +22,15 @@ namespace Persistencia.Repository
             this._context = context;
         }
 
+        public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        {
+            IQueryable<AtencionIndividual> atencionQuery = _context.AtencionIndividual.AsQueryable();
+
+            atencionQuery = atencionQuery.Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
+                                            (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0));
+
+            return await atencionQuery.ToListAsync();
+        }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
             long EstadoId, 
@@ -122,7 +131,7 @@ namespace Persistencia.Repository
 
         }
 
-        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechas(DateTime fechaInicio, DateTime fechaFinal)
+        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechasParaReporteOYP(DateTime fechaInicio, DateTime fechaFinal)
         {
             IQueryable<AtencionIndividual> query = _context.AtencionIndividual.AsQueryable();
 

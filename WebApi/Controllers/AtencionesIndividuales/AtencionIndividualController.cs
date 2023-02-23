@@ -11,6 +11,8 @@ using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
 using Newtonsoft.Json;
+using Dominio.Models.AtencionesGrupales;
+using Dominio.Models.AtencionesWeb;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -148,14 +150,13 @@ namespace WebApi.Controllers.AtencionesIndividuales
         }
 
 
-
-        [HttpGet("obtenerPorRangoFechas")]
-        public async Task<ActionResult<ListModelResponse<AtencionIndividualReporteDto>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")]DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        [HttpGet("obtenerPorRangoFechasParaReporteOYP")]
+        public async Task<ActionResult<ListModelResponse<AtencionIndividualReporteDto>>> obtenerPorRangoFechasParaReporteOYP([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
         {
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron registros de Atencion Individual", Codigo = HttpStatusCode.OK };
             IEnumerable<AtencionIndividualReporteDto> atencionIndividualReporteDto = null;
 
-            atencionIndividualReporteDto = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+            atencionIndividualReporteDto = await _atencionIndividualservice.obtenerPorRangoFechasParaReporteOYP(fechaInicio, fechaFinal);
 
             if (!atencionIndividualReporteDto.Any())
             {
@@ -165,6 +166,25 @@ namespace WebApi.Controllers.AtencionesIndividuales
             var listModelResponse = new ListModelResponse<AtencionIndividualReporteDto>(response.Codigo, response.Titulo, response.Mensaje, atencionIndividualReporteDto);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+        }
+
+        [HttpGet("obtenerPorRangoFechas")]
+        public async Task<ActionResult<ListModelResponse<AtencionIndividual>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        {
+            try
+            {
+                IEnumerable<AtencionIndividual> atenciones = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+
+                var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atenciones individuales", Codigo = HttpStatusCode.OK };
+                var listModelResponse = new ListModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, atenciones);
+                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+            }
+            catch(Exception ex)
+            {
+                var response = new { Titulo = "Algo salió mal!", Mensaje = "Error inesperado " + ex.Message, Codigo = HttpStatusCode.InternalServerError };
+                var listModelResponse = new ListModelResponse<string>(response.Codigo, response.Titulo, response.Mensaje, new List<string>());
+                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+            }
         }
 
 

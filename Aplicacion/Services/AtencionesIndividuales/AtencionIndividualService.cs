@@ -16,6 +16,11 @@ namespace Aplicacion.Services.AtencionesIndividuales
             _genericRepository = genericRepository;
         }
 
+        public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        {
+            return await _AtencionIndividualRepository.obtenerPorRangoFechas(DtFechaInicio, DtFechaFin);
+        }
+
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
             long EstadoId,
             DateTime DtFechaInicio,
@@ -28,9 +33,9 @@ namespace Aplicacion.Services.AtencionesIndividuales
         }
 
 
-        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechas(DateTime fechaInicio, DateTime fechaFinal)
+        public async Task<IEnumerable<AtencionIndividualReporteDto>> obtenerPorRangoFechasParaReporteOYP(DateTime fechaInicio, DateTime fechaFinal)
         {
-            return await _AtencionIndividualRepository.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+            return await _AtencionIndividualRepository.obtenerPorRangoFechasParaReporteOYP(fechaInicio, fechaFinal);
         }
 
 
