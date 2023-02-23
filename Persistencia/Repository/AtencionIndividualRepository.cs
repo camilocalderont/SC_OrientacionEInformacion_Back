@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Build.ObjectModelRemoting;
 using Dominio.Utilities;
+using System.Security.Cryptography;
 
 namespace Persistencia.Repository
 {
@@ -24,12 +25,26 @@ namespace Persistencia.Repository
 
         public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
-            IQueryable<AtencionIndividual> atencionQuery = _context.AtencionIndividual.AsQueryable();
-
-            atencionQuery = atencionQuery.Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
-                                            (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0));
-
-            return await atencionQuery.ToListAsync();
+            IEnumerable<AtencionIndividual> atencionQuery = await (from at in _context.AtencionIndividual
+                .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
+                                            (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0))
+                                                                   join pe in _context.Persona on at.PersonaId equals pe.Id
+                                                                   select new AtencionIndividual
+                                                                   {
+                                                                       Id = at.Id,
+                                                                       DtFechaRegistro = at.DtFechaRegistro,
+                                                                       EstadoId = at.EstadoId,
+                                                                       MotivoId = at.MotivoId,
+                                                                       SubMotivoId = at.SubMotivoId,
+                                                                       TxAclaracionMotivo = at.TxAclaracionMotivo,
+                                                                       TxGestionRealizada = at.TxGestionRealizada,
+                                                                       AtencionReasignaciones = at.AtencionReasignaciones,
+                                                                       AtencionSeguimientos = at.AtencionSeguimientos,
+                                                                       UsuarioId = at.UsuarioId,
+                                                                       PersonaId = at.PersonaId,
+                                                                       Persona = pe
+                                                                   }).ToListAsync();
+            return atencionQuery;
         }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
