@@ -11,6 +11,8 @@ using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
 using Newtonsoft.Json;
+using Dominio.Models.AtencionesGrupales;
+using Dominio.Models.AtencionesWeb;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -147,7 +149,26 @@ namespace WebApi.Controllers.AtencionesIndividuales
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
-        
+        [HttpGet("obtenerPorRangoFechas")]
+        public async Task<ActionResult<ListModelResponse<AtencionIndividual>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        {
+            try
+            {
+                IEnumerable<AtencionIndividual> atenciones = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+
+                var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atenciones individuales", Codigo = HttpStatusCode.OK };
+                var listModelResponse = new ListModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, atenciones);
+                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+            }
+            catch(Exception ex)
+            {
+                var response = new { Titulo = "Algo salió mal!", Mensaje = "Error inesperado " + ex.Message, Codigo = HttpStatusCode.InternalServerError };
+                var listModelResponse = new ListModelResponse<string>(response.Codigo, response.Titulo, response.Mensaje, new List<string>());
+                return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+            }
+        }
+
+
         [HttpGet("otrosCasos/{PersonaId}/{AtencionIndividualId}")]
         public async Task<ActionResult<ListModelResponse<BandejaIndividualDTO>>> obtenerOtrosCasosPersona(long PersonaId, long AtencionIndividualId)
         {

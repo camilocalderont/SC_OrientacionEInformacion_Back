@@ -16,6 +16,11 @@ namespace Aplicacion.Services.AtencionesIndividuales
             _genericRepository = genericRepository;
         }
 
+        public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        {
+            return await _AtencionIndividualRepository.obtenerPorRangoFechas(DtFechaInicio, DtFechaFin);
+        }
+
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
             long EstadoId,
             DateTime DtFechaInicio,
