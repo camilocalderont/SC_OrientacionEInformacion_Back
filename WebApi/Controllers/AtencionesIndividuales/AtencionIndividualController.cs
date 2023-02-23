@@ -147,7 +147,27 @@ namespace WebApi.Controllers.AtencionesIndividuales
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
-        
+
+
+        [HttpGet("obtenerPorRangoFechas")]
+        public async Task<ActionResult<ListModelResponse<AtencionIndividualReporteDto>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")]DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        {
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron registros de Atencion Individual", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionIndividualReporteDto> atencionIndividualReporteDto = null;
+
+            atencionIndividualReporteDto = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+
+            if (!atencionIndividualReporteDto.Any())
+            {
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron registros de Atencion Individual con el fitro indicado", Codigo = HttpStatusCode.OK };
+            }
+
+            var listModelResponse = new ListModelResponse<AtencionIndividualReporteDto>(response.Codigo, response.Titulo, response.Mensaje, atencionIndividualReporteDto);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+        }
+
+
         [HttpGet("otrosCasos/{PersonaId}/{AtencionIndividualId}")]
         public async Task<ActionResult<ListModelResponse<BandejaIndividualDTO>>> obtenerOtrosCasosPersona(long PersonaId, long AtencionIndividualId)
         {
