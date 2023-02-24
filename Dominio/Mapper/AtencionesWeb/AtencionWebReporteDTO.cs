@@ -3,7 +3,7 @@
     public class AtencionWebReporteDTO
     {
         public long Id { get; set; }
-        public string Mes { get; set; }
+        public long Mes { get; set; }
         public DateTime FechaAlmacenamiento { get; set; }
         public DateTime FechaOrientacion { get; set; }
         public string PrimerApellido { get; set; }
@@ -17,7 +17,7 @@
         public long SubMotivoId { get; set; }
         public long CanalAtencionId { get; set; }
         public long TipoGestionId { get; set; }
-        public long TipoProcesoFallido { get; set; }
+        public long TipoProcesoFallidoId { get; set; }
         public string AsuntoCorreoElectronico { get; set; }
         public string AclaracionMotivoOrientacion { get; set; }
         public long UsuarioId { get; set; }

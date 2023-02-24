@@ -141,7 +141,7 @@ namespace Persistencia.Repository
             var atencionWeb = await query.Select(atencionWeb => new AtencionWebReporteDTO
             {
                 Id = atencionWeb.Id,
-                Mes = atencionWeb.DtFechaRegistro.Month + "",
+                Mes = atencionWeb.DtFechaRegistro.Month,
                 FechaAlmacenamiento = atencionWeb.DtFechaRegistro,
                 FechaOrientacion = atencionWeb.DtFechaOrientacion,
                 PrimerApellido = atencionWeb.PersonasWeb.VcPrimerApellido == null ? "" : atencionWeb.PersonasWeb.VcPrimerApellido,
@@ -155,7 +155,7 @@ namespace Persistencia.Repository
                 SubMotivoId = atencionWeb.SubMotivoId,
                 CanalAtencionId = atencionWeb.CanalAtencionId,
                 TipoGestionId = atencionWeb.TipoGestionId == null ? -1 : atencionWeb.TipoGestionId.Value,
-                TipoProcesoFallido = atencionWeb.TipoProcesoFallidoId,
+                TipoProcesoFallidoId = atencionWeb.TipoProcesoFallidoId,
                 AsuntoCorreoElectronico = atencionWeb.TxAsuntoCorreo,
                 AclaracionMotivoOrientacion = atencionWeb.TxAclaracionMotivo,
                 UsuarioId = atencionWeb.PersonasWeb.UsuarioId
