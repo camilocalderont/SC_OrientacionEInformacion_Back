@@ -1,4 +1,6 @@
 ﻿
+using Dominio.Mapper.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesWeb;
 using Dominio.Models.AtencionesWeb;
 using Persistencia.Repository;
 
@@ -26,6 +28,11 @@ namespace Aplicacion.Services.AtencionesWeb
         )
         {
             return await _AtencionWebRepository.obtenerPorRangoFechasEstadoUsuarioYCorreo(EstadoId,DtFechaInicio, DtFechaFin, usuarioId, VcCorreo);
+        }
+
+        public async Task<IEnumerable<AtencionWebReporteDTO>> obtenerPorRangoFechasParaReporteOW(DateTime fechaInicio, DateTime fechaFinal)
+        {
+            return await _AtencionWebRepository.obtenerPorRangoFechasParaReporteOW(fechaInicio, fechaFinal);
         }
 
         public async Task<IEnumerable<AtencionWebDTO>> obtenerPorPersonaWebYExcluyeCaso(long PersonaWebId, long AtencionWebId)

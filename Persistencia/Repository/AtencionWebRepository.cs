@@ -1,4 +1,6 @@
 ﻿using Dominio.Mapper.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesWeb;
+using Dominio.Models.AtencionesIndividuales;
 using Dominio.Models.AtencionesWeb;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
@@ -127,7 +129,42 @@ namespace Persistencia.Repository
         }
 
 
-        public async Task<AtencionWebDTO> obtenerPorId(long atencionWebId)
+        public async Task<IEnumerable<AtencionWebReporteDTO>> obtenerPorRangoFechasParaReporteOW(DateTime fechaInicio, DateTime fechaFinal)
+        {
+            IQueryable<AtencionWeb> query = _context.AtencionWeb.AsQueryable();
+
+            query = query
+                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechaFinal) <= 0));
+
+            query = query.Include(atencionWeb => atencionWeb.PersonasWeb);
+
+            var atencionWeb = await query.Select(atencionWeb => new AtencionWebReporteDTO
+            {
+                Id = atencionWeb.Id,
+                Mes = atencionWeb.DtFechaRegistro.Month + "",
+                FechaAlmacenamiento = atencionWeb.DtFechaRegistro,
+                FechaOrientacion = atencionWeb.DtFechaOrientacion,
+                PrimerApellido = atencionWeb.PersonasWeb.VcPrimerApellido == null ? "" : atencionWeb.PersonasWeb.VcPrimerApellido,
+                SegundoApellido = atencionWeb.PersonasWeb.VcSegundoApellido == null ? "" : atencionWeb.PersonasWeb.VcSegundoApellido,
+                PrimerNombre = atencionWeb.PersonasWeb.VcPrimerNombre == null ? "" : atencionWeb.PersonasWeb.VcPrimerNombre,
+                SegundoNombre = atencionWeb.PersonasWeb.VcSegundoNombre == null ? "" : atencionWeb.PersonasWeb.VcSegundoNombre,
+                CorreoElectronico = atencionWeb.PersonasWeb.VcCorreo,
+                Telefono1 = atencionWeb.PersonasWeb.VcTelefono1 == null ? "" : atencionWeb.PersonasWeb.VcTelefono1,
+                Celular = atencionWeb.PersonasWeb.VcTelefono2 == null ? "" : atencionWeb.PersonasWeb.VcTelefono2,
+                MotivoId = atencionWeb.MotivoId,
+                SubMotivoId = atencionWeb.SubMotivoId,
+                CanalAtencionId = atencionWeb.CanalAtencionId,
+                TipoGestionId = atencionWeb.TipoGestionId == null ? -1 : atencionWeb.TipoGestionId.Value,
+                TipoProcesoFallido = atencionWeb.TipoProcesoFallidoId,
+                AsuntoCorreoElectronico = atencionWeb.TxAsuntoCorreo,
+                AclaracionMotivoOrientacion = atencionWeb.TxAclaracionMotivo,
+                UsuarioId = atencionWeb.PersonasWeb.UsuarioId
+            }).ToListAsync();
+
+            return atencionWeb;
+        }
+
+            public async Task<AtencionWebDTO> obtenerPorId(long atencionWebId)
         {
             var atencionWebDto = _context.AtencionWeb.Where(p => p.Id == atencionWebId)
                 .Select(a => new AtencionWebDTO

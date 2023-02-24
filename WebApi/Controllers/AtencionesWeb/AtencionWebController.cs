@@ -9,6 +9,9 @@ using WebApi.Storage;
 using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesWeb;
+using Aplicacion.Services.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesIndividuales;
+using Dominio.Mapper.AtencionesWeb;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -164,7 +167,25 @@ namespace WebApi.Controllers.AtencionesWeb
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
-        
+        [HttpGet("obtenerPorRangoFechasParaReporteOW")]
+        public async Task<ActionResult<ListModelResponse<AtencionWebReporteDTO>>> obtenerPorRangoFechasParaReporteOW([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        {
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron registros de Atencion Web", Codigo = HttpStatusCode.OK };
+            IEnumerable<AtencionWebReporteDTO> atencionIndividualReporteDto = null;
+
+            atencionIndividualReporteDto = await _atencionWebservice.obtenerPorRangoFechasParaReporteOW(fechaInicio, fechaFinal);
+
+            if (!atencionIndividualReporteDto.Any())
+            {
+                response = new { Titulo = "No hay registros", Mensaje = "No se encontraron registros de Atencion Web con el fitro indicado", Codigo = HttpStatusCode.OK };
+            }
+
+            var listModelResponse = new ListModelResponse<AtencionWebReporteDTO>(response.Codigo, response.Titulo, response.Mensaje, atencionIndividualReporteDto);
+
+            return StatusCode((int)listModelResponse.Codigo, listModelResponse);
+        }
+
+
         [HttpGet("otrosCasos/{PersonaWebId}/{AtencionWebId}")]
         public async Task<ActionResult<ListModelResponse<AtencionWebDTO>>> obtenerOtrosCasosPersonaWeb(long PersonaWebId, long AtencionWebId)
         {
