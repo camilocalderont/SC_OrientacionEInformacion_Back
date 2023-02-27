@@ -20,11 +20,9 @@ namespace Persistencia.Repository
 
         public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId)
         {
-            IQueryable<AtencionGrupal> atencionesGrupalQuery = _context.AtencionGrupal.AsQueryable();
-            DtFechaFin = DtFechaFin.AddDays(1).AddSeconds(-1);
-
-            atencionesGrupalQuery.Where(p => p.DtFechaOrientacion >= DtFechaInicio &&
-                                            p.DtFechaOrientacion <= DtFechaFin);
+            IQueryable<AtencionGrupal> atencionesGrupalQuery = _context.AtencionGrupal
+                .Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= DtFechaFin)
+                .AsQueryable();
 
             if (usuarioId > 0)
             {

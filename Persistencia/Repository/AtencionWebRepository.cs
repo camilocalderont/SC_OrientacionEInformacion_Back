@@ -33,11 +33,6 @@ namespace Persistencia.Repository
 
             atencionesWebQuery = atencionesWebQuery.Where(p => p.DtFechaRegistro >= DtFechaInicio &&
                                             p.DtFechaRegistro <= DtFechaFin);
-            if (usuarioId > 0)
-            {
-                atencionesWebQuery = atencionesWebQuery.Where(p => p.UsuarioId == usuarioId);
-            }
-
             if (EstadoId > 0)
             {
                 atencionesWebQuery = atencionesWebQuery.Where(p => p.EstadoId == EstadoId);
@@ -56,7 +51,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesWeb = await atencionesWebQuery.Select(a=>new AtencionWebDTO
+            var atencionesWeb = atencionesWebQuery.Select(a=>new AtencionWebDTO
             {
                 Id= a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -80,11 +75,14 @@ namespace Persistencia.Repository
                 VcTelefono2 = a.PersonasWeb.VcTelefono2,
                 UsuarioActualId = a.AtencionReasignaciones.Any() ? a.AtencionReasignaciones.OrderBy(a=>a.Id).Last().UsuarioActualId : a.UsuarioId,
 
-            }).ToListAsync();
+            });
 
-            return atencionesWeb;
+            if (usuarioId > 0)
+            {
+                atencionesWeb = atencionesWeb.Where(p => p.UsuarioActualId == usuarioId);
+            }
 
-
+            return await atencionesWeb.ToListAsync();
         }
 
 
