@@ -133,8 +133,10 @@ namespace Persistencia.Repository
         {
             IQueryable<AtencionWeb> query = _context.AtencionWeb.AsQueryable();
 
+            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(fechaFinal.Year, fechaFinal.Month, fechaFinal.Day, 23, 59, 59);
+
             query = query
-                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechaFinal) <= 0));
+                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0));
 
             query = query.Include(atencionWeb => atencionWeb.PersonasWeb);
 

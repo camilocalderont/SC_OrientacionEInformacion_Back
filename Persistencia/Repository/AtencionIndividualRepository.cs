@@ -25,9 +25,11 @@ namespace Persistencia.Repository
 
         public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
+            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(DtFechaFin.Year, DtFechaFin.Month, DtFechaFin.Day, 23, 59, 59);
+
             IEnumerable<AtencionIndividual> atencionQuery = await (from at in _context.AtencionIndividual
                 .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
-                                            (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0))
+                                            (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0))
                                                                    join pe in _context.Persona on at.PersonaId equals pe.Id
                                                                    select new AtencionIndividual
                                                                    {
@@ -150,8 +152,10 @@ namespace Persistencia.Repository
         {
             IQueryable<AtencionIndividual> query = _context.AtencionIndividual.AsQueryable();
 
+            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(fechaFinal.Year, fechaFinal.Month, fechaFinal.Day, 23, 59, 59);
+
             query = query
-                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechaFinal) <= 0));
+                .Where(p => (DateTime.Compare(p.DtFechaRegistro, fechaInicio) >= 0) && (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0));
 
             query = query
                 .Include(atencionIndividual => atencionIndividual.Persona)
