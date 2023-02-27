@@ -169,14 +169,14 @@ namespace WebApi.Controllers.AtencionesIndividuales
         }
 
         [HttpGet("obtenerPorRangoFechas")]
-        public async Task<ActionResult<ListModelResponse<AtencionIndividual>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
+        public async Task<ActionResult<ListModelResponse<AtencionIndividualMapper>>> obtenerPorRangoFechas([FromQuery(Name = "fechaInicio")] DateTime fechaInicio, [FromQuery(Name = "fechaFinal")] DateTime fechaFinal)
         {
             try
             {
-                IEnumerable<AtencionIndividual> atenciones = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
+                IEnumerable<AtencionIndividualMapper> atenciones = await _atencionIndividualservice.obtenerPorRangoFechas(fechaInicio, fechaFinal);
 
                 var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atenciones individuales", Codigo = HttpStatusCode.OK };
-                var listModelResponse = new ListModelResponse<AtencionIndividual>(response.Codigo, response.Titulo, response.Mensaje, atenciones);
+                var listModelResponse = new ListModelResponse<AtencionIndividualMapper>(response.Codigo, response.Titulo, response.Mensaje, atenciones);
                 return StatusCode((int)listModelResponse.Codigo, listModelResponse);
             }
             catch(Exception ex)

@@ -22,7 +22,7 @@ namespace Persistencia.Repository
         {
             IQueryable<AtencionGrupal> atencionesGrupalQuery = _context.AtencionGrupal
                 .Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= DtFechaFin)
-                .AsQueryable();            
+                .AsQueryable();
 
             if (usuarioId > 0)
             {

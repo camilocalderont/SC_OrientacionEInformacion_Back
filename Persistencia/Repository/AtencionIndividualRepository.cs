@@ -2,12 +2,7 @@
 using Dominio.Mapper.AtencionesIndividuales;
 using Microsoft.EntityFrameworkCore;
 using Persistencia.Context;
-using System.Reflection.Metadata;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Build.ObjectModelRemoting;
 using Dominio.Utilities;
-using System.Security.Cryptography;
 
 namespace Persistencia.Repository
 {
@@ -23,13 +18,13 @@ namespace Persistencia.Repository
             this._context = context;
         }
 
-        public async Task<IEnumerable<AtencionIndividual>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        public async Task<IEnumerable<AtencionIndividualMapper>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
-            IEnumerable<AtencionIndividual> atencionQuery = await (from at in _context.AtencionIndividual
+            IQueryable<AtencionIndividualMapper> atencionQuery = (from at in _context.AtencionIndividual
                 .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
                                             (DateTime.Compare(p.DtFechaRegistro, DtFechaFin) <= 0))
                                                                    join pe in _context.Persona on at.PersonaId equals pe.Id
-                                                                   select new AtencionIndividual
+                                                                   select new AtencionIndividualMapper
                                                                    {
                                                                        Id = at.Id,
                                                                        DtFechaRegistro = at.DtFechaRegistro,
@@ -41,10 +36,11 @@ namespace Persistencia.Repository
                                                                        AtencionReasignaciones = at.AtencionReasignaciones,
                                                                        AtencionSeguimientos = at.AtencionSeguimientos,
                                                                        UsuarioId = at.UsuarioId,
+                                                                       UsuarioActualId = at.AtencionSeguimientos.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).Last().UsuarioActualId : at.UsuarioId,
                                                                        PersonaId = at.PersonaId,
                                                                        Persona = pe
-                                                                   }).ToListAsync();
-            return atencionQuery;
+                                                                   });
+            return await atencionQuery.ToListAsync();
         }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
@@ -59,11 +55,7 @@ namespace Persistencia.Repository
 
             atencionesIndividualesQuery = atencionesIndividualesQuery.Where(p => p.DtFechaRegistro >= DtFechaInicio &&
                                             p.DtFechaRegistro <= DtFechaFin);
-            if (usuarioId > 0)
-            {
-                atencionesIndividualesQuery = atencionesIndividualesQuery.Where(p => p.UsuarioId == usuarioId);
-            }
-
+            
             if (EstadoId > 0)
             {
                 atencionesIndividualesQuery = atencionesIndividualesQuery.Where(p => p.EstadoId == EstadoId);
@@ -83,7 +75,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
+            var atencionesIndividuales = atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -139,9 +131,14 @@ namespace Persistencia.Repository
                 VcTelefono1 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono1 : "",
                 VcTelefono2 = a.Persona.PersonaContactos.Any() ? a.Persona.PersonaContactos.OrderBy(a => a.Id).Last().VcTelefono2 : "",                
 
-            }).ToListAsync();
+            });
 
-            return atencionesIndividuales;
+            if (usuarioId > 0)
+            {
+                atencionesIndividuales = atencionesIndividuales.Where(p => p.UsuarioActualId == usuarioId);
+            }
+
+            return await atencionesIndividuales.ToListAsync();
 
 
         }
