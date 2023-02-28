@@ -23,27 +23,44 @@ namespace Persistencia.Repository
 
             DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(DtFechaFin.Year, DtFechaFin.Month, DtFechaFin.Day, 23, 59, 59);
 
-            IQueryable<AtencionIndividualMapper> atencionQuery = (from at in _context.AtencionIndividual
+            IQueryable<AtencionIndividual> atencionQuery = (from at in _context.AtencionIndividual
                 .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
                                             (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0))
-                                                                   join pe in _context.Persona on at.PersonaId equals pe.Id
-                                                                   select new AtencionIndividualMapper
-                                                                   {
-                                                                       Id = at.Id,
-                                                                       DtFechaRegistro = at.DtFechaRegistro,
-                                                                       EstadoId = at.EstadoId,
-                                                                       MotivoId = at.MotivoId,
-                                                                       SubMotivoId = at.SubMotivoId,
-                                                                       TxAclaracionMotivo = at.TxAclaracionMotivo,
-                                                                       TxGestionRealizada = at.TxGestionRealizada,
-                                                                       AtencionReasignaciones = at.AtencionReasignaciones,
-                                                                       AtencionSeguimientos = at.AtencionSeguimientos,
-                                                                       UsuarioId = at.UsuarioId,
-                                                                       UsuarioActualId = at.AtencionSeguimientos.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).Last().UsuarioActualId : at.UsuarioId,
-                                                                       PersonaId = at.PersonaId,
-                                                                       Persona = pe
-                                                                   });
-            return await atencionQuery.ToListAsync();
+                                                            join pe in _context.Persona on at.PersonaId equals pe.Id
+                                                            select new AtencionIndividual
+                                                            {
+                                                                Id = at.Id,
+                                                                DtFechaRegistro = at.DtFechaRegistro,
+                                                                EstadoId = at.EstadoId,
+                                                                MotivoId = at.MotivoId,
+                                                                SubMotivoId = at.SubMotivoId,
+                                                                TxAclaracionMotivo = at.TxAclaracionMotivo,
+                                                                TxGestionRealizada = at.TxGestionRealizada,
+                                                                AtencionReasignaciones = at.AtencionReasignaciones,
+                                                                AtencionSeguimientos = at.AtencionSeguimientos,
+                                                                UsuarioId = at.UsuarioId,
+                                                                PersonaId = at.PersonaId,
+                                                                Persona = pe
+                                                            });
+
+            var atenciones = await atencionQuery.Select(at => new AtencionIndividualMapper
+            {
+                Id = at.Id,
+                DtFechaRegistro = at.DtFechaRegistro,
+                EstadoId = at.EstadoId,
+                MotivoId = at.MotivoId,
+                SubMotivoId = at.SubMotivoId,
+                TxAclaracionMotivo = at.TxAclaracionMotivo,
+                TxGestionRealizada = at.TxGestionRealizada,
+                AtencionReasignaciones = at.AtencionReasignaciones,
+                AtencionSeguimientos = at.AtencionSeguimientos,
+                UsuarioId = at.UsuarioId,
+                UsuarioActualId = at.AtencionSeguimientos.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).Last().UsuarioActualId : at.UsuarioId,
+                PersonaId = at.PersonaId,
+                Persona = at.Persona
+            }).ToListAsync();
+
+            return atenciones;
         }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
