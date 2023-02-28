@@ -208,7 +208,7 @@ namespace Persistencia.Repository
                     DatosDeContactoAclaración = item.Persona.PersonaContactos.First().TxDatosContactoAclaraciones,
                     CanalAtencionId = item.CanalAtencionId,
                     EstadoCasoId = item.EstadoId,
-                    UsuarioId = item.Persona.UsuarioId
+                    UsuarioId = item.UsuarioId
                 }
             ).ToListAsync<AtencionIndividualReporteDto>();
 
