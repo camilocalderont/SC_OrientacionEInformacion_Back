@@ -21,7 +21,7 @@ namespace Persistencia.Repository
         public async Task<IEnumerable<AtencionIndividualMapper>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
 
-            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(DtFechaFin.Year, DtFechaFin.Month, DtFechaFin.Day, 23, 59, 59);
+            DateTime fechafinalContemplandoHorasMinutosSegundos = Convert.ToDateTime(DtFechaFin.ToString("yyyy-MM-dd") + " 23:59:59");
 
             IQueryable<AtencionIndividual> atencionQuery = (from at in _context.AtencionIndividual
                 .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
