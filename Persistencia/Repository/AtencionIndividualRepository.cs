@@ -23,25 +23,25 @@ namespace Persistencia.Repository
 
             DateTime fechafinalContemplandoHorasMinutosSegundos = Convert.ToDateTime(DtFechaFin.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            IQueryable<AtencionIndividual> atencionQuery = (from at in _context.AtencionIndividual.Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= fechafinalContemplandoHorasMinutosSegundos)
-                                                            join pe in _context.Persona on at.PersonaId equals pe.Id
-                                                            select new AtencionIndividual
-                                                            {
-                                                                Id = at.Id,
-                                                                DtFechaRegistro = at.DtFechaRegistro,
-                                                                EstadoId = at.EstadoId,
-                                                                MotivoId = at.MotivoId,
-                                                                SubMotivoId = at.SubMotivoId,
-                                                                TxAclaracionMotivo = at.TxAclaracionMotivo,
-                                                                TxGestionRealizada = at.TxGestionRealizada,
-                                                                AtencionReasignaciones = at.AtencionReasignaciones,
-                                                                AtencionSeguimientos = at.AtencionSeguimientos,
-                                                                UsuarioId = at.UsuarioId,
-                                                                PersonaId = at.PersonaId,
-                                                                Persona = pe
-                                                            });
+            IEnumerable<AtencionIndividual> atencionQuery = await (from at in _context.AtencionIndividual.Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= fechafinalContemplandoHorasMinutosSegundos)
+                                                                   join pe in _context.Persona on at.PersonaId equals pe.Id
+                                                                   select new AtencionIndividual
+                                                                   {
+                                                                       Id = at.Id,
+                                                                       DtFechaRegistro = at.DtFechaRegistro,
+                                                                       EstadoId = at.EstadoId,
+                                                                       MotivoId = at.MotivoId,
+                                                                       SubMotivoId = at.SubMotivoId,
+                                                                       TxAclaracionMotivo = at.TxAclaracionMotivo,
+                                                                       TxGestionRealizada = at.TxGestionRealizada,
+                                                                       AtencionReasignaciones = at.AtencionReasignaciones,
+                                                                       AtencionSeguimientos = at.AtencionSeguimientos,
+                                                                       UsuarioId = at.UsuarioId,
+                                                                       PersonaId = at.PersonaId,
+                                                                       Persona = pe
+                                                                   }).ToListAsync();
 
-            var atenciones = await atencionQuery.Select(at => new AtencionIndividualReporteResponse
+            var atenciones = atencionQuery.Select(at => new AtencionIndividualReporteResponse
             {
                 Id = at.Id,
                 DtFechaRegistro = at.DtFechaRegistro,
@@ -64,7 +64,7 @@ namespace Persistencia.Repository
                 VcSegundoNombre = at.Persona.VcSegundoNombre,
                 FechaCambioEstadoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty,
                 FechaUltimoSeguimientoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty
-            }).ToListAsync();
+            }).ToList();
 
             return atenciones;
         }
