@@ -23,9 +23,7 @@ namespace Persistencia.Repository
 
             DateTime fechafinalContemplandoHorasMinutosSegundos = Convert.ToDateTime(DtFechaFin.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            IQueryable<AtencionIndividual> atencionQuery = (from at in _context.AtencionIndividual
-                .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
-                                            (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0))
+            IQueryable<AtencionIndividual> atencionQuery = (from at in _context.AtencionIndividual.Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= fechafinalContemplandoHorasMinutosSegundos)
                                                             join pe in _context.Persona on at.PersonaId equals pe.Id
                                                             select new AtencionIndividual
                                                             {
