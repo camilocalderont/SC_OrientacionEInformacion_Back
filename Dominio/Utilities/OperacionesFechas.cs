@@ -47,14 +47,16 @@ namespace Dominio.Utilities
                 }
                 else
                 {
-                    fechaResultado.meses = 0;
+                    fechaResultado.anios = fechaResultado.anios - 1;
+                    fechaResultado.meses = fechaFin.Month + 12 - fechaInicio.Value.Month;
                     if (fechaFin.Day >= fechaInicio.Value.Day)
                     {
                         fechaResultado.dias = fechaFin.Day - fechaInicio.Value.Day;
                     }
                     else
                     {
-                        fechaResultado.dias = 0;
+                        fechaResultado.meses = fechaResultado.meses - 1;
+                        fechaResultado.dias = fechaFin.Day + 31 - fechaInicio.Value.Day;
                     }
                 }
                 return fechaResultado;

@@ -35,8 +35,10 @@ namespace Persistencia.Repository
         {
             IQueryable<AtencionGrupal> atencionesGrupalQuery = _context.AtencionGrupal.AsQueryable();
 
+            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(DtFechaFin.Year, DtFechaFin.Month, DtFechaFin.Day, 23, 59, 59);
+
             atencionesGrupalQuery = atencionesGrupalQuery.Where(p =>  (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio)>=0) &&
-                                            (DateTime.Compare(p.DtFechaRegistro,DtFechaFin)<=0) );
+                                            (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <=0) );
            
             return await atencionesGrupalQuery.ToListAsync();
         }
