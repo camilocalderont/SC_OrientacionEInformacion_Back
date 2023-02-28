@@ -57,11 +57,11 @@ namespace Persistencia.Repository
                 EnfoquePoblacionalId = at.Persona.EnfoquePoblacionalId,
                 PoblacionPrioritariaId = at.Persona.PoblacionPrioritariaId,
                 SubPoblacionPrioritariaId = at.Persona.SubPoblacionPrioritariaId ?? 0,
-                VcDocumento = at.Persona.VcDocumento,
-                VcPrimerApellido = at.Persona.VcPrimerApellido,
-                VcPrimerNombre = at.Persona.VcPrimerNombre,
-                VcSegundoApellido = at.Persona.VcSegundoApellido,
-                VcSegundoNombre = at.Persona.VcSegundoNombre,
+                VcDocumento = at.Persona.VcDocumento ?? string.Empty,
+                VcPrimerApellido = at.Persona.VcPrimerApellido ?? string.Empty,
+                VcPrimerNombre = at.Persona.VcPrimerNombre ?? string.Empty,
+                VcSegundoApellido = at.Persona.VcSegundoApellido ?? string.Empty,
+                VcSegundoNombre = at.Persona.VcSegundoNombre ?? string.Empty,
                 FechaCambioEstadoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty,
                 FechaUltimoSeguimientoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty
             }).ToList();
