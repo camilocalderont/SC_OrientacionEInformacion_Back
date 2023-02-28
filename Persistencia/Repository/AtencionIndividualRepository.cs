@@ -51,7 +51,7 @@ namespace Persistencia.Repository
                 TxAclaracionMotivo = at.TxAclaracionMotivo,
                 TxGestionRealizada = at.TxGestionRealizada,
                 UsuarioId = at.UsuarioId,
-                UsuarioActualId = at.AtencionSeguimientos.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).Last().UsuarioActualId : at.UsuarioId,
+                UsuarioActualId = at.AtencionReasignaciones.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).LastOrDefault().UsuarioActualId : at.UsuarioId,
                 PersonaId = at.PersonaId,
                 TipoDocumentoId = at.Persona.TipoDocumentoId,
                 EnfoquePoblacionalId = at.Persona.EnfoquePoblacionalId,
