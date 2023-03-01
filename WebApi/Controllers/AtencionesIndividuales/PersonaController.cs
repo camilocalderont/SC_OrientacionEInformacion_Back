@@ -10,6 +10,7 @@ using WebApi.Storage;
 using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
+using Aplicacion.AgregarExcel;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -18,6 +19,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
     public class PersonaController : ControllerBase
     {
         private readonly PersonaService  _personaService;
+        private readonly IAgregarExcel _agregarExcel;
         private readonly PersonaAfiliacionService  _personaAfiliacionService;
         private readonly PersonaContactoService  _personaContactoService;
         private readonly ValidacionCorreo _validacorreo;
@@ -33,7 +35,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
             IMapper mapper, 
             IGenericService<AtencionIndividualAnexo> anexo, 
             ValidacionCorreo validacorreo,
-            AzureStorage azureStorage
+            AzureStorage azureStorage,
+            IAgregarExcel agregarExcel
         )
         {
             this._personaService = personaService;
@@ -43,6 +46,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             this._azureStorage=azureStorage;
             this._personaAfiliacionService = personaAfiliacionService;
             this._personaContactoService = personaContactoService;
+            this._agregarExcel = agregarExcel;
         }
 
         [HttpGet("{tipoDocumentoId}/{vcDocumento}")]
@@ -172,5 +176,104 @@ namespace WebApi.Controllers.AtencionesIndividuales
           
         }
 
+
+        [HttpPost("cargar")]
+        public async Task<ActionResult> Cargar([FromForm] List<IFormFile> files, [FromForm] long UsuarioId)
+        {
+            var horaInicio = DateTime.Now;
+            var statusOk = HttpStatusCode.OK;
+
+            var response = new CargaParametroResponse(statusOk, "Bien Hecho!", "datos cargados", null, 0);
+            try
+            {
+                var errores = new List<string>();
+                var registros = 0;
+
+                if (files.Count == 0)
+                {
+                    response = new CargaParametroResponse(
+                        HttpStatusCode.BadRequest,
+                        "Algo salio mal",
+                        "No se recibio el archivo ",
+                        errores,
+                        registros
+                    );
+                }
+
+                string rutaInicial = Environment.CurrentDirectory;
+                var nombreArchivo = files[0].FileName;
+
+                var archivoArray = nombreArchivo.Split(".");
+                var extencion = archivoArray[archivoArray.Length - 1];
+
+                if (extencion != "xlsx")
+                {
+                    response = new CargaParametroResponse(
+                        HttpStatusCode.BadRequest,
+                        "Algo salio mal",
+                        "El Archivo no contiene el formato Excel ",
+                        errores,
+                        registros
+                    );
+                }
+                else
+                {
+
+                    using (var ms = new MemoryStream())
+                    {
+
+                        files[0].CopyTo(ms);
+
+                        var responseParametro = await _agregarExcel.procesarArchivo(ms, UsuarioId);
+
+                        if (responseParametro.Errores.Count > 0)
+                        {
+                            response = new CargaParametroResponse(
+                                HttpStatusCode.BadRequest,
+                                "Datos Vacios en Documento Excel",
+                                "Falta un valor en alguna celda del archivo excel",
+                                responseParametro.Errores,
+                                registros
+                            );
+                        }
+                        else if (responseParametro.Registros == 0)
+                        {
+                            response = new CargaParametroResponse(
+                                statusOk,
+                                "Archivo sin procesar",
+                                "No se procesó el archivo debido a que ya existían los parámetros en base de datos",
+                                errores,
+                                registros
+                            );
+                        }
+                        else
+                        {
+                            response = new CargaParametroResponse(
+                            statusOk,
+                            "Parametros cargados", "Se cargaron (" + responseParametro.Registros + ") Personas, archivo: " + nombreArchivo,
+                            responseParametro.Errores,
+                            responseParametro.Registros
+                            );
+                        }
+                    }  
+
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new CargaParametroResponse(
+                    HttpStatusCode.BadRequest,
+                    "Algo salio mal",
+                    "Error procesando el archivo " + ex.Message + " " + ex.StackTrace,
+                    null,
+                    0
+               );
+            }
+
+            var horaFin = DateTime.Now;
+            var tiempo = horaFin - horaInicio;
+            response.Mensaje += " Petición resulta en " + tiempo.ToString();
+            return StatusCode((int)response.Codigo, response);
+        }
     }
 }

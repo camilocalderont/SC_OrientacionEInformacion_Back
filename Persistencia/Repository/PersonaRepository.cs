@@ -1,6 +1,7 @@
 using Dominio.Mapper.AtencionesIndividuales;
 using Dominio.Models.AtencionesIndividuales;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Persistencia.Context;
 
 
@@ -132,5 +133,13 @@ namespace Persistencia.Repository
 
             return persona;
         }
+
+        public async Task<int> agregarVarios(IEnumerable<Persona> personas)
+        {
+            await _context.Persona.AddRangeAsync(personas);
+
+            return await _context.SaveChangesAsync();
+        }
+
     }
 }

@@ -10,6 +10,7 @@ using WebApi.Storage;
 using WebApi.Validaciones;
 using WebAPI.Midleware;
 using Azure.Identity;
+using Aplicacion.AgregarExcel;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -57,6 +58,7 @@ builder.Services.AddDbContext<OrientacionDbContext>(options =>
                        options.UseSqlServer(connectionString),
             ServiceLifetime.Transient);
 
+builder.Services.AddScoped(typeof(IAgregarExcel), typeof(AgregarExcel));
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
@@ -81,6 +83,8 @@ builder.Services.AddScoped(typeof(PersonaService), typeof(PersonaService));
 builder.Services.AddScoped(typeof(PersonaAfiliacionService), typeof(PersonaAfiliacionService));
 builder.Services.AddScoped(typeof(PersonaContactoService), typeof(PersonaContactoService));
 builder.Services.AddScoped(typeof(AtencionIndividualService), typeof(AtencionIndividualService));
+
+
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
