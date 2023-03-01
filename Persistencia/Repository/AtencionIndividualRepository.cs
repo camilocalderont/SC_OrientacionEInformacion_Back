@@ -18,32 +18,39 @@ namespace Persistencia.Repository
             this._context = context;
         }
 
-        public async Task<IEnumerable<AtencionIndividualMapper>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
+        public async Task<IEnumerable<AtencionIndividualReporteResponse>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
         {
 
-            DateTime fechafinalContemplandoHorasMinutosSegundos = new DateTime(DtFechaFin.Year, DtFechaFin.Month, DtFechaFin.Day, 23, 59, 59);
+            DateTime fechafinalContemplandoHorasMinutosSegundos = Convert.ToDateTime(DtFechaFin.ToString("yyyy-MM-dd") + " 23:59:59");
 
-            IQueryable<AtencionIndividualMapper> atencionQuery = (from at in _context.AtencionIndividual
-                .Where(p => (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio) >= 0) &&
-                                            (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <= 0))
-                                                                   join pe in _context.Persona on at.PersonaId equals pe.Id
-                                                                   select new AtencionIndividualMapper
-                                                                   {
-                                                                       Id = at.Id,
-                                                                       DtFechaRegistro = at.DtFechaRegistro,
-                                                                       EstadoId = at.EstadoId,
-                                                                       MotivoId = at.MotivoId,
-                                                                       SubMotivoId = at.SubMotivoId,
-                                                                       TxAclaracionMotivo = at.TxAclaracionMotivo,
-                                                                       TxGestionRealizada = at.TxGestionRealizada,
-                                                                       AtencionReasignaciones = at.AtencionReasignaciones,
-                                                                       AtencionSeguimientos = at.AtencionSeguimientos,
-                                                                       UsuarioId = at.UsuarioId,
-                                                                       UsuarioActualId = at.AtencionSeguimientos.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).Last().UsuarioActualId : at.UsuarioId,
-                                                                       PersonaId = at.PersonaId,
-                                                                       Persona = pe
-                                                                   });
-            return await atencionQuery.ToListAsync();
+            IEnumerable<AtencionIndividualReporteResponse> atenciones = await (from at in _context.AtencionIndividual.Where(p => p.DtFechaRegistro >= DtFechaInicio && p.DtFechaRegistro <= fechafinalContemplandoHorasMinutosSegundos)
+                                                                               join pe in _context.Persona on at.PersonaId equals pe.Id
+                                                                               select new AtencionIndividualReporteResponse
+                                                                               {
+                                                                                   Id = at.Id,
+                                                                                   DtFechaRegistro = at.DtFechaRegistro,
+                                                                                   EstadoId = at.EstadoId,
+                                                                                   MotivoId = at.MotivoId,
+                                                                                   SubMotivoId = at.SubMotivoId,
+                                                                                   TxAclaracionMotivo = at.TxAclaracionMotivo,
+                                                                                   TxGestionRealizada = at.TxGestionRealizada,
+                                                                                   UsuarioId = at.UsuarioId,
+                                                                                   UsuarioActualId = at.AtencionReasignaciones.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).LastOrDefault().UsuarioActualId : at.UsuarioId,
+                                                                                   PersonaId = at.PersonaId,
+                                                                                   TipoDocumentoId = pe.TipoDocumentoId,
+                                                                                   EnfoquePoblacionalId = pe.EnfoquePoblacionalId,
+                                                                                   PoblacionPrioritariaId = pe.PoblacionPrioritariaId,
+                                                                                   SubPoblacionPrioritariaId = pe.SubPoblacionPrioritariaId ?? 0,
+                                                                                   VcDocumento = pe.VcDocumento ?? string.Empty,
+                                                                                   VcPrimerApellido = pe.VcPrimerApellido ?? string.Empty,
+                                                                                   VcPrimerNombre = pe.VcPrimerNombre ?? string.Empty,
+                                                                                   VcSegundoApellido = pe.VcSegundoApellido ?? string.Empty,
+                                                                                   VcSegundoNombre = pe.VcSegundoNombre ?? string.Empty,
+                                                                                   FechaCambioEstadoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty,
+                                                                                   FechaUltimoSeguimientoCaso = at.AtencionSeguimientos.Any() ? at.AtencionSeguimientos.OrderBy(x => x.Id).LastOrDefault().DtFechaRegistro.ToString("yyyy-MM-dd") : string.Empty
+                                                                               }).ToListAsync();            
+
+            return atenciones;
         }
 
         public async Task<IEnumerable<BandejaIndividualDTO>> obtenerPorRangoFechasEstadoUsuarioYDocumento(
