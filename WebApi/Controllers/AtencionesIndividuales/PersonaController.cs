@@ -239,7 +239,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
                         else if (responseParametro.Registros == 0)
                         {
                             response = new CargaParametroResponse(
-                                statusOk,
+                                HttpStatusCode.Accepted,
                                 "Archivo sin procesar",
                                 "No se procesó el archivo debido a que ya existían los parámetros en base de datos",
                                 errores,

@@ -113,7 +113,7 @@ namespace Aplicacion.AgregarExcel
                         fila++;
                     }
 
-                    if(errores.Count>0)
+                    if(errores.Count>=1)
                     {
                         personas = new List<Persona>();
                         registros = 0;

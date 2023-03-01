@@ -136,7 +136,24 @@ namespace Persistencia.Repository
 
         public async Task<int> agregarVarios(IEnumerable<Persona> personas)
         {
-            await _context.Persona.AddRangeAsync(personas);
+           
+            List<Persona> personasToGuardar = new List<Persona>();
+
+            foreach(Persona item in personas)
+            {
+                IQueryable<Persona> query = _context.Persona.AsNoTracking();
+
+                query = query.Where(persona => (persona.TipoDocumentoId == item.TipoDocumentoId) && (persona.VcDocumento == item.VcDocumento));
+
+                var resultQuery = await query.AsNoTracking().FirstOrDefaultAsync();
+
+                if (resultQuery is null)
+                {
+                    personasToGuardar.Add(item); 
+                }
+            }
+
+            await _context.Persona.AddRangeAsync(personasToGuardar);
 
             return await _context.SaveChangesAsync();
         }
