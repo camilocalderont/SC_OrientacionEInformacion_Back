@@ -11,6 +11,8 @@ using WebApi.Validaciones;
 using WebAPI.Midleware;
 using Azure.Identity;
 using Aplicacion.AgregarExcel;
+using System.Configuration;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -90,6 +92,10 @@ builder.Services.AddScoped(typeof(AtencionIndividualService), typeof(AtencionInd
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+string timeZoneId = builder.Configuration.GetValue<string>("TimeZone");
+TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+// Configura la zona horaria por defecto para la aplicaci�n
+builder.Services.AddSingleton(timeZone);
 
 builder.Services.AddCors(opt => {   
     opt.AddPolicy(name: myAllowSpecificOrigins,
