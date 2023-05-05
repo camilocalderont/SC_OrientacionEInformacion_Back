@@ -27,13 +27,16 @@ namespace WebApi.Controllers.AtencionesWeb
 
         private readonly AzureStorage _azureStorage;
 
+        private readonly TimeZoneInfo _timeZone;
+
         public AtencionWebController(
             AtencionWebService service,
             PersonaWebService personaWebService,
             IMapper mapper, 
             IGenericService<AtencionWebAnexo> anexo, 
             ValidacionCorreo validacorreo,
-            AzureStorage azureStorage
+            AzureStorage azureStorage,
+            TimeZoneInfo timeZone
         )
         {
             this._personaWebService = personaWebService;
@@ -42,6 +45,7 @@ namespace WebApi.Controllers.AtencionesWeb
             this._anexoWebService = anexo;
             this._validacorreo=validacorreo;
             this._azureStorage=azureStorage;
+            this._timeZone = timeZone;
         }
 
 
@@ -58,8 +62,8 @@ namespace WebApi.Controllers.AtencionesWeb
                 if (_azureStorage.validarAnexo(atencionWebRequest.Anexo, Constants.DOSMB, "pdf"))
                 {
 
-                    personaWeb.DtFechaActualizacion = DateTime.Now;
-                    personaWeb.DtFechaRegistro      = DateTime.Now;
+                    personaWeb.DtFechaActualizacion = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
+                    personaWeb.DtFechaRegistro      = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
 
                     var personaWebCorreo = _personaWebService.obtenerporCorreo(personaWeb.VcCorreo);
 
@@ -88,7 +92,7 @@ namespace WebApi.Controllers.AtencionesWeb
                     if (guardopersonaWeb)
                     {
                         atencionWeb.PersonaWebId = personaWeb.Id;
-                        atencionWeb.DtFechaRegistro = DateTime.Now;
+                        atencionWeb.DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
 
                         bool guardoatencionWeb = await _atencionWebservice.CreateAsync(atencionWeb);
 

@@ -16,15 +16,18 @@ namespace WebApi.Controllers.AtencionesWeb
         private readonly IGenericService<AtencionWebSeguimiento> _service;
         private readonly IGenericService<AtencionWeb> _atencionWebservice;
         private readonly IMapper _mapper;
+        private readonly TimeZoneInfo _timeZone;
         public AtencionWebSeguimientoController(
             IGenericService<AtencionWebSeguimiento> service,
             IGenericService<AtencionWeb> atencionWebservice,
-            IMapper mapper
+            IMapper mapper,
+            TimeZoneInfo timeZone
         )
         {
             this._service = service;
             this._atencionWebservice = atencionWebservice;
             this._mapper = mapper;
+            this._timeZone = timeZone;
         }
 
         [HttpPost("crear")]
@@ -35,7 +38,7 @@ namespace WebApi.Controllers.AtencionesWeb
             AtencionWebSeguimiento atencionWebSeguimientoModel = null;
 
             AtencionWebSeguimiento atencionWebSeguimiento = _mapper.Map<AtencionWebSeguimiento>(atencionWebSeguimientoRequest);
-            atencionWebSeguimiento.DtFechaRegistro = DateTime.Now;
+            atencionWebSeguimiento.DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             bool guardo = await _service.CreateAsync(atencionWebSeguimiento);
             if (!guardo)
             {

@@ -16,18 +16,23 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
         private readonly IGenericService<AtencionIndividualActor> _service;
         private readonly IMapper _mapper;
-
-        public AtencionIndividualActorController(IGenericService<AtencionIndividualActor> service, IMapper _mapper)
+        private readonly TimeZoneInfo _timeZone;
+        public AtencionIndividualActorController(
+            IGenericService<AtencionIndividualActor> service, 
+            IMapper _mapper,
+            TimeZoneInfo timeZone
+        )
         {
             this._service = service;
             this._mapper  = _mapper; 
+            this._timeZone = timeZone;
         }
 
         [HttpPost("crear")]
         public async Task<bool> crearPorListado(IEnumerable<AtencionIndividualActor> AtencionesIndividualesActoresList)
         {
             bool guardo = true;
-            var fechaRegistro = DateTime.Now;
+            var fechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             foreach (AtencionIndividualActor atencionIndividualActor in AtencionesIndividualesActoresList)
             {
                 atencionIndividualActor.DtFechaRegistro = fechaRegistro;

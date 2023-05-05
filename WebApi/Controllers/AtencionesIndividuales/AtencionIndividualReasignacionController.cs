@@ -12,9 +12,13 @@ namespace WebApi.Controllers.AtencionesIndividuales
     public class AtencionIndividualReasignacionController : ControllerBase
     {
         private readonly IGenericService<AtencionIndividualReasignacion> _service;
-        public AtencionIndividualReasignacionController(IGenericService<AtencionIndividualReasignacion> service)
+        private readonly TimeZoneInfo _timeZone;
+        public AtencionIndividualReasignacionController(
+            IGenericService<AtencionIndividualReasignacion> service,
+            TimeZoneInfo timeZone)
         {
             this._service = service;
+            this._timeZone = timeZone;
         }
 
 
@@ -28,7 +32,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             var asignacionesCasoWeb = await _service.GetAsync(e => e.AtencionIndividualId == atencionIndividualReasignacion.AtencionIndividualId, e => e.OrderBy(e => e.Id), "");
 
             bool validaUsuarioAnterior = true;
-            atencionIndividualReasignacion.DtFechaAsignacion = DateTime.Now;
+            atencionIndividualReasignacion.DtFechaAsignacion = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             if (asignacionesCasoWeb.Any())
             {
                 var ultimaAsignacion = asignacionesCasoWeb.Last();

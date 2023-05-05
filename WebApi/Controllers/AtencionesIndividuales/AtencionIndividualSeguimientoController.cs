@@ -16,14 +16,17 @@ namespace WebApi.Controllers.AtencionesIndividuales
         private readonly IGenericService<AtencionIndividualSeguimiento> _service;
         private readonly IGenericService<AtencionIndividual> _atencionIndividualservice;
         private readonly IMapper _mapper;
+        private readonly TimeZoneInfo _timeZone;
         public AtencionIndividualSeguimientoController(
             IGenericService<AtencionIndividualSeguimiento> service, 
             IMapper mapper,
-            IGenericService<AtencionIndividual> atencionIndividualservice)
+            IGenericService<AtencionIndividual> atencionIndividualservice,
+            TimeZoneInfo timeZone)
         {
             this._service = service;
             this._mapper = mapper;
             this._atencionIndividualservice = atencionIndividualservice;
+            this._timeZone = timeZone;
         }
 
         [HttpPost("crear")]
@@ -34,7 +37,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             AtencionIndividualSeguimiento atencionIndividualSeguimientoModel = null;
 
             AtencionIndividualSeguimiento atencionIndividualSeguimiento = _mapper.Map<AtencionIndividualSeguimiento>(atencionIndividualSeguimientoRequest);
-            atencionIndividualSeguimiento.DtFechaRegistro = DateTime.Now;
+            atencionIndividualSeguimiento.DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             bool guardo = await _service.CreateAsync(atencionIndividualSeguimiento);
             if (!guardo)
             {

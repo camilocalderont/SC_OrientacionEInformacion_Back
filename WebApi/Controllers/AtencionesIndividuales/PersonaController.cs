@@ -27,6 +27,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         private readonly IMapper _mapper;
 
         private readonly AzureStorage _azureStorage;
+        private readonly TimeZoneInfo _timeZone;
 
         public PersonaController(
             PersonaService personaService,
@@ -36,7 +37,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
             IGenericService<AtencionIndividualAnexo> anexo, 
             ValidacionCorreo validacorreo,
             AzureStorage azureStorage,
-            IAgregarExcel agregarExcel
+            IAgregarExcel agregarExcel,
+            TimeZoneInfo timeZone
         )
         {
             this._personaService = personaService;
@@ -47,6 +49,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             this._personaAfiliacionService = personaAfiliacionService;
             this._personaContactoService = personaContactoService;
             this._agregarExcel = agregarExcel;
+            this._timeZone = timeZone;
         }
 
         [HttpGet("{tipoDocumentoId}/{vcDocumento}")]
@@ -106,8 +109,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
             try
             {
-                persona.DtFechaActualizacion = DateTime.Now;
-                persona.DtFechaRegistro      = DateTime.Now;
+                persona.DtFechaActualizacion = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
+                persona.DtFechaRegistro      = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
                 
                 personaAfiliacion.Id = null;
                 personaContacto.Id = null;
@@ -180,7 +183,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         [HttpPost("cargar")]
         public async Task<ActionResult> Cargar([FromForm] List<IFormFile> files, [FromForm] long UsuarioId)
         {
-            var horaInicio = DateTime.Now;
+            var horaInicio = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             var statusOk = HttpStatusCode.OK;
 
             var response = new CargaParametroResponse(statusOk, "Bien Hecho!", "datos cargados", null, 0);
@@ -270,7 +273,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
                );
             }
 
-            var horaFin = DateTime.Now;
+            var horaFin = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
             var tiempo = horaFin - horaInicio;
             response.Mensaje += " Petición resulta en " + tiempo.ToString();
             return StatusCode((int)response.Codigo, response);

@@ -46,35 +46,7 @@ namespace WebApi.Controllers.AtencionesGrupales
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
         }
 
-        /*
-         * Se debe agregar funcionalidad de almacenamiento en Azure
-        [HttpPost("PostAtencionGrupalAnexo")]
-        public async Task<IActionResult> PostAtencionGrupalAnexo(AtencionGrupalAnexoDTO atenciongrupalanexo)
-        {
-            try
-            {
-                var response = new { Titulo = "Bien Hecho!", Mensaje = "Atencion grupal anexo creado de forma correcta", Codigo = HttpStatusCode.Created };
-                var atenciongrupalanexoDTO = _mapper.Map<AtencionGrupalAnexo>(atenciongrupalanexo);
-
-                atenciongrupalanexoDTO.DtFechaRegistro = DateTime.Now;
-
-                bool guardo = await _service.CreateAsync(atenciongrupalanexoDTO);
-
-                if (!guardo)
-                {
-                    response = new { Titulo = "Algo salio mal", Mensaje = "No se pudo guardar atención grupal anexo", Codigo = HttpStatusCode.BadRequest };
-                }
-                var modelResponse = new ModelResponse<AtencionGrupalAnexoDTO>(response.Codigo, response.Titulo, response.Mensaje, atenciongrupalanexo);
-                return StatusCode((int)modelResponse.Codigo, modelResponse);
-            }
-            catch (Exception)
-            {
-                var response = new { Titulo = "Algo salio mal", Mensaje = "Creando atención grupal anexo", Codigo = HttpStatusCode.RequestedRangeNotSatisfiable };
-                return StatusCode((int)response.Codigo, response); throw;
-            }
-
-        }
-        */
+        
     }
 
 }

@@ -21,12 +21,20 @@ namespace WebApi.Controllers.AtencionesGrupales
         private readonly IMapper _mapper;
 
         private readonly AzureStorage _azureStorage;
-        public AtencionGrupalController(AtencionGrupalService service, IGenericService<AtencionGrupalAnexo> anexo, IMapper mapper, AzureStorage azureStorage)
+        private readonly TimeZoneInfo _timeZone;
+        public AtencionGrupalController(
+            AtencionGrupalService service, 
+            IGenericService<AtencionGrupalAnexo> anexo, 
+            IMapper mapper, 
+            AzureStorage azureStorage,
+            TimeZoneInfo timeZone
+        )
         {
             _service = service;
             _mapper = mapper;
             _anexo = anexo;
             _azureStorage = azureStorage;
+            _timeZone = timeZone;
         }
 
 
@@ -42,7 +50,7 @@ namespace WebApi.Controllers.AtencionesGrupales
                 {
                     if (_azureStorage.validarAnexo(atenciongrupalRequest.Anexo,Constants.DOSMB,"pdf"))
                     {
-                        atencionGrupal.DtFechaRegistro = DateTime.Now;
+                        atencionGrupal.DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
                         bool guardo = await _service.CreateAsync(atencionGrupal);
 
                         if (guardo)

@@ -15,10 +15,14 @@ namespace Aplicacion.AgregarExcel
     public class AgregarExcel   : IAgregarExcel 
     {
         public PersonaRepository _personaRepository { get; }
-
-        public AgregarExcel(PersonaRepository personaRepository)
+        private readonly TimeZoneInfo _timeZone;
+        public AgregarExcel(
+            PersonaRepository personaRepository,
+            TimeZoneInfo timeZone
+        )
         {
             this._personaRepository = personaRepository;
+            this._timeZone = timeZone;
         }
 
         public async Task<PersonaRequest> procesarArchivo(Stream ruta, long UsuarioId)
@@ -104,7 +108,7 @@ namespace Aplicacion.AgregarExcel
                             EnfoquePoblacionalId = 1239,
                             EtniaId = 1608,
                             PoblacionPrioritariaId = 1624,
-                            DtFechaRegistro = DateTime.Now,
+                            DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone),
                             UsuarioId = UsuarioId,
                         };
 

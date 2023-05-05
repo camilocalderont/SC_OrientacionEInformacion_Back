@@ -28,7 +28,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
         private readonly IMapper _mapper;
 
         private readonly AzureStorage _azureStorage;
-
+        private readonly TimeZoneInfo _timeZone;
         public AtencionIndividualController(
             AtencionIndividualService service,
             PersonaService personaService,
@@ -36,7 +36,8 @@ namespace WebApi.Controllers.AtencionesIndividuales
             IGenericService<AtencionIndividualAnexo> anexo, 
             ValidacionCorreo validacorreo,
             AzureStorage azureStorage,
-            IGenericService<AtencionIndividualActor>  actorIndividualservice
+            IGenericService<AtencionIndividualActor>  actorIndividualservice,
+            TimeZoneInfo timeZone
         )
         {
             this._personaService = personaService;
@@ -46,6 +47,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             this._validacorreo=validacorreo;
             this._azureStorage=azureStorage;
             this._actorIndividualservice = actorIndividualservice;
+            this._timeZone = timeZone;
         }
 
 
@@ -60,7 +62,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
             {
                 if (_azureStorage.validarAnexo(atencionIndividualRequest.Anexo, Constants.DOSMB, "pdf"))
                 {
-                    atencionIndividual.DtFechaRegistro = DateTime.Now;
+                    atencionIndividual.DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone);
                     bool guardoatencionIndividual = await _atencionIndividualservice.CreateAsync(atencionIndividual);
                     if (guardoatencionIndividual)
                     {
