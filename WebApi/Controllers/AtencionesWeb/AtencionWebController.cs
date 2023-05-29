@@ -12,6 +12,8 @@ using Aplicacion.Services.AtencionesWeb;
 using Aplicacion.Services.AtencionesIndividuales;
 using Dominio.Mapper.AtencionesIndividuales;
 using Dominio.Mapper.AtencionesWeb;
+using Dominio.Models.AtencionesIndividuales;
+using WebApi.Requests.AtencionesIndividuales;
 
 namespace WebApi.Controllers.AtencionesWeb
 {
@@ -99,25 +101,7 @@ namespace WebApi.Controllers.AtencionesWeb
 
                         if (guardoatencionWeb && atencionWebRequest.Anexo != null)
                         {
-                            var anexo = atencionWebRequest.Anexo;
-                            var nombreEntidad = atencionWeb.GetType().Name;
-                            string rutaRemota = nombreEntidad + "/" + atencionWeb.Id + "/" + anexo.FileName;
-                            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);                          
-
-                            if (archivoCarga.rutaLocal.Length > 0)
-                            {
-                                AtencionWebAnexo atencionwebAnexo = new AtencionWebAnexo
-                                {
-                                    AtencionWebId = atencionWeb.Id,
-                                    IBytes = (int)anexo.Length,
-                                    VcNombre = anexo.FileName,
-                                    UsuarioId = atencionWeb.UsuarioId,
-                                    DtFechaRegistro = atencionWeb.DtFechaRegistro,
-                                    VcRuta = archivoCarga.rutaLocal
-                                };
-
-                                bool guardoAnexo = await _anexoWebService.CreateAsync(atencionwebAnexo);
-                            }
+                            bool guardoAnexo = await guardarAnexo(atencionWebRequest.Anexo, atencionWeb);
 
                         }
 
@@ -143,7 +127,7 @@ namespace WebApi.Controllers.AtencionesWeb
                 return StatusCode((int)modelResponseError.Codigo, modelResponseError);
             }
 
-            var modelResponse = new ModelResponse<PersonaWeb>(response.Codigo, response.Titulo, response.Mensaje, personaWeb);
+            var modelResponse = new ModelResponse<AtencionWeb>(response.Codigo, response.Titulo, response.Mensaje, atencionWeb);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
 
         }
@@ -231,6 +215,47 @@ namespace WebApi.Controllers.AtencionesWeb
 
             var modelResponse = new ModelResponse<AtencionWebDTO>(response.Codigo, response.Titulo, response.Mensaje, AtencionWebModelModel);
             return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
+        [HttpPost("asociarAnexoCaso")]
+        public async Task<ActionResult<bool>> asociarAnexoCasoAtencionIndividual([FromForm] AtencionWebRequest atencionWebRequest)
+        {
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
+            AtencionWeb atencionWeb = _mapper.Map<AtencionWeb>(atencionWebRequest);
+            bool guardoAnexo = await guardarAnexo(atencionWebRequest.Anexo, atencionWeb);
+            if (!guardoAnexo)
+            {
+                response = new { Titulo = "Algo salió mal!", Mensaje = "No se pudo cargar el anexo", Codigo = HttpStatusCode.OK };
+            }
+            var modelResponse = new ModelResponse<bool>(response.Codigo, response.Titulo, response.Mensaje, guardoAnexo);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
+        [NonAction]
+        public async Task<bool> guardarAnexo(IFormFile Anexo, AtencionWeb atencionWeb)
+        {
+            bool guardoAnexo = false;
+            var anexo = Anexo;
+            var nombreEntidad = atencionWeb.GetType().Name;
+            string rutaRemota = nombreEntidad + "/" + atencionWeb.Id + "/" + anexo.FileName;
+            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
+
+            if (archivoCarga.rutaLocal.Length > 0)
+            {
+                AtencionWebAnexo atencionwebAnexo = new AtencionWebAnexo
+                {
+                    AtencionWebId = atencionWeb.Id,
+                    IBytes = (int)anexo.Length,
+                    VcNombre = anexo.FileName,
+                    UsuarioId = atencionWeb.UsuarioId,
+                    DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone),
+                    VcRuta = archivoCarga.rutaLocal
+                };
+
+                guardoAnexo = await _anexoWebService.CreateAsync(atencionwebAnexo);
+            }
+
+            return guardoAnexo;
         }
 
 

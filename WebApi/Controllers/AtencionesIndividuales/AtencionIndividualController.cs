@@ -13,6 +13,7 @@ using Aplicacion.Services.AtencionesIndividuales;
 using Newtonsoft.Json;
 using Dominio.Models.AtencionesGrupales;
 using Dominio.Models.AtencionesWeb;
+using Azure;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -80,25 +81,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
                         if (atencionIndividualRequest.Anexo != null)
                         {
-                            var anexo = atencionIndividualRequest.Anexo;
-                            var nombreEntidad = atencionIndividual.GetType().Name;
-                            string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
-                            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
-
-                            if (archivoCarga.rutaLocal.Length > 0)
-                            {
-                                AtencionIndividualAnexo atencionIndividualAnexo = new AtencionIndividualAnexo
-                                {
-                                    AtencionIndividualId = atencionIndividual.Id,
-                                    IBytes = (int)anexo.Length,
-                                    VcNombre = anexo.FileName,
-                                    UsuarioId = atencionIndividual.UsuarioId,
-                                    DtFechaRegistro = atencionIndividual.DtFechaRegistro,
-                                    VcRuta = archivoCarga.rutaLocal
-                                };
-
-                                bool guardoAnexo = await _anexoIndividualService.CreateAsync(atencionIndividualAnexo);
-                            }
+                            bool guardoAnexo = await guardarAnexo(atencionIndividualRequest.Anexo, atencionIndividual);
                         }
 
 
@@ -249,6 +232,47 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
 
+        }
+
+        [HttpPost("asociarAnexoCaso")]
+        public async Task<ActionResult<bool>> asociarAnexoCasoAtencionIndividual([FromForm] AtencionIndividualRequest atencionIndividualRequest)
+        {
+            var response = new { Titulo = "Bien Hecho!", Mensaje = "Datos cargados", Codigo = HttpStatusCode.OK };
+            AtencionIndividual atencionIndividual = _mapper.Map<AtencionIndividual>(atencionIndividualRequest);
+            bool guardoAnexo = await guardarAnexo(atencionIndividualRequest.Anexo, atencionIndividual);
+            if (!guardoAnexo)
+            {
+                response = new { Titulo = "Algo salió mal!", Mensaje = "No se pudo cargar el anexo", Codigo = HttpStatusCode.OK };
+            }
+            var modelResponse = new ModelResponse<bool>(response.Codigo, response.Titulo, response.Mensaje, guardoAnexo);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
+        }
+
+        [NonAction]
+        public async Task<bool> guardarAnexo(IFormFile Anexo, AtencionIndividual atencionIndividual)
+        {
+            bool guardoAnexo = false;
+            var anexo = Anexo;
+            var nombreEntidad = atencionIndividual.GetType().Name;
+            string rutaRemota = nombreEntidad + "/" + atencionIndividual.Id + "/" + anexo.FileName;
+            ArchivoCarga archivoCarga = await _azureStorage.CargarArchivoStream(anexo, rutaRemota);
+
+            if (archivoCarga.rutaLocal.Length > 0)
+            {
+                AtencionIndividualAnexo atencionIndividualAnexo = new AtencionIndividualAnexo
+                {
+                    AtencionIndividualId = atencionIndividual.Id,
+                    IBytes = (int)anexo.Length,
+                    VcNombre = anexo.FileName,
+                    UsuarioId = atencionIndividual.UsuarioId,
+                    DtFechaRegistro = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, _timeZone),
+                    VcRuta = archivoCarga.rutaLocal
+                };
+
+                guardoAnexo = await _anexoIndividualService.CreateAsync(atencionIndividualAnexo);
+            }
+
+            return guardoAnexo;
         }
 
 
