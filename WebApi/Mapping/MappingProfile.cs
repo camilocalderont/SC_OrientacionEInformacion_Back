@@ -43,7 +43,8 @@ namespace Aplicacion.Mapping
 
             CreateMap<AtencionWebSeguimiento, AtencionWebSeguimientoRequest>().ReverseMap();
             
-            
+            CreateMap<AtencionGrupal, BandejaGrupalDto>()
+                .ForMember(dest=>dest.IAnexos,opt=>opt.MapFrom(src=>src.AtencionGrupalesAnexos.Count()));
 
         }
     }

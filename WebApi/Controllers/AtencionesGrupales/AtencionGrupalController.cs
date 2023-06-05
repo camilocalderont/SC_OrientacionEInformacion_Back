@@ -115,11 +115,11 @@ namespace WebApi.Controllers.AtencionesGrupales
         }
 
         [HttpPost("bandeja")]
-        public async Task<ActionResult<ListModelResponse<AtencionGrupal>>> obtenerPorRangoFechasYUsuario(BandejaCasosGrupalRequest bandejaCasosGrupal)
+        public async Task<ActionResult<ListModelResponse<BandejaGrupalDto>>> obtenerPorRangoFechasYUsuario(BandejaCasosGrupalRequest bandejaCasosGrupal)
         {
 
             var response = new { Titulo = "Bien Hecho!", Mensaje = "Se encontraron los casos de atención grupal", Codigo = HttpStatusCode.OK };
-            IEnumerable<AtencionGrupal> AtencionesGrupales = null;
+            IEnumerable<BandejaGrupalDto> AtencionesGrupales = null;
             AtencionesGrupales = await _service.obtenerPorRangoFechasYUsuario(bandejaCasosGrupal.DtFechaInicio, bandejaCasosGrupal.DtFechaFin, bandejaCasosGrupal.UsuarioId);
 
             if (AtencionesGrupales.Count() == 0)
@@ -127,7 +127,7 @@ namespace WebApi.Controllers.AtencionesGrupales
                 response = new { Titulo = "Algo salio mal", Mensaje = "No se encontraron casos de atención grupal con el fitro indicado", Codigo = HttpStatusCode.NoContent };
 
             }
-            var listModelResponse = new ListModelResponse<AtencionGrupal>(response.Codigo, response.Titulo, response.Mensaje, AtencionesGrupales);
+            var listModelResponse = new ListModelResponse<BandejaGrupalDto>(response.Codigo, response.Titulo, response.Mensaje, AtencionesGrupales);
 
             return StatusCode((int)listModelResponse.Codigo, listModelResponse);
 

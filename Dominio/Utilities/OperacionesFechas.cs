@@ -9,62 +9,43 @@ namespace Dominio.Utilities
 {
     public class OperacionesFechas
     {
+
         public static DiferenciaEntreFechas restar(DateTime fechaFin, DateTime? fechaInicio)
         {
-            /*
-            * 1. Si retorna -1  entonces la fecha inicial es mayor que la fecha final, entonces no se debe hacer la resta de fechas.
-            * 2. Si retonra 0 entonces la fecha incial es igual a la fecha final
-            * 3. Si alguno de los atributos de DiferenciaEntreFechas es mayor que cero, entonces se realizó la operacion.
-            */
-            
+            // Inicializamos los valores de la diferencia en 0.
+            int anios = 0;
+            int meses = 0;
+            int dias = 0;
 
-            DiferenciaEntreFechas fechaResultado = new DiferenciaEntreFechas();
-
-            if (fechaInicio != null)
+            // Si la fechaInicio es null o si es mayor que la fecha final, retornamos "0 años, 0 meses, 0 días".
+            if (fechaInicio == null || fechaInicio.Value > fechaFin)
             {
-                if (fechaInicio.Value.Year > fechaFin.Year)
-                {
-                    fechaResultado.anios = -1;
-                    fechaResultado.meses = -1;
-                    fechaResultado.dias = -1;
-                    return fechaResultado;
-                }
-
-                if ((fechaInicio.Value.Year == fechaFin.Year) && (fechaInicio.Value.Month == fechaFin.Month) && (fechaInicio.Value.Day == fechaFin.Day))
-                {
-                    return fechaResultado;
-                }
-
-                fechaResultado.anios = fechaFin.Year - fechaInicio.Value.Year;
-
-                if (fechaFin.Month >= fechaInicio.Value.Month)
-                {
-                    fechaResultado.meses = fechaFin.Month - fechaInicio.Value.Month;
-                    if (fechaFin.Day >= fechaInicio.Value.Day)
-                    {
-                        fechaResultado.dias = fechaFin.Day - fechaInicio.Value.Day;
-                    }
-                }
-                else
-                {
-                    fechaResultado.anios = fechaResultado.anios - 1;
-                    fechaResultado.meses = fechaFin.Month + 12 - fechaInicio.Value.Month;
-                    if (fechaFin.Day >= fechaInicio.Value.Day)
-                    {
-                        fechaResultado.dias = fechaFin.Day - fechaInicio.Value.Day;
-                    }
-                    else
-                    {
-                        fechaResultado.meses = fechaResultado.meses - 1;
-                        fechaResultado.dias = fechaFin.Day + 31 - fechaInicio.Value.Day;
-                    }
-                }
-                return fechaResultado;
+                return new DiferenciaEntreFechas(anios, meses, dias);
             }
-            else
+
+            // Calculamos la diferencia en años, meses y días.
+            anios = fechaFin.Year - fechaInicio.Value.Year;
+            meses = fechaFin.Month - fechaInicio.Value.Month;
+            dias = fechaFin.Day - fechaInicio.Value.Day;
+
+            // Si el día de la fecha final es menor al día de la fecha de inicio,
+            // entonces debemos "pedir prestado" un mes de los meses.
+            if (dias < 0)
             {
-                return fechaResultado;
+                meses--;
+                dias += DateTime.DaysInMonth(fechaInicio.Value.Year, fechaInicio.Value.Month);
             }
+
+            // Si el mes de la fecha final es menor al mes de la fecha de inicio,
+            // entonces debemos "pedir prestado" un año de los años.
+            if (meses < 0)
+            {
+                anios--;
+                meses += 12;
+            }
+
+            // Retornamos el resultado.
+            return new DiferenciaEntreFechas(anios, meses, dias);
         }
     }
 }

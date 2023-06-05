@@ -1,4 +1,5 @@
-﻿using Dominio.Mapper.AtencionesGrupales;
+﻿using AutoMapper;
+using Dominio.Mapper.AtencionesGrupales;
 using Dominio.Models.AtencionesGrupales;
 using Persistencia.Repository;
 
@@ -11,15 +12,23 @@ namespace Aplicacion.Services.AtencionesGrupales
 
         public AtencionGrupalRepository _atencionGrupalRepository { get; }
         public IGenericRepository<AtencionGrupal> _genericRepository { get; }
-        public AtencionGrupalService(IGenericRepository<AtencionGrupal> genericRepository, AtencionGrupalRepository atencionGrupalRepository) : base(genericRepository)
+        private readonly IMapper _mapper;
+        public AtencionGrupalService(
+            IGenericRepository<AtencionGrupal> genericRepository, 
+            AtencionGrupalRepository atencionGrupalRepository,
+            IMapper mapper
+        ) : base(genericRepository)
         {
             _atencionGrupalRepository = atencionGrupalRepository;
             _genericRepository = genericRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId)
+        public async Task<IEnumerable<BandejaGrupalDto>> obtenerPorRangoFechasYUsuario(DateTime DtFechaInicio, DateTime DtFechaFin, long usuarioId)
         {
-            return await _atencionGrupalRepository.obtenerPorRangoFechasYUsuario(DtFechaInicio, DtFechaFin, usuarioId);
+            var atencionesGrupales = await _atencionGrupalRepository.obtenerPorRangoFechasYUsuario(DtFechaInicio, DtFechaFin, usuarioId); ;
+            var bandejaGrupal = _mapper.Map<IEnumerable<BandejaGrupalDto>>(atencionesGrupales);
+            return bandejaGrupal;
         }
 
         public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
