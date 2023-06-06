@@ -16,7 +16,12 @@ namespace Dominio.Mapper.AtencionesGrupales
         public string TipoActividad { get; set; }
         public string Localidad { get; set; }
         public string VcLugar { get; set; }
+        public long TipoSolicitudId { get; set; }
+        public long MotivoId { get; set; }
+        public long SubMotivoId { get; set; }
+        public long TiempoDuracionId { get; set; }
+        public long TipoActividadId { get; set; }
+        public long LocalidadId { get; set; }
         public int IAnexos { get; set; }
-
     }
 }
