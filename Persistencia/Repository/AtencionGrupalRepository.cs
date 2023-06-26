@@ -29,7 +29,7 @@ namespace Persistencia.Repository
             {
                 atencionesGrupalQuery = atencionesGrupalQuery.Where(p => p.UsuarioId == usuarioId);
             }
-            return await atencionesGrupalQuery.ToListAsync();
+            return await atencionesGrupalQuery.OrderByDescending(a => a.DtFechaRegistro).ToListAsync();
         }
 
         public async Task<IEnumerable<AtencionGrupal>> obtenerPorRangoFechas(DateTime DtFechaInicio, DateTime DtFechaFin)
@@ -41,7 +41,7 @@ namespace Persistencia.Repository
             atencionesGrupalQuery = atencionesGrupalQuery.Where(p =>  (DateTime.Compare(p.DtFechaRegistro, DtFechaInicio)>=0) &&
                                             (DateTime.Compare(p.DtFechaRegistro, fechafinalContemplandoHorasMinutosSegundos) <=0) );
            
-            return await atencionesGrupalQuery.ToListAsync();
+            return await atencionesGrupalQuery.OrderByDescending(a => a.DtFechaRegistro).ToListAsync();
         }
 
         public async Task<AtencionGrupalDTO> obtenerPorId(long atencionGrupalId)

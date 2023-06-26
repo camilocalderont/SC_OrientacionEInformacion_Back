@@ -17,6 +17,8 @@ namespace Dominio.Mapper.AtencionesIndividuales
         public string FechaCambioEstadoCaso { get; set; } = string.Empty;
         public string FechaUltimoSeguimientoCaso { get; set; } = string.Empty;
 
+        public long TipoSolicitudId { get; set; }
+
         public long TipoDocumentoId { get; set; }
         public long EnfoquePoblacionalId { get; set; }
         public long PoblacionPrioritariaId { get; set; }

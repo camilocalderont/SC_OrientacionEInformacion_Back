@@ -34,6 +34,7 @@ namespace Persistencia.Repository
                                                                                    SubMotivoId = at.SubMotivoId,
                                                                                    TxAclaracionMotivo = at.TxAclaracionMotivo,
                                                                                    TxGestionRealizada = at.TxGestionRealizada,
+                                                                                   TipoSolicitudId = at.TipoSolicitudId,
                                                                                    UsuarioId = at.UsuarioId,
                                                                                    UsuarioActualId = at.AtencionReasignaciones.Any() ? at.AtencionReasignaciones.OrderBy(x => x.Id).LastOrDefault().UsuarioActualId : at.UsuarioId,
                                                                                    PersonaId = at.PersonaId,
@@ -85,7 +86,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesIndividuales = atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
+            var atencionesIndividuales = atencionesIndividualesQuery.OrderByDescending(a => a.DtFechaRegistro).Select(a=>new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -170,7 +171,7 @@ namespace Persistencia.Repository
 
 
             var atencionesIndividuales = await query.
-                Select(item =>
+                OrderByDescending(a => a.DtFechaRegistro).Select(item =>
                 new AtencionIndividualReporteDto
                 {
                     Consecutivo = item.PersonaId + "",
@@ -232,7 +233,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a => new BandejaIndividualDTO
+            var atencionesIndividuales = await atencionesIndividualesQuery.OrderByDescending(a => a.DtFechaRegistro).Select(a => new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -406,7 +407,7 @@ namespace Persistencia.Repository
 
             }
 
-            var atencionesIndividuales = await atencionesIndividualesQuery.Select(a=>new BandejaIndividualDTO
+            var atencionesIndividuales = await atencionesIndividualesQuery.OrderByDescending(a => a.DtFechaRegistro).Select(a=>new BandejaIndividualDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,

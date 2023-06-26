@@ -11,6 +11,7 @@ using WebApi.Validaciones;
 using Dominio.Utilities;
 using Aplicacion.Services.AtencionesIndividuales;
 using Aplicacion.AgregarExcel;
+using wsComprobadorDerechos;
 
 namespace WebApi.Controllers.AtencionesIndividuales
 {
@@ -28,6 +29,7 @@ namespace WebApi.Controllers.AtencionesIndividuales
 
         private readonly AzureStorage _azureStorage;
         private readonly TimeZoneInfo _timeZone;
+
 
         public PersonaController(
             PersonaService personaService,
@@ -277,6 +279,66 @@ namespace WebApi.Controllers.AtencionesIndividuales
             var tiempo = horaFin - horaInicio;
             response.Mensaje += " Petición resulta en " + tiempo.ToString();
             return StatusCode((int)response.Codigo, response);
+        }
+
+        
+        [HttpGet("comprobador/{vcDocumento}")]
+        public async Task<IActionResult> obtenerDatosComprobadorDerechos(string vcDocumento)
+        {
+
+            var proxy = new ServiceSoapClient(ServiceSoapClient.EndpointConfiguration.ServiceSoap);
+            var authentication = new AuthenticationHeader();
+            authentication.UserName = "pai";
+            authentication.Password = "P$i2016$$SdS";
+
+            var consultaContributivo = await proxy.GetRegimenContributivoAsync(authentication, vcDocumento,"","","","","");
+            RRegimenContributivo responseContributivo = consultaContributivo.GetRegimenContributivoResult;
+            ComprobadorDerechosResponse comprobadorResponse = new();
+
+            bool fEncontrado = false;
+
+            if (!responseContributivo.ErrorConsulta){
+
+                if (responseContributivo.ArrayRegimenContributivo.Count() > 0)
+                {
+                    var contributivo = responseContributivo.ArrayRegimenContributivo[0];
+                    GetDecryptDataResponse codigoEPSResponse = await proxy.GetDecryptDataAsync(authentication, contributivo.CodigoEPS);
+                    comprobadorResponse.CodigoEPS = codigoEPSResponse.GetDecryptDataResult;
+                    comprobadorResponse.CodigoRegimen = "1";
+                    fEncontrado = true;
+                }
+            }
+
+            if (!fEncontrado)
+            {
+                GetRegimenSubsidiadoResponse consultaSubsidiado = await proxy.GetRegimenSubsidiadoAsync(authentication, "", vcDocumento, "", "", "", "", "", "");
+                RRegimenSubsidiado responseSubsidiado =  consultaSubsidiado.GetRegimenSubsidiadoResult;
+                
+                if (!responseSubsidiado.ErrorConsulta)
+                {
+                    if(responseSubsidiado.ArrayRegimenSubsidiado.Count() > 0)
+                    {
+                        var subsidiado = responseSubsidiado.ArrayRegimenSubsidiado[0];
+                        GetDecryptDataResponse codigoEPSResponse = await proxy.GetDecryptDataAsync(authentication, subsidiado.CodigoAseguradora);
+                        comprobadorResponse.CodigoEPS = codigoEPSResponse.GetDecryptDataResult;
+                        comprobadorResponse.CodigoRegimen = "2";
+                        fEncontrado = true;
+                    }
+                }
+                
+            }
+            var response = new { Titulo = "", Mensaje = "", Codigo = HttpStatusCode.Accepted };
+            if (!fEncontrado)
+            {
+                response = new { Titulo = "Algo salio mal", Mensaje = $"No existe la persona con el documento {vcDocumento}  ", Codigo = HttpStatusCode.OK };
+            }
+            else
+            {
+                response = new { Titulo = "Bien Hecho!", Mensaje = "Se obtuvo los datos de comprobador de derechos con el documento solicitado", Codigo = HttpStatusCode.OK };
+            }
+
+            var modelResponse = new ModelResponse<ComprobadorDerechosResponse>(response.Codigo, response.Titulo, response.Mensaje, comprobadorResponse);
+            return StatusCode((int)modelResponse.Codigo, modelResponse);
         }
     }
 }

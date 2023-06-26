@@ -51,7 +51,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesWeb = atencionesWebQuery.Select(a=>new AtencionWebDTO
+            var atencionesWeb = atencionesWebQuery.OrderByDescending(a => a.DtFechaRegistro).Select(a=>new AtencionWebDTO
             {
                 Id= a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -95,7 +95,7 @@ namespace Persistencia.Repository
 
 
 
-            var atencionesWeb = await atencionesWebQuery.Select(a => new AtencionWebDTO
+            var atencionesWeb = await atencionesWebQuery.OrderByDescending(a => a.DtFechaRegistro).Select(a => new AtencionWebDTO
             {
                 Id = a.Id,
                 DtFechaRegistro = a.DtFechaRegistro,
@@ -138,7 +138,7 @@ namespace Persistencia.Repository
 
             query = query.Include(atencionWeb => atencionWeb.PersonasWeb);
 
-            var atencionWeb = await query.Select(atencionWeb => new AtencionWebReporteDTO
+            var atencionWeb = await query.OrderByDescending(a => a.DtFechaRegistro).Select(atencionWeb => new AtencionWebReporteDTO
             {
                 Id = atencionWeb.Id,
                 Mes = atencionWeb.DtFechaRegistro.Month,
